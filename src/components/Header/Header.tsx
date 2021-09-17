@@ -14,7 +14,12 @@ export default function Header() {
           <GearIcon />
         </Link>
       </div>
-      <h1 className="font-display text-center text-6xl text-yellow-600">Jot</h1>
+      <Link
+        className="block font-display text-center text-6xl text-yellow-600"
+        to={Urls.routes.app}
+      >
+        Jot
+      </Link>
     </Container>
   );
 }
