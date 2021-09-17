@@ -1,4 +1,5 @@
 import { useAuth0 } from "@auth0/auth0-react";
+import Account from "components/Account";
 import Dashboard from "components/Dashboard";
 import LandingPage from "components/LandingPage";
 import ProtectedRoute from "components/ProtectedRoute";
@@ -23,6 +24,7 @@ const App = () => {
         <Switch>
           <Route exact path={Urls.routes.root} component={LandingPage} />
           <ProtectedRoute path={Urls.routes.app} component={Dashboard} />
+          <ProtectedRoute path={Urls.routes.account} component={Account} />
         </Switch>
       </Router>
     </QueryClientProvider>

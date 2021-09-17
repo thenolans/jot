@@ -1,22 +1,21 @@
-import LogoutButton from "components/LogoutButton";
+import Entries from "components/Entries";
+import GearIcon from "components/GearIcon";
 import Urls from "constants/urls";
-import { useQuery } from "react-query";
-import http from "utils/http";
+import { Link } from "react-router-dom";
 
 export default function Dashboard() {
-  const { data } = useQuery(["categories"], () => http.get(Urls.api.posts), {
-    retry: false,
-    refetchOnWindowFocus: false,
-  });
-
   return (
-    <div className="container max-w-sm mx-auto py-16 space-y-12">
-      <h1 className="text-3xl font-bold text-gray-700">Dashboard</h1>
-      <p className="text-lg text-gray-600">
-        This page is a protected route and would typically require
-        authentication to view
-      </p>
-      <LogoutButton />
+    <div className="container max-w-sm mx-auto py-4 space-y-8">
+      <div className="flex justify-end ">
+        <Link
+          to={Urls.routes.account}
+          className="text-gray-300 hover:text-yellow-600"
+        >
+          <GearIcon />
+        </Link>
+      </div>
+      <h1 className="font-display text-center text-6xl text-yellow-600">Jot</h1>
+      <Entries />
     </div>
   );
 }
