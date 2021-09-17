@@ -1,6 +1,6 @@
 import Container from "components/Container";
-import GearIcon from "components/GearIcon";
 import Urls from "constants/urls";
+import GearIcon from "icons/Gear";
 import { Link } from "react-router-dom";
 
 export default function Header() {

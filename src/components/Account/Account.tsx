@@ -1,15 +1,13 @@
 import { useAuth0 } from "@auth0/auth0-react";
-import Container from "components/Container";
-import Header from "components/Header";
-import LogoutIcon from "components/LogoutIcon";
-import TrashIcon from "components/TrashIcon";
+import Layout from "components/Layout";
+import LogoutIcon from "icons/Logout";
+import TrashIcon from "icons/Trash";
 
 export default function Account() {
   const { logout } = useAuth0();
 
   return (
-    <Container>
-      <Header />
+    <Layout>
       <div className="grid grid-cols-1 divide-y divide-gray-300">
         <div className="py-4">
           <button
@@ -46,6 +44,6 @@ export default function Account() {
           </button>
         </div>
       </div>
-    </Container>
+    </Layout>
   );
 }

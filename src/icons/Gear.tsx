@@ -1,4 +1,4 @@
-export default function GearIcon() {
+export default function Gear() {
   return (
     <svg
       aria-hidden="true"

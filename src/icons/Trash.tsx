@@ -1,4 +1,4 @@
-export default function TrashIcon() {
+export default function Trash() {
   return (
     <svg
       aria-hidden="true"

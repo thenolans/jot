@@ -1,4 +1,4 @@
-export default function AddIcon() {
+export default function Plus() {
   return (
     <svg
       aria-hidden="true"
