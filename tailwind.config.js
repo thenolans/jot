@@ -5,6 +5,7 @@ module.exports = {
     extend: {
       fontFamily: {
         display: "'Damion', sans-serif",
+        body: "'Nunito', sans-serif",
       },
     },
   },
