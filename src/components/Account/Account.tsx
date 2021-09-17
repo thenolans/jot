@@ -1,4 +1,5 @@
 import { useAuth0 } from "@auth0/auth0-react";
+import Button from "components/Button";
 import Layout from "components/Layout";
 import LogoutIcon from "icons/Logout";
 import TrashIcon from "icons/Trash";
@@ -10,29 +11,30 @@ export default function Account() {
     <Layout>
       <div className="grid grid-cols-1 divide-y divide-gray-300">
         <div className="py-4">
-          <button
-            className="flex items-center space-x-2 text-gray-700 hover:text-yellow-700 font-semibold"
+          <Button
+            className="space-x-2"
             onClick={() =>
               logout({
                 returnTo: window.location.origin,
               })
             }
-            type="button"
+            theme="mutedLink"
           >
             <LogoutIcon />
             <span>Logout</span>
-          </button>
+          </Button>
         </div>
         <div className="py-4">
-          <button
-            className="flex items-center space-x-2 text-red-700 font-semibold"
+          <Button
+            className="space-x-2"
+            theme="dangerLink"
             onClick={async () => {
               if (
                 window.confirm(
                   "Are you sure you want to delete your data? This action cannot be undone!"
                 )
               ) {
-                // await deleteAccount();
+                // TODO await deleteAccount();
                 logout({
                   returnTo: window.location.origin,
                 });
@@ -41,7 +43,7 @@ export default function Account() {
           >
             <TrashIcon />
             <span>Delete my data</span>
-          </button>
+          </Button>
         </div>
       </div>
     </Layout>
