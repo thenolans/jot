@@ -1,6 +1,7 @@
 export default function TrashIcon() {
   return (
     <svg
+      aria-hidden="true"
       fill="none"
       height={24}
       stroke="currentColor"
