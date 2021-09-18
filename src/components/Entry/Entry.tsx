@@ -14,7 +14,6 @@ export default function Entry({ data, highlightTerm = "" }: Props) {
         <h3 className="font-semibold">
           <Highlighter
             autoEscape
-            highlightClassName="tw-bg-sandy-beach p-0"
             searchWords={[highlightTerm]}
             textToHighlight={data.title}
           />
@@ -24,7 +23,6 @@ export default function Entry({ data, highlightTerm = "" }: Props) {
         <div className="text-sm">
           <Highlighter
             autoEscape
-            highlightClassName="tw-bg-sandy-beach p-0"
             searchWords={[highlightTerm]}
             textToHighlight={data.notes}
           />

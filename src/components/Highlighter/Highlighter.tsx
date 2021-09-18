@@ -1,26 +1,18 @@
 import { findAll, FindAllArgs } from "highlight-words-core";
 import { Fragment } from "react";
 
-type Props = FindAllArgs & {
-  highlightClassName?: string;
-  highlightTag?: keyof JSX.IntrinsicElements;
-};
+type Props = FindAllArgs;
 
-export default function Highlighter({
-  highlightClassName,
-  highlightTag = "mark",
-  ...findAllArgs
-}: Props) {
-  const HighlightTag = highlightTag;
+export default function Highlighter({ ...findAllArgs }: Props) {
   return (
     <>
       {findAll(findAllArgs).map((chunk, index) => {
         const text = findAllArgs.textToHighlight.slice(chunk.start, chunk.end);
         return chunk.highlight ? (
           // eslint-disable-next-line react/no-array-index-key
-          <HighlightTag key={index} className={highlightClassName}>
+          <mark key={index} className="bg-yellow-100">
             {text}
-          </HighlightTag>
+          </mark>
         ) : (
           // eslint-disable-next-line react/no-array-index-key
           <Fragment key={index}>{text}</Fragment>
