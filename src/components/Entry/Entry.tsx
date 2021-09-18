@@ -36,13 +36,15 @@ export default function Entry({ data, highlightTerm = "" }: Props) {
           />
         </div>
       )}
-      <div className="flex space-x-2">
-        {data.tags.map((tag) => (
-          <div key={tag} className="bg-gray-100 rounded px-2 py-1 text-xs">
-            {tag}
-          </div>
-        ))}
-      </div>
+      {!!data.tags.length && (
+        <div className="flex space-x-2">
+          {data.tags.map((tag) => (
+            <div key={tag} className="bg-gray-100 rounded px-2 py-1 text-xs">
+              {tag}
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

@@ -4,6 +4,7 @@ import FilterDialog from "components/FilterDialog";
 import useEntries from "hooks/useEntries";
 import FilterIcon from "icons/Filter";
 import PlusIcon from "icons/Plus";
+import { DialogKeys } from "types";
 
 export default function FloatingButtons() {
   const { activeDialog, setActiveDialog } = useEntries();
@@ -13,14 +14,14 @@ export default function FloatingButtons() {
       <div className="fixed bottom-0 left-0 w-full p-2">
         <div className="flex justify-between">
           <Button
-            onClick={() => setActiveDialog("filter")}
+            onClick={() => setActiveDialog(DialogKeys.FILTER)}
             className="w-12 shadow"
           >
             <FilterIcon />
             <span className="sr-only">Filters</span>
           </Button>
           <Button
-            onClick={() => setActiveDialog("create")}
+            onClick={() => setActiveDialog(DialogKeys.CREATE)}
             className="w-12 space-x-2"
           >
             <PlusIcon />
@@ -29,11 +30,11 @@ export default function FloatingButtons() {
         </div>
       </div>
       <FilterDialog
-        isOpen={activeDialog === "filter"}
+        isOpen={activeDialog === DialogKeys.FILTER}
         onClose={() => setActiveDialog(null)}
       />
       <CreateDialog
-        isOpen={activeDialog === "create"}
+        isOpen={activeDialog === DialogKeys.CREATE}
         onClose={() => setActiveDialog(null)}
       />
     </>

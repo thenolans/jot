@@ -5,7 +5,8 @@ const Urls = {
     account: "/account",
   },
   api: {
-    posts: "/api/posts",
+    entries: "/jot/entries",
+    tags: "/jot/tags",
   },
 };
 

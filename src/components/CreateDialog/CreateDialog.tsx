@@ -1,7 +1,9 @@
 import Button from "components/Button";
 import Dialog from "components/Dialog";
 import Input from "components/Input";
+import Urls from "constants/urls";
 import { SyntheticEvent, useState } from "react";
+import http from "utils/http";
 
 type Props = {
   isOpen?: boolean;
@@ -11,8 +13,12 @@ type Props = {
 export default function FilterDialog({ isOpen = false, onClose }: Props) {
   const [title, setTitle] = useState("");
 
-  function handleSubmit(e: SyntheticEvent) {
+  async function handleSubmit(e: SyntheticEvent) {
     e.preventDefault();
+
+    await http.post(Urls.api.entries, {
+      title,
+    });
 
     onClose();
   }
