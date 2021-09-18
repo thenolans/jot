@@ -1,9 +1,19 @@
 import dayjs from "dayjs";
-import { createContext, ReactNode } from "react";
+import {
+  createContext,
+  Dispatch,
+  ReactNode,
+  SetStateAction,
+  useState,
+} from "react";
 import { Entry as EntryType, SortedEntries } from "types";
+
+type DialogOptions = "filter" | "create" | null;
 
 type EntriesContextType = {
   sortedEntries: SortedEntries;
+  activeDialog: DialogOptions;
+  setActiveDialog: Dispatch<SetStateAction<DialogOptions>>;
 };
 
 const DATA: EntryType[] = [
@@ -67,9 +77,12 @@ const DATA: EntryType[] = [
 
 const EntriesContext = createContext<EntriesContextType>({
   sortedEntries: {},
+  activeDialog: null,
+  setActiveDialog() {},
 });
 
 export const EntriesProvider = ({ children }: { children: ReactNode }) => {
+  const [activeDialog, setActiveDialog] = useState<DialogOptions>(null);
   const sortedEntriesByDate = DATA.reduce<SortedEntries>(
     (sortedEntries, currentEntry) => {
       const formattedEntryDate = dayjs(currentEntry.createdAt).format(
@@ -91,7 +104,13 @@ export const EntriesProvider = ({ children }: { children: ReactNode }) => {
   );
 
   return (
-    <EntriesContext.Provider value={{ sortedEntries: sortedEntriesByDate }}>
+    <EntriesContext.Provider
+      value={{
+        sortedEntries: sortedEntriesByDate,
+        activeDialog,
+        setActiveDialog,
+      }}
+    >
       {children}
     </EntriesContext.Provider>
   );
