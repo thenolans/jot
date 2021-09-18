@@ -1,5 +1,5 @@
-import Button from "components/Button";
 import DatePicker from "components/DatePicker";
+import FormError from "components/FormError";
 import Input from "components/Input";
 import Label from "components/Label";
 import Textarea from "components/Textarea";
@@ -25,18 +25,19 @@ const ValidationSchema = Yup.object().shape({
 });
 
 export default function RecipeForm({ formId, initialData, onSubmit }: Props) {
-  const { handleChange, handleSubmit, values, setFieldValue } = useFormik({
-    initialValues: {
-      date: new Date(),
-      title: "",
-      notes: "",
-      ...initialData,
-    },
-    onSubmit(values) {
-      onSubmit(values);
-    },
-    validationSchema: ValidationSchema,
-  });
+  const { errors, handleChange, handleSubmit, values, setFieldValue } =
+    useFormik({
+      initialValues: {
+        date: new Date(),
+        title: "",
+        notes: "",
+        ...initialData,
+      },
+      onSubmit(values) {
+        onSubmit(values);
+      },
+      validationSchema: ValidationSchema,
+    });
   const nameInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -48,6 +49,7 @@ export default function RecipeForm({ formId, initialData, onSubmit }: Props) {
       <div>
         <Label>Title</Label>
         <Input name="title" onChange={handleChange} value={values.title} />
+        {errors.title && <FormError>Please enter a title</FormError>}
       </div>
       <div>
         <Label>Notes</Label>

@@ -25,7 +25,11 @@ export default function CreateDialog({ isOpen = false, onClose }: Props) {
         />
       </Dialog.Content>
       <Dialog.Footer>
-        <Button form="create-entry-form" options={{ fluid: true }}>
+        <Button
+          type="submit"
+          form="create-entry-form"
+          options={{ fluid: true }}
+        >
           Log entry
         </Button>
       </Dialog.Footer>
