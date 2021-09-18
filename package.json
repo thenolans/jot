@@ -17,6 +17,7 @@
     "classnames": "^2.3.1",
     "dayjs": "^1.10.7",
     "highlight-words-core": "^1.2.2",
+    "query-string": "^7.0.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-query": "^3.19.6",
@@ -60,6 +61,7 @@
   },
   "devDependencies": {
     "@types/highlight-words-core": "^1.2.1",
+    "@types/query-string": "^6.3.0",
     "@types/react-router-dom": "^5.1.8",
     "@types/react-sticky": "^6.0.4",
     "autoprefixer": "^9",
