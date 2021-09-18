@@ -7,6 +7,9 @@ module.exports = {
         display: "'Damion', sans-serif",
         body: "'Nunito', sans-serif",
       },
+      minHeight: {
+        24: "6rem",
+      },
     },
   },
   variants: {
