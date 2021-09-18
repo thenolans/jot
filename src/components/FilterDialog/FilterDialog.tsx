@@ -31,9 +31,11 @@ export default function FilterDialog({ isOpen = false, onClose }: Props) {
   }
 
   function resetFilters() {
+    setKeyword("");
+    setSelectedTags([]);
     setSearchParams({
-      [FilterKeys.KEYWORD]: keyword || undefined,
-      [FilterKeys.TAGS]: tags,
+      [FilterKeys.KEYWORD]: undefined,
+      [FilterKeys.TAGS]: undefined,
     });
     onClose();
   }

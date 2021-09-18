@@ -1,5 +1,7 @@
 import Urls from "constants/urls";
 import dayjs from "dayjs";
+import useGetQuery from "hooks/useGetQuery";
+import useSearchParams from "hooks/useSearchParams";
 import {
   createContext,
   Dispatch,
@@ -7,14 +9,12 @@ import {
   SetStateAction,
   useState,
 } from "react";
-import { useQuery } from "react-query";
 import {
   DialogKeys,
   Entry as EntryType,
   PaginatedResponse,
   SortedEntries,
 } from "types";
-import http from "utils/http";
 
 type EntriesContextType = {
   sortedEntries: SortedEntries;
@@ -28,15 +28,13 @@ const EntriesContext = createContext<EntriesContextType>({
   setActiveDialog() {},
 });
 
-function fetchEntries(): Promise<PaginatedResponse<EntryType[]>> {
-  return http.get(Urls.api.entries).then((res) => res.data);
-}
-
 export const EntriesProvider = ({ children }: { children: ReactNode }) => {
-  const { data, isLoading } = useQuery(["entries"], () => fetchEntries(), {
-    retry: false,
-    refetchOnWindowFocus: false,
-  });
+  const [searchParams] = useSearchParams();
+  const { data, isLoading } = useGetQuery<PaginatedResponse<EntryType[]>>(
+    Urls.api.entries,
+    searchParams
+  );
+  console.log(data);
   const [activeDialog, setActiveDialog] = useState<DialogKeys | null>(null);
   const sortedEntriesByDate = data
     ? data.data.reduce<SortedEntries>((sortedEntries, currentEntry) => {
