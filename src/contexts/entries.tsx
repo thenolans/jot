@@ -40,7 +40,7 @@ export const EntriesProvider = ({ children }: { children: ReactNode }) => {
   const [activeDialog, setActiveDialog] = useState<DialogKeys | null>(null);
   const sortedEntriesByDate = data
     ? data.data.reduce<SortedEntries>((sortedEntries, currentEntry) => {
-        const formattedEntryDate = dayjs(currentEntry.createdAt).format(
+        const formattedEntryDate = dayjs(currentEntry.date).format(
           "MMM D, YYYY"
         );
 

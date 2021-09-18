@@ -5,10 +5,10 @@ export enum DialogKeys {
 
 export type Entry = {
   _id: string;
+  date: Date;
   title: string;
   notes: string | null;
   tags: string[];
-  createdAt: string;
 };
 
 export type SortedEntries = {

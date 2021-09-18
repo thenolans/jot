@@ -1,4 +1,5 @@
 import Button from "components/Button";
+import DatePicker from "components/DatePicker";
 import Input from "components/Input";
 import Label from "components/Label";
 import Textarea from "components/Textarea";
@@ -7,6 +8,7 @@ import { useEffect, useRef } from "react";
 import * as Yup from "yup";
 
 export type FormData = {
+  date: Date;
   title: string;
   notes: string;
 };
@@ -22,8 +24,9 @@ const ValidationSchema = Yup.object().shape({
 });
 
 export default function RecipeForm({ initialData, onSubmit }: Props) {
-  const { handleChange, handleSubmit, values } = useFormik({
+  const { handleChange, handleSubmit, values, setFieldValue } = useFormik({
     initialValues: {
+      date: new Date(),
       title: "",
       notes: "",
       ...initialData,
@@ -48,6 +51,13 @@ export default function RecipeForm({ initialData, onSubmit }: Props) {
       <div>
         <Label>Notes</Label>
         <Textarea name="notes" onChange={handleChange} value={values.notes} />
+      </div>
+      <div>
+        <Label>Date</Label>
+        <DatePicker
+          value={values.date}
+          onChange={(date) => setFieldValue("date", date)}
+        />
       </div>
       <Button options={{ fluid: true }} type="submit">
         Add entry

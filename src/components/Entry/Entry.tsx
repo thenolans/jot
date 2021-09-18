@@ -19,12 +19,6 @@ export default function Entry({ data, highlightTerm = "" }: Props) {
             textToHighlight={data.title}
           />
         </h3>
-        <time
-          className="text-sm text-gray-500"
-          dateTime={dayjs(data.createdAt).format("YYYY-MM-DD")}
-        >
-          {dayjs(data.createdAt).format("MMM D, YYYY @ h:mma")}
-        </time>
       </div>
       {data.notes && (
         <div className="text-sm">

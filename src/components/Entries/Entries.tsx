@@ -1,4 +1,5 @@
 import Entry from "components/Entry";
+import dayjs from "dayjs";
 import useEntries from "hooks/useEntries";
 import useSearchParams, { asStringParam } from "hooks/useSearchParams";
 import { Sticky, StickyContainer } from "react-sticky";
@@ -17,12 +18,13 @@ export default function Entries() {
           <StickyContainer key={date}>
             <Sticky>
               {({ style }) => (
-                <div
+                <time
+                  dateTime={dayjs(date).format("YYYY-MM-DD")}
                   style={style}
                   className="p-2 bg-gray-50 uppercase text-sm text-gray-400"
                 >
                   {date}
-                </div>
+                </time>
               )}
             </Sticky>
             <div className="space-y-4 px-2 pt-2 pb-8">
