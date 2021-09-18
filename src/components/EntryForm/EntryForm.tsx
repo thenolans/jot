@@ -63,6 +63,7 @@ export default function RecipeForm({ formId, initialData, onSubmit }: Props) {
       <div>
         <Label htmlFor="create-entry--tags">Tags</Label>
         <TagSelect
+          creatable
           inputId="create-entry--tags"
           value={values.tags}
           onChange={(tags) => setFieldValue("tags", tags)}

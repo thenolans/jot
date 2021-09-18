@@ -1,37 +1,49 @@
 import { selectProps } from "components/Select";
 import useTags from "hooks/useTags";
+import Select from "react-select";
 import CreatableSelect from "react-select/creatable";
-import {
-  getOptionLabel as getOptionLabelType,
-  getOptionValue as getOptionValueType,
-} from "react-select/src/builtins";
-import { Tag } from "types";
 
 type Props = {
+  creatable?: boolean;
   inputId: string;
   value: string[];
   onChange: (tags: string[]) => void;
 };
 
-const getOptionValue: getOptionValueType<Tag> = ({ _id }) => String(_id);
-const getOptionLabel: getOptionLabelType<Tag> = ({ name }) => name;
-
-export default function TagSelect({ inputId, onChange, value }: Props) {
+export default function TagSelect({
+  creatable = false,
+  inputId,
+  onChange,
+  value,
+}: Props) {
   const { addTag, tags } = useTags();
 
-  return (
-    <CreatableSelect
-      isMulti
-      inputId={inputId}
-      {...selectProps}
-      options={tags}
-      getOptionLabel={getOptionLabel}
-      getOptionValue={getOptionValue}
-      onCreateOption={(newTag: string) => addTag(newTag)}
-      value={tags.filter((tag) => value.includes(tag._id))}
-      onChange={(selectedOptions) =>
-        onChange(selectedOptions.map((o) => o._id))
-      }
-    />
-  );
+  const sharedProps = {
+    isMutli: true,
+    inputId,
+    options: tags.map((tag) => ({ label: tag.name, value: tag._id })),
+    value: tags
+      .filter((tag) => value.includes(tag._id))
+      .map((tag) => ({
+        label: tag.name,
+        value: tag._id,
+      })),
+    // @ts-expect-error
+    onChange: (selectedOptions) => {
+      // @ts-expect-error
+      onChange(selectedOptions.map((o) => o.value));
+    },
+    ...selectProps,
+  };
+
+  if (creatable) {
+    return (
+      <CreatableSelect
+        {...sharedProps}
+        onCreateOption={(newTag: string) => addTag(newTag)}
+      />
+    );
+  }
+
+  return <Select {...sharedProps} />;
 }
