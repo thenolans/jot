@@ -12,6 +12,8 @@ type Props = {
 };
 
 const Dialog = ({ children, isOpen = false, onClose, title }: Props) => {
+  if (!isOpen) return null;
+
   return (
     <ReachDialog
       className="fixed bottom-0 left-0 w-full h-full bg-white overflow-hidden"
@@ -19,7 +21,7 @@ const Dialog = ({ children, isOpen = false, onClose, title }: Props) => {
       onDismiss={onClose}
     >
       <div className="flex flex-col overflow-hidden h-full">
-        <div className="border-b-2 border-gray-100 font-semibold">
+        <div className="border-b-2 border-gray-100 font-semibold px-4">
           <Container>
             <div className="flex justify-between text-lg text-gray-700">
               {title}
@@ -46,7 +48,7 @@ Dialog.Content = ({ children }: { children: ReactNode }) => {
 
 Dialog.Footer = ({ children }: { children: ReactNode }) => {
   return (
-    <div className="border-t-2 border-gray-100">
+    <div className="border-t-2 border-gray-100 px-4">
       <Container>{children}</Container>
     </div>
   );

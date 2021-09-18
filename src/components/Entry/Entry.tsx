@@ -31,10 +31,13 @@ export default function Entry({ data, highlightTerm = "" }: Props) {
         </div>
       )}
       {!!data.tags.length && (
-        <div className="flex space-x-2">
+        <div className="flex flex-wrap">
           {data.tags.map((tag) => (
-            <div key={tag} className="bg-gray-100 rounded px-2 py-1 text-xs">
-              {tag}
+            <div
+              key={tag._id}
+              className="bg-gray-100 rounded px-2 py-1 text-xs my-1 mr-1"
+            >
+              {tag.name}
             </div>
           ))}
         </div>

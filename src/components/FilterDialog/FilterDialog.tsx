@@ -1,8 +1,10 @@
 import Button from "components/Button";
 import Dialog from "components/Dialog";
 import Input from "components/Input";
-import useSearchParams from "hooks/useSearchParams";
+import TagSelect from "components/TagSelect";
+import useSearchParams, { asStringArrayParam } from "hooks/useSearchParams";
 import { SyntheticEvent, useState } from "react";
+import { FilterKeys } from "types";
 
 type Props = {
   isOpen?: boolean;
@@ -11,15 +13,28 @@ type Props = {
 
 export default function FilterDialog({ isOpen = false, onClose }: Props) {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [keyword, setKeyword] = useState(searchParams.q || "");
+  const [keyword, setKeyword] = useState(
+    searchParams[FilterKeys.KEYWORD] || ""
+  );
+  const appliedTags = asStringArrayParam(searchParams[FilterKeys.TAGS]);
+  const [tags, setSelectedTags] = useState(appliedTags);
 
   function handleSubmit(e: SyntheticEvent) {
     e.preventDefault();
 
     setSearchParams({
-      q: keyword || undefined,
+      [FilterKeys.KEYWORD]: keyword || undefined,
+      [FilterKeys.TAGS]: tags,
     });
 
+    onClose();
+  }
+
+  function resetFilters() {
+    setSearchParams({
+      [FilterKeys.KEYWORD]: keyword || undefined,
+      [FilterKeys.TAGS]: tags,
+    });
     onClose();
   }
 
@@ -44,16 +59,34 @@ export default function FilterDialog({ isOpen = false, onClose }: Props) {
               value={keyword}
             />
           </div>
+          <div>
+            <label
+              className="text-sm text-gray-500 block mb-1"
+              htmlFor="filter--tags"
+            >
+              By tags
+            </label>
+            <TagSelect
+              inputId="filter--tags"
+              onChange={(tags) => setSelectedTags(tags)}
+              value={tags}
+            />
+          </div>
         </form>
       </Dialog.Content>
       <Dialog.Footer>
-        <Button
-          type="submit"
-          form="filter-entries-form"
-          options={{ fluid: true }}
-        >
-          Apply filters
-        </Button>
+        <div className="grid grid-cols-2 gap-2">
+          <Button onClick={() => resetFilters()} theme="mutedLink">
+            Reset
+          </Button>
+          <Button
+            type="submit"
+            form="filter-entries-form"
+            options={{ fluid: true }}
+          >
+            Apply
+          </Button>
+        </div>
       </Dialog.Footer>
     </Dialog>
   );

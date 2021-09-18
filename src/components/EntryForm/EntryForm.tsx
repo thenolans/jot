@@ -2,6 +2,7 @@ import DatePicker from "components/DatePicker";
 import FormError from "components/FormError";
 import Input from "components/Input";
 import Label from "components/Label";
+import TagSelect from "components/TagSelect";
 import Textarea from "components/Textarea";
 import { useFormik } from "formik";
 import { useEffect, useRef } from "react";
@@ -31,6 +32,7 @@ export default function RecipeForm({ formId, initialData, onSubmit }: Props) {
         date: new Date(),
         title: "",
         notes: "",
+        tags: [],
         ...initialData,
       },
       onSubmit(values) {
@@ -38,6 +40,7 @@ export default function RecipeForm({ formId, initialData, onSubmit }: Props) {
       },
       validationSchema: ValidationSchema,
       validateOnBlur: false,
+      validateOnChange: false,
     });
   const nameInputRef = useRef<HTMLInputElement>(null);
 
@@ -48,13 +51,31 @@ export default function RecipeForm({ formId, initialData, onSubmit }: Props) {
   return (
     <form id={formId} onSubmit={handleSubmit} className="space-y-8">
       <div>
-        <Label>Title</Label>
-        <Input name="title" onChange={handleChange} value={values.title} />
+        <Label htmlFor="create-entry--title">Title</Label>
+        <Input
+          id="create-entry--title"
+          name="title"
+          onChange={handleChange}
+          value={values.title}
+        />
         {errors.title && <FormError>Please enter a title</FormError>}
       </div>
       <div>
-        <Label>Notes</Label>
-        <Textarea name="notes" onChange={handleChange} value={values.notes} />
+        <Label htmlFor="create-entry--tags">Tags</Label>
+        <TagSelect
+          inputId="create-entry--tags"
+          value={values.tags}
+          onChange={(tags) => setFieldValue("tags", tags)}
+        />
+      </div>
+      <div>
+        <Label htmlFor="create-entry--notes">Notes</Label>
+        <Textarea
+          id="create-entry--notes"
+          name="notes"
+          onChange={handleChange}
+          value={values.notes}
+        />
       </div>
       <div>
         <Label>Date</Label>

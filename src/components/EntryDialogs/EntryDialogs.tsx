@@ -1,4 +1,5 @@
 import Button from "components/Button";
+import Container from "components/Container";
 import CreateDialog from "components/CreateDialog";
 import FilterDialog from "components/FilterDialog";
 import useEntries from "hooks/useEntries";
@@ -12,22 +13,24 @@ export default function FloatingButtons() {
   return (
     <>
       <div className="fixed bottom-0 left-0 w-full p-2">
-        <div className="flex justify-between">
-          <Button
-            onClick={() => setActiveDialog(DialogKeys.FILTER)}
-            className="w-12 shadow"
-          >
-            <FilterIcon />
-            <span className="sr-only">Filters</span>
-          </Button>
-          <Button
-            onClick={() => setActiveDialog(DialogKeys.CREATE)}
-            className="w-12 space-x-2"
-          >
-            <PlusIcon />
-            <span className="sr-only">Add entry</span>
-          </Button>
-        </div>
+        <Container>
+          <div className="flex justify-between">
+            <Button
+              onClick={() => setActiveDialog(DialogKeys.FILTER)}
+              className="w-12 shadow"
+            >
+              <FilterIcon />
+              <span className="sr-only">Filters</span>
+            </Button>
+            <Button
+              onClick={() => setActiveDialog(DialogKeys.CREATE)}
+              className="w-12 space-x-2"
+            >
+              <PlusIcon />
+              <span className="sr-only">Add entry</span>
+            </Button>
+          </div>
+        </Container>
       </div>
       <FilterDialog
         isOpen={activeDialog === DialogKeys.FILTER}

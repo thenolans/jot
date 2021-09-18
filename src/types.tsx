@@ -3,12 +3,22 @@ export enum DialogKeys {
   FILTER = "filter",
 }
 
+export enum FilterKeys {
+  KEYWORD = "q",
+  TAGS = "tag",
+}
+
+export type Tag = {
+  _id: string;
+  name: string;
+};
+
 export type Entry = {
   _id: string;
   date: Date;
   title: string;
   notes: string | null;
-  tags: string[];
+  tags: Tag[];
 };
 
 export type SortedEntries = {
