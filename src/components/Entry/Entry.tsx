@@ -38,7 +38,9 @@ export default function Entry({ data, highlightTerm = "" }: Props) {
       )}
       <div className="flex space-x-2">
         {data.tags.map((tag) => (
-          <div className="bg-gray-100 rounded px-2 py-1 text-xs">{tag}</div>
+          <div key={tag} className="bg-gray-100 rounded px-2 py-1 text-xs">
+            {tag}
+          </div>
         ))}
       </div>
     </div>

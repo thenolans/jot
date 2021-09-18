@@ -5,3 +5,7 @@ export type Entry = {
   tags: string[];
   createdAt: string;
 };
+
+export type SortedEntries = {
+  [formattedDate: string]: Entry[];
+};
