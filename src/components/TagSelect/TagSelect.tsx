@@ -19,7 +19,7 @@ export default function TagSelect({
   const { addTag, tags } = useTags();
 
   const sharedProps = {
-    isMutli: true,
+    isMulti: true,
     inputId,
     options: tags.map((tag) => ({ label: tag.name, value: tag._id })),
     value: tags
@@ -30,6 +30,7 @@ export default function TagSelect({
       })),
     // @ts-expect-error
     onChange: (selectedOptions) => {
+      console.log(selectedOptions);
       // @ts-expect-error
       onChange(selectedOptions.map((o) => o.value));
     },
