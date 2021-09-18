@@ -14,6 +14,7 @@ export type FormData = {
 };
 
 type Props = {
+  formId: string;
   initialData?: FormData;
   onSubmit: (formData: FormData) => void;
 };
@@ -23,7 +24,7 @@ const ValidationSchema = Yup.object().shape({
   notes: Yup.string(),
 });
 
-export default function RecipeForm({ initialData, onSubmit }: Props) {
+export default function RecipeForm({ formId, initialData, onSubmit }: Props) {
   const { handleChange, handleSubmit, values, setFieldValue } = useFormik({
     initialValues: {
       date: new Date(),
@@ -43,7 +44,7 @@ export default function RecipeForm({ initialData, onSubmit }: Props) {
   }, [nameInputRef]);
 
   return (
-    <form action="" onSubmit={handleSubmit} className="space-y-8">
+    <form id={formId} onSubmit={handleSubmit} className="space-y-8">
       <div>
         <Label>Title</Label>
         <Input name="title" onChange={handleChange} value={values.title} />
@@ -59,9 +60,6 @@ export default function RecipeForm({ initialData, onSubmit }: Props) {
           onChange={(date) => setFieldValue("date", date)}
         />
       </div>
-      <Button options={{ fluid: true }} type="submit">
-        Add entry
-      </Button>
     </form>
   );
 }

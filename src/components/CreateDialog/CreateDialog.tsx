@@ -1,3 +1,4 @@
+import Button from "components/Button";
 import Dialog from "components/Dialog";
 import EntryForm from "components/EntryForm";
 import Urls from "constants/urls";
@@ -17,7 +18,17 @@ export default function CreateDialog({ isOpen = false, onClose }: Props) {
 
   return (
     <Dialog onClose={onClose} isOpen={isOpen} title="Add entry">
-      <EntryForm onSubmit={(data) => createEntry(data)} />
+      <Dialog.Content>
+        <EntryForm
+          formId="create-entry-form"
+          onSubmit={(data) => createEntry(data)}
+        />
+      </Dialog.Content>
+      <Dialog.Footer>
+        <Button form="create-entry-form" options={{ fluid: true }}>
+          Log entry
+        </Button>
+      </Dialog.Footer>
     </Dialog>
   );
 }
