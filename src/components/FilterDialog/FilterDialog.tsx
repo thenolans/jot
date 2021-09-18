@@ -26,7 +26,11 @@ export default function FilterDialog({ isOpen = false, onClose }: Props) {
   return (
     <Dialog onClose={onClose} isOpen={isOpen} title="Filter">
       <Dialog.Content>
-        <form onSubmit={handleSubmit} className="space-y-8">
+        <form
+          id="filter-entries-form"
+          onSubmit={handleSubmit}
+          className="space-y-8"
+        >
           <div>
             <label
               className="text-sm text-gray-500 block mb-1"
@@ -40,11 +44,17 @@ export default function FilterDialog({ isOpen = false, onClose }: Props) {
               value={keyword}
             />
           </div>
-          <Button type="submit" options={{ fluid: true }}>
-            Apply filters
-          </Button>
         </form>
       </Dialog.Content>
+      <Dialog.Footer>
+        <Button
+          type="submit"
+          form="filter-entries-form"
+          options={{ fluid: true }}
+        >
+          Apply filters
+        </Button>
+      </Dialog.Footer>
     </Dialog>
   );
 }

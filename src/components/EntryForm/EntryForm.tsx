@@ -37,6 +37,7 @@ export default function RecipeForm({ formId, initialData, onSubmit }: Props) {
         onSubmit(values);
       },
       validationSchema: ValidationSchema,
+      validateOnBlur: false,
     });
   const nameInputRef = useRef<HTMLInputElement>(null);
 
