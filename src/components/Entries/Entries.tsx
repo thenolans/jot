@@ -1,5 +1,8 @@
 import Button from "components/Button";
+import EmptyState from "components/EmptyState";
 import Entry from "components/Entry";
+import Icon from "components/Icon";
+import SROnly from "components/SROnly";
 import dayjs from "dayjs";
 import useEntries from "hooks/useEntries";
 import useSearchParams, { asStringParam } from "hooks/useSearchParams";
@@ -22,9 +25,11 @@ export default function Entries() {
   if (isLoading) {
     return (
       <div className="text-center space-y-4">
-        <i
-          aria-hidden="true"
-          className="fa fa-circle-o-notch fa-spin fa-2x text-gray-300"
+        <Icon
+          className="text-gray-300"
+          variant="fa-circle-o-notch"
+          size="fa-2x"
+          spin
         />
         <div className="text-gray-500">Fetching entries</div>
       </div>
@@ -33,29 +38,21 @@ export default function Entries() {
 
   if (!Object.keys(sortedEntries).length && !Object.keys(searchParams).length) {
     return (
-      <div className="text-center space-y-6">
-        <i aria-hidden="true" className="fa fa-book fa-3x text-gray-400" />
-        <div className="text-gray-500 text-xl">
-          You have not logged any entries, yet
-        </div>
+      <EmptyState text="You have not logged any entries, yet">
         <Button onClick={() => setActiveDialog(DialogKeys.CREATE)}>
           Add entry
         </Button>
-      </div>
+      </EmptyState>
     );
   }
 
   if (!Object.keys(sortedEntries).length && Object.keys(searchParams).length) {
     return (
-      <div className="text-center space-y-6">
-        <i aria-hidden="true" className="fa fa-book fa-3x text-gray-400" />
-        <div className="text-gray-500 text-xl">
-          No results match the applied filters, try adjusting them!
-        </div>
+      <EmptyState text="No results match the applied filters, try adjusting them!">
         <Button onClick={() => setActiveDialog(DialogKeys.FILTER)}>
           Change filters
         </Button>
-      </div>
+      </EmptyState>
     );
   }
 
@@ -90,25 +87,21 @@ export default function Entries() {
       })}
       {isFetching && (
         <div className="text-center">
-          <i
-            aria-hidden="true"
-            className="fa fa-circle-o-notch fa-spin fa-2x text-gray-300"
+          <Icon
+            className="text-gray-300"
+            variant="fa-circle-o-notch"
+            size="2x"
+            spin
           />
-          <span className="sr-only">Loading more entries...</span>
+          <SROnly>Loading more entries...</SROnly>
         </div>
       )}
       {hasNextPage && !isFetching && (
-        <div className="text-center">
-          <Button onClick={() => fetchNextPage()} theme="mutedLink">
-            <i
-              aria-hidden="true"
-              className="mr-4 fa fa-long-arrow-down text-gray-300"
-            />
-            Load more entries
-            <i
-              aria-hidden="true"
-              className="ml-4 fa fa-long-arrow-down text-gray-300"
-            />
+        <div className="text-center mb-8">
+          <Button onClick={() => fetchNextPage()} theme="link--muted">
+            <Icon className="text-gray-300" variant="fa-long-arrow-down" />
+            <span>Load more entries</span>
+            <Icon className="text-gray-300" variant="fa-long-arrow-down" />
           </Button>
         </div>
       )}

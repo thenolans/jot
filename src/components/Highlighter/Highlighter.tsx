@@ -9,12 +9,10 @@ export default function Highlighter({ ...findAllArgs }: Props) {
       {findAll(findAllArgs).map((chunk, index) => {
         const text = findAllArgs.textToHighlight.slice(chunk.start, chunk.end);
         return chunk.highlight ? (
-          // eslint-disable-next-line react/no-array-index-key
-          <mark key={index} className="bg-yellow-100">
+          <mark key={index} className="bg-primary-100">
             {text}
           </mark>
         ) : (
-          // eslint-disable-next-line react/no-array-index-key
           <Fragment key={index}>{text}</Fragment>
         );
       })}

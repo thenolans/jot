@@ -1,55 +1,44 @@
 import classNames from "classnames";
 import { ButtonHTMLAttributes, ReactNode } from "react";
 
-type ButtonTheme = "primary" | "secondary" | "dangerLink" | "mutedLink";
-
-type ButtonOptions = {
-  fluid?: boolean;
-};
+type ButtonTheme = "primary" | "secondary" | "link--danger" | "link--muted";
 
 type Props = ButtonHTMLAttributes<HTMLButtonElement> & {
   children?: ReactNode;
   className?: string;
   theme?: ButtonTheme;
-  options?: ButtonOptions;
+  fluid?: boolean;
 };
 
-const themeStyles = {
-  common: "inline-flex items-center justify-center transition-colors",
+const themeMap = {
+  // Common theme styles for both regular variants and link variants
+  common: "inline-flex items-center justify-center space-x-2 transition-colors",
+  // Common theme styles for non-link variants
   commonNonLink: "rounded-lg h-12 px-4",
-  primary: "bg-yellow-600 hover:bg-yellow-700 text-white",
+  primary: "bg-primary-600 hover:bg-primary-700 text-white",
   secondary:
-    "bg-white border-2 border-yellow-600 hover:border-yellow-700 hover:text-yellow-700 text-yellow-600",
-  dangerLink: "text-red-600 hover:text-red-700",
-  mutedLink: "text-gray-600 hover:text-yellow-700",
+    "bg-transparent border-2 border-primary-600 text-primary-600 hover:border-primary-700 hover:text-primary-700",
+  "link--danger": "text-danger-600 hover:text-danger-700",
+  "link--muted": "text-gray-500 hover:text-primary-600",
 };
-
-export function createButtonVariant(
-  theme: ButtonTheme,
-  options: ButtonOptions,
-  className?: string
-) {
-  const isLinkTheme = theme.includes("Link");
-
-  return classNames(
-    themeStyles.common,
-    !isLinkTheme && themeStyles.commonNonLink,
-    themeStyles[theme],
-    options.fluid && "w-full",
-    className
-  );
-}
 
 export default function Button({
   className,
-  options = {},
+  fluid = false,
   theme = "primary",
   type = "button",
   ...props
 }: Props) {
+  const isLinkVariant = theme.includes("link");
+
   return (
     <button
-      className={createButtonVariant(theme, options, className)}
+      className={classNames(
+        themeMap[theme],
+        themeMap.common,
+        !isLinkVariant && themeMap.commonNonLink,
+        fluid && "w-full"
+      )}
       type={type}
       {...props}
     />

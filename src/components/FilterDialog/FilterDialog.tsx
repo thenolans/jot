@@ -83,14 +83,10 @@ export default function FilterDialog({ isOpen = false, onClose }: Props) {
       </Dialog.Content>
       <Dialog.Footer>
         <div className="grid grid-cols-2 gap-2">
-          <Button onClick={() => resetFilters()} theme="mutedLink">
+          <Button onClick={() => resetFilters()} theme="link--muted">
             Reset
           </Button>
-          <Button
-            type="submit"
-            form="filter-entries-form"
-            options={{ fluid: true }}
-          >
+          <Button type="submit" form="filter-entries-form" fluid>
             Apply
           </Button>
         </div>

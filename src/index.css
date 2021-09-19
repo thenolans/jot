@@ -11,10 +11,14 @@ body * {
 }
 
 #nprogress .bar {
-  @apply bg-yellow-600 z-10;
+  @apply bg-primary-600 z-10;
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 2px;
+}
+
+.u-absolute-center {
+  @apply absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2;
 }

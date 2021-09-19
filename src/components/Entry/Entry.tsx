@@ -1,5 +1,7 @@
 import Button from "components/Button";
 import Highlighter from "components/Highlighter";
+import Icon from "components/Icon";
+import SROnly from "components/SROnly";
 import useEntries from "hooks/useEntries";
 import { DialogKeys, Entry as EntryType } from "types";
 
@@ -28,14 +30,14 @@ export default function Entry({
         </h3>
         {canEdit && (
           <Button
-            theme="mutedLink"
+            theme="link--muted"
             onClick={() => {
               setActiveDialog(DialogKeys.EDIT);
               setEntryToEdit(data);
             }}
           >
-            <i aria-hidden="true" className="fa fa-pencil" />
-            <span className="sr-only">Edit entry</span>
+            <Icon variant="fa-pencil" />
+            <SROnly>Edit entry</SROnly>
           </Button>
         )}
       </div>

@@ -1,5 +1,6 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import Button from "components/Button";
+import Icon from "components/Icon";
 import Layout from "components/Layout";
 import Urls from "constants/urls";
 import http from "utils/http";
@@ -9,25 +10,23 @@ export default function Account() {
 
   return (
     <Layout>
-      <div className="grid grid-cols-1 divide-y divide-gray-300">
+      <div className="divide-y divide-gray-300">
         <div className="py-4">
           <Button
-            className="space-x-2"
             onClick={() =>
               logout({
                 returnTo: window.location.origin,
               })
             }
-            theme="mutedLink"
+            theme="link--muted"
           >
-            <i aria-hidden="true" className="fa fa-power-off" />
+            <Icon variant="fa-power-off" />
             <span>Logout</span>
           </Button>
         </div>
         <div className="py-4">
           <Button
-            className="space-x-2"
-            theme="dangerLink"
+            theme="link--danger"
             onClick={async () => {
               if (
                 window.confirm(
@@ -41,7 +40,7 @@ export default function Account() {
               }
             }}
           >
-            <i aria-hidden="true" className="fa fa-trash" />
+            <Icon variant="fa-trash" />
             <span>Delete my data</span>
           </Button>
         </div>

@@ -1,6 +1,8 @@
 import { Dialog as ReachDialog } from "@reach/dialog";
 import Button from "components/Button";
 import Container from "components/Container";
+import Icon from "components/Icon";
+import SROnly from "components/SROnly";
 import { ReactNode } from "react";
 
 type Props = {
@@ -28,13 +30,13 @@ const Dialog = ({
       aria-label={ariaLabel}
     >
       <div className="flex flex-col overflow-hidden h-full">
-        <div className="border-b-2 border-gray-100 font-semibold px-4">
+        <div className="border-b-2 border-gray-100 font-semibold p-4">
           <Container>
-            <div className="flex justify-between text-lg text-gray-700">
+            <div className="flex items-center justify-between text-lg text-gray-700">
               {title}
-              <Button onClick={onClose} theme="mutedLink">
-                <i className="fa fa-close" />
-                <span className="sr-only">Close</span>
+              <Button onClick={onClose} theme="link--muted">
+                <Icon variant="fa-close" />
+                <SROnly>Close</SROnly>
               </Button>
             </div>
           </Container>
@@ -55,7 +57,7 @@ Dialog.Content = ({ children }: { children: ReactNode }) => {
 
 Dialog.Footer = ({ children }: { children: ReactNode }) => {
   return (
-    <div className="border-t-2 border-gray-100 px-4">
+    <div className="border-t-2 border-gray-100 p-4">
       <Container>{children}</Container>
     </div>
   );

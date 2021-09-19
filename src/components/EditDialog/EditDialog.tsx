@@ -1,6 +1,8 @@
 import Button from "components/Button";
 import Dialog from "components/Dialog";
 import EntryForm from "components/EntryForm";
+import Icon from "components/Icon";
+import SROnly from "components/SROnly";
 import useEntries from "hooks/useEntries";
 import { useState } from "react";
 import { EntryFormData } from "types";
@@ -65,22 +67,15 @@ export default function EditDialog({ isOpen = false, onClose }: Props) {
             onClick={() => {
               deleteEntry();
             }}
-            theme="dangerLink"
+            theme="link--danger"
           >
             Delete entry
           </Button>
-          <Button
-            type="submit"
-            form="edit-entry-form"
-            options={{ fluid: true }}
-          >
+          <Button type="submit" form="edit-entry-form" fluid>
             {isSaving ? (
               <>
-                <i
-                  aria-hidden="true"
-                  className="fa fa-circle-o-notch fa-spin"
-                />
-                <span className="sr-only">Saving...</span>
+                <Icon variant="fa-circle-o-notch" spin />
+                <SROnly>Saving...</SROnly>
               </>
             ) : (
               "Save Entry"

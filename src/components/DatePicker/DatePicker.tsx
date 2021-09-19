@@ -37,7 +37,7 @@ export default function DatePicker({ onChange, value }: Props) {
 
         // default modifiers
         today: "today",
-        selected: "text-white bg-yellow-600 hover:bg-yellow-700",
+        selected: "text-white bg-primary-600 hover:bg-primary-700",
         disabled: "disabled",
         outside: "outside",
       }}
