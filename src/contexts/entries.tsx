@@ -12,10 +12,12 @@ import {
 } from "react";
 import {
   DialogKeys,
+  Entry,
   Entry as EntryType,
   PaginatedResponse,
   SortedEntries,
 } from "types";
+import http from "utils/http";
 
 type EntriesContextType = {
   sortedEntries: SortedEntries;
@@ -25,6 +27,7 @@ type EntriesContextType = {
   isFetching: boolean;
   hasNextPage: boolean | undefined;
   fetchNextPage: () => void;
+  addEntry: (entryData: Partial<Omit<Entry, "_id">>) => void;
 };
 
 const EntriesContext = createContext<EntriesContextType>({
@@ -35,11 +38,12 @@ const EntriesContext = createContext<EntriesContextType>({
   isFetching: false,
   hasNextPage: false,
   fetchNextPage() {},
+  addEntry() {},
 });
 
 export const EntriesProvider = ({ children }: { children: ReactNode }) => {
   const [searchParams] = useSearchParams();
-  const { data, isLoading, fetchNextPage, hasNextPage, isFetching } =
+  const { data, isLoading, fetchNextPage, hasNextPage, isFetching, refetch } =
     useInfiniteQuery<PaginatedResponse<EntryType[]>>(
       Urls.api.entries,
       searchParams
@@ -66,6 +70,14 @@ export const EntriesProvider = ({ children }: { children: ReactNode }) => {
     : {};
   useNProgress(isFetching);
 
+  async function addEntry(data: Partial<Omit<Entry, "_id">>) {
+    const newEntry = await http.post(Urls.api.entries, data);
+
+    refetch();
+
+    return newEntry;
+  }
+
   return (
     <EntriesContext.Provider
       value={{
@@ -76,6 +88,7 @@ export const EntriesProvider = ({ children }: { children: ReactNode }) => {
         hasNextPage,
         fetchNextPage,
         isFetching,
+        addEntry,
       }}
     >
       {children}

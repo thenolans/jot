@@ -1,8 +1,8 @@
 import Button from "components/Button";
 import Dialog from "components/Dialog";
 import EntryForm from "components/EntryForm";
-import Urls from "constants/urls";
-import http from "utils/http";
+import useEntries from "hooks/useEntries";
+import { useState } from "react";
 
 type Props = {
   isOpen?: boolean;
@@ -10,10 +10,16 @@ type Props = {
 };
 
 export default function CreateDialog({ isOpen = false, onClose }: Props) {
+  const [isCreating, setIsCreating] = useState(false);
+  const { addEntry } = useEntries();
+
   async function createEntry(data: any) {
-    await http.post(Urls.api.entries, data);
+    setIsCreating(true);
+
+    await addEntry(data);
 
     onClose();
+    setIsCreating(false);
   }
 
   return (
@@ -26,11 +32,16 @@ export default function CreateDialog({ isOpen = false, onClose }: Props) {
       </Dialog.Content>
       <Dialog.Footer>
         <Button
+          disabled={isCreating}
           type="submit"
           form="create-entry-form"
           options={{ fluid: true }}
         >
-          Log entry
+          {isCreating ? (
+            <i className="fa fa-circle-o-notch fa-spin" />
+          ) : (
+            "Log Entry"
+          )}
         </Button>
       </Dialog.Footer>
     </Dialog>
