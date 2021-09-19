@@ -1,32 +1,18 @@
 import NProgress from "accessible-nprogress";
-import { MutableRefObject, useEffect, useRef } from "react";
+import { useEffect } from "react";
 
 NProgress.configure({ showSpinner: false });
 
-const refs = new Set<MutableRefObject<boolean>>();
-
-function updateNProgress() {
-  // @ts-expect-error
-  if ([...refs.values()].some((ref) => ref.current)) {
-    NProgress.start();
-  } else {
-    NProgress.done();
-  }
-}
-
 export default function useNProgress(isActive: boolean) {
-  const ref = useRef(isActive);
-
   useEffect(() => {
-    refs.add(ref);
+    if (isActive) {
+      NProgress.start();
+    } else {
+      NProgress.done();
+    }
+
     return () => {
-      refs.delete(ref);
-      updateNProgress();
+      NProgress.done();
     };
-  }, []);
-
-  useEffect(() => {
-    ref.current = isActive;
-    updateNProgress();
   }, [isActive]);
 }

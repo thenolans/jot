@@ -9,7 +9,7 @@ export default function Dashboard() {
     <Layout>
       <TagProvider>
         <EntriesProvider>
-          <div className="pb-4">
+          <div className="pb-24">
             <Entries />
           </div>
           <EntryDialogs />

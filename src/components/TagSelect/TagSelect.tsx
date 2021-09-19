@@ -30,7 +30,6 @@ export default function TagSelect({
       })),
     // @ts-expect-error
     onChange: (selectedOptions) => {
-      console.log(selectedOptions);
       // @ts-expect-error
       onChange(selectedOptions.map((o) => o.value));
     },

@@ -13,6 +13,7 @@
     "@types/node": "^16.6.2",
     "@types/react": "^17.0.18",
     "@types/react-dom": "^17.0.9",
+    "accessible-nprogress": "^2.1.2",
     "axios": "^0.21.1",
     "classnames": "^2.3.1",
     "dayjs": "^1.10.7",

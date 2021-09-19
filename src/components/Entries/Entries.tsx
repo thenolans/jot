@@ -8,7 +8,14 @@ import { DialogKeys } from "types";
 
 export default function Entries() {
   const [searchParams] = useSearchParams();
-  const { sortedEntries, setActiveDialog, isLoading } = useEntries();
+  const {
+    sortedEntries,
+    setActiveDialog,
+    isLoading,
+    isFetching,
+    hasNextPage,
+    fetchNextPage,
+  } = useEntries();
   const dates = Object.keys(sortedEntries);
   const keywordFilter = asStringParam(searchParams.q);
 
@@ -78,6 +85,20 @@ export default function Entries() {
           </StickyContainer>
         );
       })}
+      {isFetching && (
+        <div className="text-center">
+          <i className="fa fa-circle-o-notch fa-spin fa-2x text-gray-300" />
+        </div>
+      )}
+      {hasNextPage && !isFetching && (
+        <div className="text-center">
+          <Button onClick={() => fetchNextPage()} theme="mutedLink">
+            <i className="mr-4 fa fa-long-arrow-down text-gray-300" />
+            Load more entries
+            <i className="ml-4 fa fa-long-arrow-down text-gray-300" />
+          </Button>
+        </div>
+      )}
     </>
   );
 }

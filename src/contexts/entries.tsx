@@ -1,6 +1,7 @@
 import Urls from "constants/urls";
 import dayjs from "dayjs";
-import useGetQuery from "hooks/useGetQuery";
+import useInfiniteQuery from "hooks/useInfiniteGetQuery";
+import useNProgress from "hooks/useNProgress";
 import useSearchParams from "hooks/useSearchParams";
 import {
   createContext,
@@ -21,6 +22,9 @@ type EntriesContextType = {
   activeDialog: DialogKeys | null;
   setActiveDialog: Dispatch<SetStateAction<DialogKeys | null>>;
   isLoading: boolean;
+  isFetching: boolean;
+  hasNextPage: boolean | undefined;
+  fetchNextPage: () => void;
 };
 
 const EntriesContext = createContext<EntriesContextType>({
@@ -28,34 +32,39 @@ const EntriesContext = createContext<EntriesContextType>({
   activeDialog: null,
   setActiveDialog() {},
   isLoading: false,
+  isFetching: false,
+  hasNextPage: false,
+  fetchNextPage() {},
 });
 
 export const EntriesProvider = ({ children }: { children: ReactNode }) => {
   const [searchParams] = useSearchParams();
-  const { data, isLoading } = useGetQuery<PaginatedResponse<EntryType[]>>(
-    Urls.api.entries,
-    searchParams
-  );
-  console.log(data);
+  const { data, isLoading, fetchNextPage, hasNextPage, isFetching } =
+    useInfiniteQuery<PaginatedResponse<EntryType[]>>(
+      Urls.api.entries,
+      searchParams
+    );
   const [activeDialog, setActiveDialog] = useState<DialogKeys | null>(null);
   const sortedEntriesByDate = data
-    ? data.data.reduce<SortedEntries>((sortedEntries, currentEntry) => {
-        const formattedEntryDate = dayjs(currentEntry.date).format(
-          "MMM D, YYYY"
-        );
+    ? data.pages.reduce<SortedEntries>((sortedEntries, currentPage) => {
+        const pageEntries = currentPage.data;
+        pageEntries.forEach((entry) => {
+          const formattedEntryDate = dayjs(entry.date).format("MMM D, YYYY");
 
-        if (sortedEntries.hasOwnProperty(formattedEntryDate)) {
-          const currentEntriesAtDate = sortedEntries[formattedEntryDate];
-          sortedEntries[formattedEntryDate] = [
-            ...currentEntriesAtDate,
-            currentEntry,
-          ];
-        } else {
-          sortedEntries[formattedEntryDate] = [currentEntry];
-        }
+          if (sortedEntries.hasOwnProperty(formattedEntryDate)) {
+            const currentEntriesAtDate = sortedEntries[formattedEntryDate];
+            sortedEntries[formattedEntryDate] = [
+              ...currentEntriesAtDate,
+              entry,
+            ];
+          } else {
+            sortedEntries[formattedEntryDate] = [entry];
+          }
+        });
         return sortedEntries;
       }, {})
     : {};
+  useNProgress(isFetching);
 
   return (
     <EntriesContext.Provider
@@ -64,6 +73,9 @@ export const EntriesProvider = ({ children }: { children: ReactNode }) => {
         activeDialog,
         setActiveDialog,
         isLoading,
+        hasNextPage,
+        fetchNextPage,
+        isFetching,
       }}
     >
       {children}
