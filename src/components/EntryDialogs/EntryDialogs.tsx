@@ -7,7 +7,7 @@ import useEntries from "hooks/useEntries";
 import { DialogKeys } from "types";
 
 export default function FloatingButtons() {
-  const { activeDialog, setActiveDialog, entryToEdit } = useEntries();
+  const { activeDialog, setActiveDialog } = useEntries();
 
   return (
     <>

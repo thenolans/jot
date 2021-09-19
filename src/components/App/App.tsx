@@ -1,5 +1,6 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import Account from "components/Account";
+import AuthLoader from "components/AuthLoader";
 import Dashboard from "components/Dashboard";
 import LandingPage from "components/LandingPage";
 import ProtectedRoute from "components/ProtectedRoute";
@@ -15,7 +16,7 @@ const App = () => {
   if (isLoading) {
     // This state is rendered while Auth0 is determining whether
     // a session exists already or not
-    return <div>Loading...</div>;
+    return <AuthLoader />;
   }
 
   return (
