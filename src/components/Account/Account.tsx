@@ -10,7 +10,7 @@ export default function Account() {
 
   return (
     <Layout>
-      <div className="divide-y divide-gray-300">
+      <div className="divide-y divide-gray-300 px-2">
         <div className="py-4">
           <Button
             onClick={() =>
