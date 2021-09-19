@@ -6,9 +6,14 @@ import { DialogKeys, Entry as EntryType } from "types";
 type Props = {
   data: EntryType;
   highlightTerm?: string;
+  canEdit?: boolean;
 };
 
-export default function Entry({ data, highlightTerm = "" }: Props) {
+export default function Entry({
+  data,
+  highlightTerm = "",
+  canEdit = true,
+}: Props) {
   const { setActiveDialog, setEntryToEdit } = useEntries();
 
   return (
@@ -21,16 +26,18 @@ export default function Entry({ data, highlightTerm = "" }: Props) {
             textToHighlight={data.title}
           />
         </h3>
-        <Button
-          theme="mutedLink"
-          onClick={() => {
-            setActiveDialog(DialogKeys.EDIT);
-            setEntryToEdit(data);
-          }}
-        >
-          <i aria-hidden="true" className="fa fa-pencil" />
-          <span className="sr-only">Edit entry</span>
-        </Button>
+        {canEdit && (
+          <Button
+            theme="mutedLink"
+            onClick={() => {
+              setActiveDialog(DialogKeys.EDIT);
+              setEntryToEdit(data);
+            }}
+          >
+            <i aria-hidden="true" className="fa fa-pencil" />
+            <span className="sr-only">Edit entry</span>
+          </Button>
+        )}
       </div>
       {data.notes && (
         <div className="text-sm whitespace-pre-wrap">

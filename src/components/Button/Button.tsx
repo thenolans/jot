@@ -1,7 +1,7 @@
 import classNames from "classnames";
 import { ButtonHTMLAttributes, ReactNode } from "react";
 
-type ButtonTheme = "primary" | "dangerLink" | "mutedLink";
+type ButtonTheme = "primary" | "secondary" | "dangerLink" | "mutedLink";
 
 type ButtonOptions = {
   fluid?: boolean;
@@ -18,6 +18,8 @@ const themeStyles = {
   common: "inline-flex items-center justify-center transition-colors",
   commonNonLink: "rounded-lg h-12 px-4",
   primary: "bg-yellow-600 hover:bg-yellow-700 text-white",
+  secondary:
+    "bg-white border-2 border-yellow-600 hover:border-yellow-700 hover:text-yellow-700 text-yellow-600",
   dangerLink: "text-red-600 hover:text-red-700",
   mutedLink: "text-gray-600 hover:text-yellow-700",
 };
