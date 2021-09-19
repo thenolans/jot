@@ -1,5 +1,6 @@
 import "react-day-picker/lib/style.css";
 
+import dayjs from "dayjs";
 import DayPicker from "react-day-picker";
 
 type Props = {
@@ -41,7 +42,7 @@ export default function DatePicker({ onChange, value }: Props) {
         outside: "outside",
       }}
       onDayClick={onChange}
-      selectedDays={value || undefined}
+      selectedDays={value ? dayjs(value).toDate() : undefined}
     />
   );
 }
