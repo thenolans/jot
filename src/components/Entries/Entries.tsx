@@ -3,22 +3,28 @@ import Entry from "components/Entry";
 import dayjs from "dayjs";
 import useEntries from "hooks/useEntries";
 import useSearchParams, { asStringParam } from "hooks/useSearchParams";
-import NotebookIcon from "icons/Notebook";
 import { Sticky, StickyContainer } from "react-sticky";
 import { DialogKeys } from "types";
 
 export default function Entries() {
   const [searchParams] = useSearchParams();
-  const { sortedEntries, setActiveDialog } = useEntries();
+  const { sortedEntries, setActiveDialog, isLoading } = useEntries();
   const dates = Object.keys(sortedEntries);
   const keywordFilter = asStringParam(searchParams.q);
 
-  if (!Object.keys(sortedEntries).length && !Object.keys(searchParams).length) {
+  if (isLoading) {
     return (
       <div className="text-center space-y-4">
-        <div className="inline-block text-gray-300">
-          <NotebookIcon />
-        </div>
+        <i className="fa fa-circle-o-notch fa-spin fa-2x text-gray-300" />
+        <div className="text-gray-500">Fetching entries</div>
+      </div>
+    );
+  }
+
+  if (!Object.keys(sortedEntries).length && !Object.keys(searchParams).length) {
+    return (
+      <div className="text-center space-y-6">
+        <i className="fa fa-book fa-3x text-gray-400" />
         <div className="text-gray-500 text-xl">
           You have not logged any entries, yet
         </div>
@@ -31,10 +37,8 @@ export default function Entries() {
 
   if (!Object.keys(sortedEntries).length && Object.keys(searchParams).length) {
     return (
-      <div className="text-center space-y-4">
-        <div className="inline-block text-gray-300">
-          <NotebookIcon />
-        </div>
+      <div className="text-center space-y-6">
+        <i className="fa fa-book fa-3x text-gray-400" />
         <div className="text-gray-500 text-xl">
           No results match the applied filters, try adjusting them!
         </div>

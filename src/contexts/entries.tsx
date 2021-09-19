@@ -20,12 +20,14 @@ type EntriesContextType = {
   sortedEntries: SortedEntries;
   activeDialog: DialogKeys | null;
   setActiveDialog: Dispatch<SetStateAction<DialogKeys | null>>;
+  isLoading: boolean;
 };
 
 const EntriesContext = createContext<EntriesContextType>({
   sortedEntries: {},
   activeDialog: null,
   setActiveDialog() {},
+  isLoading: false,
 });
 
 export const EntriesProvider = ({ children }: { children: ReactNode }) => {
@@ -61,6 +63,7 @@ export const EntriesProvider = ({ children }: { children: ReactNode }) => {
         sortedEntries: sortedEntriesByDate,
         activeDialog,
         setActiveDialog,
+        isLoading,
       }}
     >
       {children}

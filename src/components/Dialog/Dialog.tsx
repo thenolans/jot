@@ -1,7 +1,6 @@
 import { Dialog as ReachDialog } from "@reach/dialog";
 import Button from "components/Button";
 import Container from "components/Container";
-import CloseIcon from "icons/Close";
 import { ReactNode } from "react";
 
 type Props = {
@@ -26,7 +25,7 @@ const Dialog = ({ children, isOpen = false, onClose, title }: Props) => {
             <div className="flex justify-between text-lg text-gray-700">
               {title}
               <Button onClick={onClose} theme="mutedLink">
-                <CloseIcon />
+                <i className="fa fa-close" />
                 <span className="sr-only">Close</span>
               </Button>
             </div>

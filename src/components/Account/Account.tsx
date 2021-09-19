@@ -1,8 +1,6 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import Button from "components/Button";
 import Layout from "components/Layout";
-import LogoutIcon from "icons/Logout";
-import TrashIcon from "icons/Trash";
 
 export default function Account() {
   const { logout } = useAuth0();
@@ -20,7 +18,7 @@ export default function Account() {
             }
             theme="mutedLink"
           >
-            <LogoutIcon />
+            <i className="fa fa-power-off" />
             <span>Logout</span>
           </Button>
         </div>
@@ -41,7 +39,7 @@ export default function Account() {
               }
             }}
           >
-            <TrashIcon />
+            <i className="fa fa-trash" />
             <span>Delete my data</span>
           </Button>
         </div>

@@ -1,6 +1,5 @@
 import Container from "components/Container";
 import Urls from "constants/urls";
-import GearIcon from "icons/Gear";
 import { Link } from "react-router-dom";
 
 export default function Header() {
@@ -11,7 +10,7 @@ export default function Header() {
           to={Urls.routes.account}
           className="text-gray-300 hover:text-yellow-600"
         >
-          <GearIcon />
+          <i className="fa fa-gear fa-2x" />
           <span className="sr-only">Account settings</span>
         </Link>
       </div>

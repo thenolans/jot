@@ -3,8 +3,6 @@ import Container from "components/Container";
 import CreateDialog from "components/CreateDialog";
 import FilterDialog from "components/FilterDialog";
 import useEntries from "hooks/useEntries";
-import FilterIcon from "icons/Filter";
-import PlusIcon from "icons/Plus";
 import { DialogKeys } from "types";
 
 export default function FloatingButtons() {
@@ -19,14 +17,14 @@ export default function FloatingButtons() {
               onClick={() => setActiveDialog(DialogKeys.FILTER)}
               className="w-12 shadow"
             >
-              <FilterIcon />
+              <i className="fa fa-filter" />
               <span className="sr-only">Filters</span>
             </Button>
             <Button
               onClick={() => setActiveDialog(DialogKeys.CREATE)}
               className="w-12 space-x-2"
             >
-              <PlusIcon />
+              <i className="fa fa-plus" />
               <span className="sr-only">Add entry</span>
             </Button>
           </div>
