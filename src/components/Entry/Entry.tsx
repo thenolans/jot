@@ -20,7 +20,7 @@ export default function Entry({ data, highlightTerm = "" }: Props) {
         </h3>
       </div>
       {data.notes && (
-        <div className="text-sm">
+        <div className="text-sm whitespace-pre-wrap">
           <Highlighter
             autoEscape
             searchWords={[highlightTerm]}
