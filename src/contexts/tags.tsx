@@ -6,12 +6,13 @@ import http from "utils/http";
 
 type TagContextType = {
   tags: Tag[];
-  addTag: (tag: string) => void;
+  addTag: (tag: string) => Promise<Tag>;
   isFetching: boolean;
 };
 
 const TagContext = createContext<TagContextType>({
   tags: [],
+  // @ts-expect-error
   addTag() {},
   isFetching: false,
 });
@@ -37,15 +38,12 @@ export const TagProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [data]);
 
-  async function addTag(tag: string) {
-    try {
-      const newTag = await http.post<Response<Tag>>(Urls.api.tags, {
-        name: tag,
-      });
-      setTags((prevTags) => [...prevTags, newTag.data.data]);
-    } catch {
-      // TODO
-    }
+  async function addTag(tag: string): Promise<Tag> {
+    const addedTag = await http.post<Response<Tag>>(Urls.api.tags, {
+      name: tag,
+    });
+    setTags((prevTags) => [...prevTags, addedTag.data.data]);
+    return addedTag.data.data;
   }
 
   return (

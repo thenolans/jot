@@ -19,7 +19,6 @@ export default function TagSelect({
   const { addTag, tags } = useTags();
 
   const sharedProps = {
-    isMulti: true,
     inputId,
     options: tags.map((tag) => ({ label: tag.name, value: tag._id })),
     value: tags
@@ -28,11 +27,6 @@ export default function TagSelect({
         label: tag.name,
         value: tag._id,
       })),
-    // @ts-expect-error
-    onChange: (selectedOptions) => {
-      // @ts-expect-error
-      onChange(selectedOptions.map((o) => o.value));
-    },
     ...selectProps,
   };
 
@@ -40,10 +34,25 @@ export default function TagSelect({
     return (
       <CreatableSelect
         {...sharedProps}
-        onCreateOption={(newTag: string) => addTag(newTag)}
+        isMulti
+        onChange={(selectedOptions) => {
+          onChange(selectedOptions.map((o) => o.value));
+        }}
+        onCreateOption={async (newTag: string) => {
+          const tag = await addTag(newTag);
+          onChange([...value, tag._id]);
+        }}
       />
     );
   }
 
-  return <Select {...sharedProps} />;
+  return (
+    <Select
+      isMulti
+      onChange={(selectedOptions) => {
+        onChange(selectedOptions.map((o) => o.value));
+      }}
+      {...sharedProps}
+    />
+  );
 }
