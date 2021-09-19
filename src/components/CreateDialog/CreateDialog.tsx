@@ -23,7 +23,12 @@ export default function CreateDialog({ isOpen = false, onClose }: Props) {
   }
 
   return (
-    <Dialog onClose={onClose} isOpen={isOpen} title="Add entry">
+    <Dialog
+      ariaLabel="Create a new entry"
+      onClose={onClose}
+      isOpen={isOpen}
+      title="Add entry"
+    >
       <Dialog.Content>
         <EntryForm
           formId="create-entry-form"

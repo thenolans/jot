@@ -8,9 +8,16 @@ type Props = {
   isOpen?: boolean;
   onClose: () => void;
   title: string;
+  ariaLabel: string;
 };
 
-const Dialog = ({ children, isOpen = false, onClose, title }: Props) => {
+const Dialog = ({
+  children,
+  isOpen = false,
+  onClose,
+  title,
+  ariaLabel,
+}: Props) => {
   if (!isOpen) return null;
 
   return (
@@ -18,6 +25,7 @@ const Dialog = ({ children, isOpen = false, onClose, title }: Props) => {
       className="fixed bottom-0 left-0 w-full h-full bg-white overflow-hidden"
       isOpen={isOpen}
       onDismiss={onClose}
+      aria-label={ariaLabel}
     >
       <div className="flex flex-col overflow-hidden h-full">
         <div className="border-b-2 border-gray-100 font-semibold px-4">

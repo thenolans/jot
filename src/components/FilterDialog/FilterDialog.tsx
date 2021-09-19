@@ -41,7 +41,12 @@ export default function FilterDialog({ isOpen = false, onClose }: Props) {
   }
 
   return (
-    <Dialog onClose={onClose} isOpen={isOpen} title="Filter">
+    <Dialog
+      ariaLabel="Filter entries by keyword or tag"
+      onClose={onClose}
+      isOpen={isOpen}
+      title="Filter"
+    >
       <Dialog.Content>
         <form
           id="filter-entries-form"

@@ -41,7 +41,12 @@ export default function EditDialog({ isOpen = false, onClose }: Props) {
   if (!entryToEdit) return null;
 
   return (
-    <Dialog onClose={onClose} isOpen={isOpen} title="Edit entry">
+    <Dialog
+      ariaLabel="Edit an existing entry"
+      onClose={onClose}
+      isOpen={isOpen}
+      title="Edit entry"
+    >
       <Dialog.Content>
         <EntryForm
           initialData={{
