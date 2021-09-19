@@ -1,6 +1,8 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import Button from "components/Button";
 import Layout from "components/Layout";
+import Urls from "constants/urls";
+import http from "utils/http";
 
 export default function Account() {
   const { logout } = useAuth0();
@@ -32,7 +34,7 @@ export default function Account() {
                   "Are you sure you want to delete your data? This action cannot be undone!"
                 )
               ) {
-                // TODO await deleteAccount();
+                await http.delete(`${Urls.api.account}?jot=true`);
                 logout({
                   returnTo: window.location.origin,
                 });

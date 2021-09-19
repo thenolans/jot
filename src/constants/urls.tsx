@@ -8,6 +8,7 @@ const Urls = {
     entries: "/jot/entries",
     entry: "/jot/entries/:id",
     tags: "/jot/tags",
+    account: "/account",
   },
 };
 
