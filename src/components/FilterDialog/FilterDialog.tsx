@@ -2,8 +2,10 @@ import Button from "components/Button";
 import Dialog from "components/Dialog";
 import Input from "components/Input";
 import TagSelect from "components/TagSelect";
+import Urls from "constants/urls";
 import useSearchParams, { asStringArrayParam } from "hooks/useSearchParams";
 import { SyntheticEvent, useState } from "react";
+import { useHistory } from "react-router";
 import { FilterKeys } from "types";
 
 type Props = {
@@ -12,6 +14,7 @@ type Props = {
 };
 
 export default function FilterDialog({ isOpen = false, onClose }: Props) {
+  const history = useHistory();
   const [searchParams, setSearchParams] = useSearchParams();
   const [keyword, setKeyword] = useState(
     searchParams[FilterKeys.KEYWORD] || ""
@@ -33,10 +36,7 @@ export default function FilterDialog({ isOpen = false, onClose }: Props) {
   function resetFilters() {
     setKeyword("");
     setSelectedTags([]);
-    setSearchParams({
-      [FilterKeys.KEYWORD]: undefined,
-      [FilterKeys.TAGS]: undefined,
-    });
+    history.push(Urls.routes.app);
     onClose();
   }
 
