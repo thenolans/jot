@@ -38,7 +38,10 @@ export default function CreateDialog({ isOpen = false, onClose }: Props) {
           options={{ fluid: true }}
         >
           {isCreating ? (
-            <i className="fa fa-circle-o-notch fa-spin" />
+            <>
+              <i aria-hidden="true" className="fa fa-circle-o-notch fa-spin" />
+              <span className="sr-only">Creating...</span>
+            </>
           ) : (
             "Log Entry"
           )}

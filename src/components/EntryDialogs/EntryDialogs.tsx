@@ -17,14 +17,14 @@ export default function FloatingButtons() {
               onClick={() => setActiveDialog(DialogKeys.FILTER)}
               className="w-12 shadow"
             >
-              <i className="fa fa-filter" />
+              <i aria-hidden="true" className="fa fa-filter" />
               <span className="sr-only">Filters</span>
             </Button>
             <Button
               onClick={() => setActiveDialog(DialogKeys.CREATE)}
               className="w-12 space-x-2"
             >
-              <i className="fa fa-plus" />
+              <i aria-hidden="true" className="fa fa-plus" />
               <span className="sr-only">Add entry</span>
             </Button>
           </div>

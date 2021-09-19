@@ -10,7 +10,7 @@ export default function Header() {
           to={Urls.routes.account}
           className="text-gray-300 hover:text-yellow-600"
         >
-          <i className="fa fa-gear fa-2x" />
+          <i aria-hidden="true" className="fa fa-gear fa-2x" />
           <span className="sr-only">Account settings</span>
         </Link>
       </div>

@@ -18,7 +18,7 @@ export default function Account() {
             }
             theme="mutedLink"
           >
-            <i className="fa fa-power-off" />
+            <i aria-hidden="true" className="fa fa-power-off" />
             <span>Logout</span>
           </Button>
         </div>
@@ -39,7 +39,7 @@ export default function Account() {
               }
             }}
           >
-            <i className="fa fa-trash" />
+            <i aria-hidden="true" className="fa fa-trash" />
             <span>Delete my data</span>
           </Button>
         </div>

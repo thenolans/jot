@@ -22,7 +22,10 @@ export default function Entries() {
   if (isLoading) {
     return (
       <div className="text-center space-y-4">
-        <i className="fa fa-circle-o-notch fa-spin fa-2x text-gray-300" />
+        <i
+          aria-hidden="true"
+          className="fa fa-circle-o-notch fa-spin fa-2x text-gray-300"
+        />
         <div className="text-gray-500">Fetching entries</div>
       </div>
     );
@@ -31,7 +34,7 @@ export default function Entries() {
   if (!Object.keys(sortedEntries).length && !Object.keys(searchParams).length) {
     return (
       <div className="text-center space-y-6">
-        <i className="fa fa-book fa-3x text-gray-400" />
+        <i aria-hidden="true" className="fa fa-book fa-3x text-gray-400" />
         <div className="text-gray-500 text-xl">
           You have not logged any entries, yet
         </div>
@@ -45,7 +48,7 @@ export default function Entries() {
   if (!Object.keys(sortedEntries).length && Object.keys(searchParams).length) {
     return (
       <div className="text-center space-y-6">
-        <i className="fa fa-book fa-3x text-gray-400" />
+        <i aria-hidden="true" className="fa fa-book fa-3x text-gray-400" />
         <div className="text-gray-500 text-xl">
           No results match the applied filters, try adjusting them!
         </div>
@@ -87,15 +90,25 @@ export default function Entries() {
       })}
       {isFetching && (
         <div className="text-center">
-          <i className="fa fa-circle-o-notch fa-spin fa-2x text-gray-300" />
+          <i
+            aria-hidden="true"
+            className="fa fa-circle-o-notch fa-spin fa-2x text-gray-300"
+          />
+          <span className="sr-only">Loading more entries...</span>
         </div>
       )}
       {hasNextPage && !isFetching && (
         <div className="text-center">
           <Button onClick={() => fetchNextPage()} theme="mutedLink">
-            <i className="mr-4 fa fa-long-arrow-down text-gray-300" />
+            <i
+              aria-hidden="true"
+              className="mr-4 fa fa-long-arrow-down text-gray-300"
+            />
             Load more entries
-            <i className="ml-4 fa fa-long-arrow-down text-gray-300" />
+            <i
+              aria-hidden="true"
+              className="ml-4 fa fa-long-arrow-down text-gray-300"
+            />
           </Button>
         </div>
       )}
