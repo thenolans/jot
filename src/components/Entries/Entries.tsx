@@ -90,7 +90,7 @@ export default function Entries() {
           <Icon
             className="text-gray-300"
             variant="fa-circle-o-notch"
-            size="2x"
+            size="fa-2x"
             spin
           />
           <SROnly>Loading more entries...</SROnly>
