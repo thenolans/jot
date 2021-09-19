@@ -11679,6 +11679,13 @@ mute-stream@0.0.7:
   resolved "https://registry.yarnpkg.com/mute-stream/-/mute-stream-0.0.7.tgz#3075ce93bc21b8fab43e1bc4da7e8115ed1e7bab"
   integrity sha1-MHXOk7whuPq0PhvE2n6BFe0ee6s=
 
+named-urls@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/named-urls/-/named-urls-2.0.1.tgz#24bcf998a834d39522da0d4983408744f70e327d"
+  integrity sha512-e/WeLA52FeLZpWt5JcpYp4fZqESBxoNuyJB3LQljHqNPNt0ow1t8QOTFEIeOZf+X+bJOLIXCPCnmyPZnBV8sMg==
+  dependencies:
+    path-to-regexp "^6.1.0"
+
 nan@^2.12.1:
   version "2.14.2"
   resolved "https://registry.yarnpkg.com/nan/-/nan-2.14.2.tgz#f5376400695168f4cc694ac9393d0c9585eeea19"
@@ -12758,6 +12765,11 @@ path-to-regexp@^1.7.0:
   integrity sha512-n43JRhlUKUAlibEJhPeir1ncUID16QnEjNpwzNdO3Lm4ywrBpBZ5oLD0I6br9evr1Y9JTqwRtAh7JLoOzAQdVA==
   dependencies:
     isarray "0.0.1"
+
+path-to-regexp@^6.1.0:
+  version "6.2.0"
+  resolved "https://registry.yarnpkg.com/path-to-regexp/-/path-to-regexp-6.2.0.tgz#f7b3803336104c346889adece614669230645f38"
+  integrity sha512-f66KywYG6+43afgE/8j/GoiNyygk/bnoCbps++3ErRKsIYkGGupyv07R2Ok5m9i67Iqc+T2g1eAUGUPzWhYTyg==
 
 path-type@^2.0.0:
   version "2.0.0"

@@ -1,5 +1,7 @@
+import Button from "components/Button";
 import Highlighter from "components/Highlighter";
-import { Entry as EntryType } from "types";
+import useEntries from "hooks/useEntries";
+import { DialogKeys, Entry as EntryType } from "types";
 
 type Props = {
   data: EntryType;
@@ -7,9 +9,11 @@ type Props = {
 };
 
 export default function Entry({ data, highlightTerm = "" }: Props) {
+  const { setActiveDialog, setEntryToEdit } = useEntries();
+
   return (
     <div className="bg-white rounded-lg shadow p-4 space-y-4">
-      <div>
+      <div className="flex items-center justify-between">
         <h3 className="font-semibold">
           <Highlighter
             autoEscape
@@ -17,6 +21,16 @@ export default function Entry({ data, highlightTerm = "" }: Props) {
             textToHighlight={data.title}
           />
         </h3>
+        <Button
+          theme="mutedLink"
+          onClick={() => {
+            setActiveDialog(DialogKeys.EDIT);
+            setEntryToEdit(data);
+          }}
+        >
+          <i aria-hidden="true" className="fa fa-pencil" />
+          <span className="sr-only">Edit entry</span>
+        </Button>
       </div>
       {data.notes && (
         <div className="text-sm whitespace-pre-wrap">

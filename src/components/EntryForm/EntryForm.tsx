@@ -6,18 +6,13 @@ import TagSelect from "components/TagSelect";
 import Textarea from "components/Textarea";
 import { useFormik } from "formik";
 import { useEffect, useRef } from "react";
+import { EntryFormData } from "types";
 import * as Yup from "yup";
-
-export type FormData = {
-  date: Date;
-  title: string;
-  notes: string;
-};
 
 type Props = {
   formId: string;
-  initialData?: FormData;
-  onSubmit: (formData: FormData) => void;
+  initialData?: Partial<EntryFormData>;
+  onSubmit: (formData: EntryFormData) => void;
 };
 
 const ValidationSchema = Yup.object().shape({

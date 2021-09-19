@@ -1,12 +1,13 @@
 import Button from "components/Button";
 import Container from "components/Container";
 import CreateDialog from "components/CreateDialog";
+import EditDialog from "components/EditDialog";
 import FilterDialog from "components/FilterDialog";
 import useEntries from "hooks/useEntries";
 import { DialogKeys } from "types";
 
 export default function FloatingButtons() {
-  const { activeDialog, setActiveDialog } = useEntries();
+  const { activeDialog, setActiveDialog, entryToEdit } = useEntries();
 
   return (
     <>
@@ -36,6 +37,10 @@ export default function FloatingButtons() {
       />
       <CreateDialog
         isOpen={activeDialog === DialogKeys.CREATE}
+        onClose={() => setActiveDialog(null)}
+      />
+      <EditDialog
+        isOpen={activeDialog === DialogKeys.EDIT}
         onClose={() => setActiveDialog(null)}
       />
     </>

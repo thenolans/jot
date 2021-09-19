@@ -6,6 +6,7 @@ const Urls = {
   },
   api: {
     entries: "/jot/entries",
+    entry: "/jot/entries/:id",
     tags: "/jot/tags",
   },
 };

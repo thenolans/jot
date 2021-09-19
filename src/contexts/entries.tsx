@@ -3,6 +3,7 @@ import dayjs from "dayjs";
 import useInfiniteQuery from "hooks/useInfiniteGetQuery";
 import useNProgress from "hooks/useNProgress";
 import useSearchParams from "hooks/useSearchParams";
+import { reverse } from "named-urls";
 import {
   createContext,
   Dispatch,
@@ -14,6 +15,7 @@ import {
   DialogKeys,
   Entry,
   Entry as EntryType,
+  EntryFormData,
   PaginatedResponse,
   SortedEntries,
 } from "types";
@@ -28,6 +30,10 @@ type EntriesContextType = {
   hasNextPage: boolean | undefined;
   fetchNextPage: () => void;
   addEntry: (entryData: Partial<Omit<Entry, "_id">>) => void;
+  saveEntry: (entryId: string, entryData: EntryFormData) => void;
+  deleteEntry: (entryId: string) => void;
+  entryToEdit: Entry | null;
+  setEntryToEdit: Dispatch<SetStateAction<Entry | null>>;
 };
 
 const EntriesContext = createContext<EntriesContextType>({
@@ -39,6 +45,10 @@ const EntriesContext = createContext<EntriesContextType>({
   hasNextPage: false,
   fetchNextPage() {},
   addEntry() {},
+  saveEntry() {},
+  deleteEntry() {},
+  entryToEdit: null,
+  setEntryToEdit() {},
 });
 
 export const EntriesProvider = ({ children }: { children: ReactNode }) => {
@@ -49,6 +59,7 @@ export const EntriesProvider = ({ children }: { children: ReactNode }) => {
       searchParams
     );
   const [activeDialog, setActiveDialog] = useState<DialogKeys | null>(null);
+  const [entryToEdit, setEntryToEdit] = useState<Entry | null>(null);
   const sortedEntriesByDate = data
     ? data.pages.reduce<SortedEntries>((sortedEntries, currentPage) => {
         const pageEntries = currentPage.data;
@@ -78,6 +89,18 @@ export const EntriesProvider = ({ children }: { children: ReactNode }) => {
     return newEntry;
   }
 
+  async function saveEntry(entryId: string, entryData: EntryFormData) {
+    await http.patch(reverse(Urls.api.entry, { id: entryId }), entryData);
+
+    refetch();
+  }
+
+  async function deleteEntry(entryId: string) {
+    await http.delete(reverse(Urls.api.entry, { id: entryId }));
+
+    refetch();
+  }
+
   return (
     <EntriesContext.Provider
       value={{
@@ -89,6 +112,10 @@ export const EntriesProvider = ({ children }: { children: ReactNode }) => {
         fetchNextPage,
         isFetching,
         addEntry,
+        deleteEntry,
+        entryToEdit,
+        setEntryToEdit,
+        saveEntry,
       }}
     >
       {children}

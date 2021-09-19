@@ -1,6 +1,7 @@
 export enum DialogKeys {
   CREATE = "create",
   FILTER = "filter",
+  EDIT = "edit",
 }
 
 export enum FilterKeys {
@@ -19,6 +20,13 @@ export type Entry = {
   title: string;
   notes: string | null;
   tags: Tag[];
+};
+
+export type EntryFormData = {
+  date: Date;
+  title: string;
+  notes: string;
+  tags: string[];
 };
 
 export type SortedEntries = {
