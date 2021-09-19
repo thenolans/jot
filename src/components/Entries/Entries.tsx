@@ -1,14 +1,49 @@
+import Button from "components/Button";
 import Entry from "components/Entry";
 import dayjs from "dayjs";
 import useEntries from "hooks/useEntries";
 import useSearchParams, { asStringParam } from "hooks/useSearchParams";
+import NotebookIcon from "icons/Notebook";
 import { Sticky, StickyContainer } from "react-sticky";
+import { DialogKeys } from "types";
 
 export default function Entries() {
   const [searchParams] = useSearchParams();
-  const { sortedEntries } = useEntries();
+  const { sortedEntries, setActiveDialog } = useEntries();
   const dates = Object.keys(sortedEntries);
   const keywordFilter = asStringParam(searchParams.q);
+
+  if (!Object.keys(sortedEntries).length && !Object.keys(searchParams).length) {
+    return (
+      <div className="text-center space-y-4">
+        <div className="inline-block text-gray-300">
+          <NotebookIcon />
+        </div>
+        <div className="text-gray-500 text-xl">
+          You have not logged any entries, yet
+        </div>
+        <Button onClick={() => setActiveDialog(DialogKeys.CREATE)}>
+          Add entry
+        </Button>
+      </div>
+    );
+  }
+
+  if (!Object.keys(sortedEntries).length && Object.keys(searchParams).length) {
+    return (
+      <div className="text-center space-y-4">
+        <div className="inline-block text-gray-300">
+          <NotebookIcon />
+        </div>
+        <div className="text-gray-500 text-xl">
+          No results match the applied filters, try adjusting them!
+        </div>
+        <Button onClick={() => setActiveDialog(DialogKeys.FILTER)}>
+          Change filters
+        </Button>
+      </div>
+    );
+  }
 
   return (
     <>

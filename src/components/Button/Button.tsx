@@ -15,7 +15,7 @@ type Props = ButtonHTMLAttributes<HTMLButtonElement> & {
 };
 
 const themeStyles = {
-  common: "flex items-center justify-center transition-colors",
+  common: "inline-flex items-center justify-center transition-colors",
   commonNonLink: "rounded-lg h-12 px-4",
   primary: "bg-yellow-600 hover:bg-yellow-700 text-white",
   dangerLink: "text-red-600 hover:text-red-700",
