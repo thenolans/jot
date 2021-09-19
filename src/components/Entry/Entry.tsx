@@ -1,5 +1,4 @@
 import Highlighter from "components/Highlighter";
-import dayjs from "dayjs";
 import { Entry as EntryType } from "types";
 
 type Props = {
