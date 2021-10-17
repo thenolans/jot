@@ -23,14 +23,7 @@ function fetchTags(): Promise<Response<Tag[]>> {
 
 export const TagProvider = ({ children }: { children: ReactNode }) => {
   const [tags, setTags] = useState<Tag[]>([]);
-  const { data, isLoading: isFetching } = useQuery(
-    ["tags"],
-    () => fetchTags(),
-    {
-      retry: false,
-      refetchOnWindowFocus: false,
-    }
-  );
+  const { data, isLoading: isFetching } = useQuery(["tags"], () => fetchTags());
 
   useEffect(() => {
     if (data?.data?.length) {

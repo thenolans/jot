@@ -19,8 +19,6 @@ const fetchData = async (
 
 const defaultConfig: QueryObserverOptions<any> = {
   getNextPageParam: (lastPage) => lastPage.meta.nextPage,
-  retry: false,
-  refetchOnWindowFocus: false,
 };
 
 export default function useInfiniteGetQuery<TResult>(
