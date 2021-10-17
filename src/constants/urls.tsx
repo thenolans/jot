@@ -13,6 +13,7 @@ const Urls = {
     entry: "/jot/entries/:id",
     tags: "/jot/tags",
     account: "/account",
+    "journals:list": "/jot/journals",
   },
 };
 

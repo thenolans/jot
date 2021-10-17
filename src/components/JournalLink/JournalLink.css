@@ -7,7 +7,7 @@
   @apply h-full bg-black bg-opacity-20 w-4;
 }
 
-.c-journal-link__title {
+.c-journal-link__name {
   @apply flex-grow p-4 text-center text-lg font-semibold text-white text-opacity-60;
 }
 
@@ -15,7 +15,7 @@
   @apply absolute top-0 right-6;
 }
 
-.c-journal-link:hover .c-journal-link__title {
+.c-journal-link:hover .c-journal-link__name {
   @apply text-primary-400;
 }
 

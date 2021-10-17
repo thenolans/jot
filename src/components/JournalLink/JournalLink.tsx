@@ -6,10 +6,10 @@ import { Link } from "react-router-dom";
 
 type Props = {
   id: string;
-  title: string;
+  name: string;
 };
 
-export default function JournalCard({ id, title }: Props) {
+export default function JournalCard({ id, name }: Props) {
   return (
     <Link
       to={reverse(Urls.routes["journal:details"], { id })}
@@ -25,10 +25,10 @@ export default function JournalCard({ id, title }: Props) {
         <path
           d="M0.476105 0.115967H24.4761V31.2207L12.4761 19.3094L0.476105 31.2207V0.115967Z"
           fill="black"
-          fill-opacity="0.2"
+          fillOpacity="0.2"
         />
       </svg>
-      <div className="c-journal-link__title">{title}</div>
+      <div className="c-journal-link__name">{name}</div>
     </Link>
   );
 }

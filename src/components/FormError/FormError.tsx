@@ -9,7 +9,10 @@ type Props = HTMLAttributes<HTMLDivElement> & {
 export default function Label({ className, ...props }: Props) {
   return (
     <div
-      className={classNames("text-sm text-danger-700 block mt-1", className)}
+      className={classNames(
+        "text-sm text-danger-700 block mt-1 ml-6",
+        className
+      )}
       {...props}
     />
   );

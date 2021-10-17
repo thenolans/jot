@@ -9,7 +9,7 @@ type Props = LabelHTMLAttributes<HTMLLabelElement> & {
 export default function Label({ className, ...props }: Props) {
   return (
     <label
-      className={classNames("text-sm text-gray-500 block mb-1", className)}
+      className={classNames("ml-6 text-sm text-gray-500 block mb-1", className)}
       {...props}
     />
   );

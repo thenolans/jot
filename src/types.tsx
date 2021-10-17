@@ -33,6 +33,13 @@ export type SortedEntries = {
   [formattedDate: string]: Entry[];
 };
 
+export type Journal = {
+  _id: string;
+  name: string;
+};
+
+export type JournalFormData = Pick<Journal, "name">;
+
 export type Response<T> = {
   data: T;
 };
