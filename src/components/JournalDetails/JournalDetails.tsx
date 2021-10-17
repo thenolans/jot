@@ -5,6 +5,7 @@ import JournalEntry from "components/JournalEntry";
 import Layout from "components/Layout";
 import PageTitle from "components/PageTitle";
 import TagSelect from "components/TagSelect";
+import Tip from "components/Tip";
 import Urls from "constants/urls";
 import { TagProvider } from "contexts/tags";
 import useDebounce from "hooks/useDebounce";
@@ -104,18 +105,36 @@ export default function JournalList() {
                   <div>Fetching journal details...</div>
                 </div>
               );
+            } else if (
+              // @ts-expect-error
+              !entries.length &&
+              !searchParams.q &&
+              !searchParams.tag
+            ) {
+              return (
+                <Tip
+                  title="You have not logged any entries, yet."
+                  description="Entries are the individual pieces that make up a journal. You can search them by keyword or by tag after you create some!"
+                />
+              );
+              // @ts-expect-error
+            } else if (!entries.length) {
+              return (
+                <Tip
+                  title="No entries match your filters!"
+                  description="We could not find any entries that match your search term or tags. Try searching by a new keyword or adjusting the tags to refine results."
+                />
+              );
             } else {
               return (
-                <>
-                  <div className="bg-primary-100 rounded-r-3xl overflow-hidden">
-                    {
-                      // @ts-expect-error
-                      entries?.map((entry) => (
-                        <JournalEntry key={entry._id} entry={entry} />
-                      ))
-                    }
-                  </div>
-                </>
+                <div className="bg-primary-100 rounded-r-3xl overflow-hidden">
+                  {
+                    // @ts-expect-error
+                    entries?.map((entry) => (
+                      <JournalEntry key={entry._id} entry={entry} />
+                    ))
+                  }
+                </div>
               );
             }
           })()}
