@@ -1,6 +1,7 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import AuthLoader from "components/AuthLoader";
 import Dashboard from "components/Dashboard";
+import JournalDetails from "components/JournalDetails";
 import JournalList from "components/JournalList";
 import LandingPage from "components/LandingPage";
 import ProtectedRoute from "components/ProtectedRoute";
@@ -26,8 +27,13 @@ const App = () => {
           <Route exact path={Urls.routes.root} component={LandingPage} />
           <ProtectedRoute path={Urls.routes.app} component={Dashboard} />
           <ProtectedRoute
+            exact
             path={Urls.routes["journal:list"]}
             component={JournalList}
+          />
+          <ProtectedRoute
+            path={Urls.routes["journal:details"]}
+            component={JournalDetails}
           />
         </Switch>
       </Router>

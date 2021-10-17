@@ -8,12 +8,14 @@ type Props = {
   inputId: string;
   value: string[];
   onChange: (tags: string[]) => void;
+  placeholder?: string;
 };
 
 export default function TagSelect({
   creatable = false,
   inputId,
   onChange,
+  placeholder,
   value,
 }: Props) {
   const { addTag, tags } = useTags();
@@ -27,6 +29,7 @@ export default function TagSelect({
         label: tag.name,
         value: tag._id,
       })),
+    placeholder,
     ...selectProps,
   };
 

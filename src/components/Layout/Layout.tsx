@@ -10,8 +10,10 @@ export default function Layout({ children }: Props) {
   return (
     <div className="h-screen flex">
       <Sidebar />
-      <div className="flex-grow p-16 max-h-screen overflow-auto">
-        <Container>{children}</Container>
+      <div className="flex-grow max-h-screen overflow-auto">
+        <div className="p-16">
+          <Container>{children}</Container>
+        </div>
       </div>
     </div>
   );

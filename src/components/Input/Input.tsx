@@ -10,7 +10,7 @@ const Input = forwardRef<HTMLInputElement, Props>(
   ({ className, type = "text", ...props }, ref) => (
     <input
       className={classNames(
-        "w-full rounded-lg px-4 h-12 bg-gray-100 border-2 border-transparent focus:border-primary-700 outline-none text-gray-800",
+        "w-full rounded-full px-6 h-12 bg-primary-100 border-2 border-transparent focus:border-primary-700 outline-none text-primary-800 text-lg placeholder-primary-600",
         className
       )}
       ref={ref}

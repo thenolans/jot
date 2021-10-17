@@ -3,7 +3,7 @@ import { components } from "react-select";
 
 const Control = (props) => (
   <components.Control
-    className="bg-gray-100 border-transparent border-2 focus-within:border-primary-700 shadow-none rounded-lg px-3 py-2"
+    className="bg-primary-100 border-transparent border-2 focus-within:border-primary-700 shadow-none rounded-full px-3 py-1"
     {...props}
   />
 );

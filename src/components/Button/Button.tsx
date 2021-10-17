@@ -12,7 +12,8 @@ type Props = ButtonHTMLAttributes<HTMLButtonElement> & {
 
 const themeMap = {
   // Common theme styles for both regular variants and link variants
-  common: "inline-flex items-center justify-center space-x-2 transition-colors",
+  common:
+    "inline-flex items-center justify-center space-x-2 transition-colors whitespace-nowrap",
   // Common theme styles for non-link variants
   commonNonLink: "rounded-lg h-12 px-6",
   primary: "bg-primary-700 hover:bg-primary-800 text-primary-50 rounded-full",
