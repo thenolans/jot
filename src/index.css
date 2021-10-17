@@ -11,7 +11,7 @@ body * {
 }
 
 #nprogress .bar {
-  @apply bg-primary-600 z-10;
+  @apply bg-primary-700 z-10;
   position: fixed;
   top: 0;
   left: 0;

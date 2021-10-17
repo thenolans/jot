@@ -9,6 +9,7 @@ import Urls from "constants/urls";
 import { TagProvider } from "contexts/tags";
 import useDebounce from "hooks/useDebounce";
 import useInfiniteGetQuery from "hooks/useInfiniteGetQuery";
+import useNProgress from "hooks/useNProgress";
 import useSearchParams, {
   asStringArrayParam,
   asStringParam,
@@ -37,10 +38,11 @@ export default function JournalList() {
   );
   const selectedTags = asStringArrayParam(searchParams.tag);
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
-  const { data, isLoading, refetch } = useInfiniteGetQuery<PaginatedEntries>(
-    reverse(Urls.api["journal:entries"], { id: journalId }),
-    { q: debouncedSearchTerm, tag: selectedTags }
-  );
+  const { data, isLoading, isFetching, refetch } =
+    useInfiniteGetQuery<PaginatedEntries>(
+      reverse(Urls.api["journal:entries"], { id: journalId }),
+      { q: debouncedSearchTerm, tag: selectedTags }
+    );
 
   const passedName = (location as Location).state?.name;
   const displayName = passedName || data?.pages[0].meta.journal.name;
@@ -49,10 +51,10 @@ export default function JournalList() {
       return [...entries, ...page.data];
     }, []) || [];
 
+  useNProgress(isFetching);
+
   useEffect(() => {
-    if (debouncedSearchTerm) {
-      setSearchParams({ q: debouncedSearchTerm });
-    }
+    setSearchParams({ q: debouncedSearchTerm || undefined });
   }, [debouncedSearchTerm]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (!isLoading && !data?.pages.length) {
@@ -64,7 +66,36 @@ export default function JournalList() {
       <Layout>
         <div className="space-y-16">
           <PageTitle>{displayName}</PageTitle>
-          {}
+          {displayName && (
+            <div className="grid grid-cols-7 gap-4">
+              <div className="col-span-4">
+                <Input
+                  placeholder="Search journal..."
+                  className="flex-grow"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+              </div>
+              <div className="col-span-2">
+                <TagSelect
+                  placeholder="Filter by tag..."
+                  inputId=""
+                  onChange={(selectedTags) =>
+                    setSearchParams({
+                      tag: selectedTags,
+                    })
+                  }
+                  value={selectedTags}
+                />
+              </div>
+              <Button
+                onClick={() => setIsLoggingEntry(true)}
+                className="flex-shrink-0"
+              >
+                Log entry
+              </Button>
+            </div>
+          )}
           {(() => {
             if (isLoading) {
               return (
@@ -76,34 +107,6 @@ export default function JournalList() {
             } else {
               return (
                 <>
-                  <div className="grid grid-cols-7 gap-4">
-                    <div className="col-span-4">
-                      <Input
-                        placeholder="Search journal..."
-                        className="flex-grow"
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                      />
-                    </div>
-                    <div className="col-span-2">
-                      <TagSelect
-                        placeholder="Filter by tag..."
-                        inputId=""
-                        onChange={(selectedTags) =>
-                          setSearchParams({
-                            tag: selectedTags,
-                          })
-                        }
-                        value={selectedTags}
-                      />
-                    </div>
-                    <Button
-                      onClick={() => setIsLoggingEntry(true)}
-                      className="flex-shrink-0"
-                    >
-                      Log entry
-                    </Button>
-                  </div>
                   <div className="bg-primary-100 rounded-r-3xl overflow-hidden">
                     {
                       // @ts-expect-error
