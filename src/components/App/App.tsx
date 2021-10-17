@@ -9,10 +9,19 @@ import Urls from "constants/urls";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
-const queryClient = new QueryClient();
-
 const App = () => {
   const { isLoading } = useAuth0();
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        refetchOnWindowFocus: false,
+        refetchOnMount: false,
+        refetchOnReconnect: false,
+        retry: false,
+        staleTime: 1000 * 60 * 60 * 24,
+      },
+    },
+  });
 
   if (isLoading) {
     // This state is rendered while Auth0 is determining whether

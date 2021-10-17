@@ -3,17 +3,21 @@
 }
 
 .c-modal {
-  @apply w-full bg-white shadow-md max-h-full sm:max-w-xl rounded-t-3xl sm:rounded-3xl overflow-hidden flex flex-col overflow-hidden;
+  @apply w-full bg-primary-50 shadow-md max-h-full sm:max-w-md rounded-t-3xl sm:rounded-3xl overflow-hidden flex flex-col overflow-hidden;
 }
 
 .c-modal__header {
-  @apply px-6 flex justify-between pt-6;
+  @apply p-6 flex justify-between;
 }
 
 .c-modal__body {
-  @apply overflow-y-auto p-6;
+  @apply overflow-y-auto px-6;
+}
+
+.c-modal__body:last-child {
+  @apply pb-6;
 }
 
 .c-modal__footer {
-  @apply px-6 pb-6 text-right;
+  @apply p-6 text-right;
 }

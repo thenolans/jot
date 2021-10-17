@@ -38,6 +38,13 @@ export type Journal = {
   name: string;
 };
 
+export type PaginatedEntries = {
+  data: Entry[];
+  meta: {
+    journal: Journal;
+  };
+};
+
 export type JournalFormData = Pick<Journal, "name">;
 
 export type Response<T> = {

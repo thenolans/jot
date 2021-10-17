@@ -18,15 +18,8 @@ function fetchJournals(): Promise<Journal[]> {
 
 export default function JournalList() {
   const [isCreatingJournal, setIsCreatingJournal] = useState(false);
-  const [journals, setJournals] = useState<Journal[]>([]);
-  const { data = [], isLoading: isFetching } = useQuery(
-    ["journals"],
-    () => fetchJournals(),
-    {
-      retry: false,
-      refetchOnWindowFocus: false,
-    }
-  );
+  const { data = [], isLoading } = useQuery("journal-list", fetchJournals);
+  const [journals, setJournals] = useState<Journal[]>(data);
 
   useEffect(() => {
     if (data.length) {
@@ -44,7 +37,7 @@ export default function JournalList() {
           </Button>
         </div>
         {(() => {
-          if (isFetching) {
+          if (isLoading) {
             return (
               <div className="text-center space-y-4 text-primary-600">
                 <Icon size="fa-3x" variant="fa-circle-o-notch" spin />
@@ -63,7 +56,6 @@ export default function JournalList() {
             return (
               <div className="grid grid-cols-4 gap-16">
                 {journals.map(({ _id, name }) => {
-                  console.log(_id);
                   return <JournalLink id={_id} key={_id} name={name} />;
                 })}
               </div>

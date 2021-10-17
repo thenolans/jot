@@ -20,7 +20,7 @@ const ValidationSchema = Yup.object().shape({
   notes: Yup.string(),
 });
 
-export default function RecipeForm({ formId, initialData, onSubmit }: Props) {
+export default function EntryForm({ formId, initialData, onSubmit }: Props) {
   const { errors, handleChange, handleSubmit, values, setFieldValue } =
     useFormik({
       initialValues: {

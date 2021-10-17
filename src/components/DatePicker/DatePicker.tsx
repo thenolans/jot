@@ -12,7 +12,7 @@ export default function DatePicker({ onChange, value }: Props) {
   return (
     <DayPicker
       classNames={{
-        container: "DayPicker bg-gray-100 rounded w-full",
+        container: "DayPicker bg-primary-100 rounded w-full",
         wrapper: "DayPicker-wrapper",
         interactionDisabled: "DayPicker--interactionDisabled",
         months: "DayPicker-Months",
@@ -31,13 +31,13 @@ export default function DatePicker({ onChange, value }: Props) {
         body: "DayPicker-Body",
         week: "DayPicker-Week",
         weekNumber: "DayPicker-WeekNumber",
-        day: "DayPicker-Day p-0 w-10 h-10 hover:bg-gray-100",
+        day: "DayPicker-Day p-0 w-10 h-10 hover:bg-primary-200",
         footer: "DayPicker-Footer",
         todayButton: "DayPicker-TodayButton",
 
         // default modifiers
         today: "today",
-        selected: "text-white bg-primary-600 hover:bg-primary-700",
+        selected: "text-primary-50 bg-primary-800",
         disabled: "disabled",
         outside: "outside",
       }}

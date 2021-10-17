@@ -1,28 +1,46 @@
 import "./JournalEntry.css";
 
+import Highlighter from "components/Highlighter";
 import Tag from "components/Tag";
+import dayjs from "dayjs";
+import useSearchParams, { asStringParam } from "hooks/useSearchParams";
+import { Entry } from "types";
 
-export default function JournalEntry() {
+type Props = {
+  entry: Entry;
+};
+
+export default function JournalEntry({ entry }: Props) {
+  const [searchParams] = useSearchParams();
+  const highlightTerm = asStringParam(searchParams.q) || "";
+
   return (
     <div className="c-journal-entry">
       <div className="c-journal-entry__date">
-        <div>Jan</div>
-        <div>1</div>
+        <div>{dayjs(entry.date).format("MMM")}</div>
+        <div>{dayjs(entry.date).format("D")}</div>
       </div>
       <div className="c-journal-entry__content">
         <h3 className="c-journal-entry__title">
-          Wampa aayla dagobah jade maul binks sidious. Antilles jar fisto
-          tatooine darth hutt.
+          <Highlighter
+            autoEscape
+            searchWords={[highlightTerm]}
+            textToHighlight={entry.title}
+          />
         </h3>
-        <div>
-          Lucas ipsum dolor sit amet ackbar r2-d2 luke sebulba ackbar skywalker
-          ackbar lars skywalker droid. Organa windu bothan droid kessel grievous
-          skywalker gonk watto. Coruscant ponda qui-gon wedge solo mara darth
-          greedo windu. Leia windu mon jade boba kenobi qui-gonn biggs.
-        </div>
+        {entry.notes && (
+          <div>
+            <Highlighter
+              autoEscape
+              searchWords={[highlightTerm]}
+              textToHighlight={entry.notes}
+            />
+          </div>
+        )}
         <div className="c-journal-entry__tags">
-          <Tag>Luke Skywalker</Tag>
-          <Tag>Mandalorian</Tag>
+          {entry.tags.map((tag) => (
+            <Tag key={tag._id}>{tag.name}</Tag>
+          ))}
         </div>
       </div>
     </div>

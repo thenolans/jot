@@ -12,7 +12,10 @@ type Props = {
 export default function JournalCard({ id, name }: Props) {
   return (
     <Link
-      to={reverse(Urls.routes["journal:details"], { id })}
+      to={{
+        pathname: reverse(Urls.routes["journal:details"], { id }),
+        state: { name },
+      }}
       className="c-journal-link"
     >
       <div className="c-journal-link__spine" />

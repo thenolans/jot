@@ -14,6 +14,8 @@ const Urls = {
     tags: "/jot/tags",
     account: "/account",
     "journals:list": "/jot/journals",
+    "journal:details": "/jot/journals/:id",
+    "journal:entries": "/jot/journals/:id/entries",
   },
 };
 

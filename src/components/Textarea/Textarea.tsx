@@ -10,7 +10,7 @@ const Input = forwardRef<HTMLTextAreaElement, Props>(
   ({ className, ...props }, ref) => (
     <textarea
       className={classNames(
-        "w-full rounded-lg p-4 h-12 bg-gray-100 border-2 border-transparent focus:border-primary-700 outline-none text-gray-800 min-h-24",
+        "w-full rounded-3xl py-4 px-6 h-12 bg-primary-100 border-2 border-transparent focus:border-primary-700 outline-none text-gray-800 min-h-24",
         className
       )}
       ref={ref}
