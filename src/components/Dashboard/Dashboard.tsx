@@ -5,16 +5,5 @@ import { EntriesProvider } from "contexts/entries";
 import { TagProvider } from "contexts/tags";
 
 export default function Dashboard() {
-  return (
-    <Layout>
-      <TagProvider>
-        <EntriesProvider>
-          <div className="pb-16">
-            <Entries />
-          </div>
-          <EntryDialogs />
-        </EntriesProvider>
-      </TagProvider>
-    </Layout>
-  );
+  return <Layout>Test</Layout>;
 }

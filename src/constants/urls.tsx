@@ -3,6 +3,10 @@ const Urls = {
     root: "/",
     app: "/app",
     account: "/account",
+    "journal:list": "/journals",
+    "journal:details": "/journals/:id",
+    "notes:list": "/notes",
+    "lists:list": "/lists",
   },
   api: {
     entries: "/jot/entries",

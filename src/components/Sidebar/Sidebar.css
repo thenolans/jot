@@ -1,0 +1,4 @@
+.c-sidebar {
+  @apply flex flex-col bg-primary-100 items-center justify-between px-8 py-16;
+  width: 400px;
+}

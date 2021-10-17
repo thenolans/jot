@@ -1,0 +1,11 @@
+.c-nav-link {
+  @apply text-xl block px-12 py-4 rounded-full;
+}
+
+.c-nav-link[aria-current="page"] {
+  @apply bg-primary-700 text-primary-50;
+}
+
+.c-nav-link:not([aria-current="page"]) {
+  @apply text-primary-700 hover:bg-primary-200;
+}

@@ -1,7 +1,7 @@
 import { useAuth0 } from "@auth0/auth0-react";
-import Account from "components/Account";
 import AuthLoader from "components/AuthLoader";
 import Dashboard from "components/Dashboard";
+import JournalList from "components/JournalList";
 import LandingPage from "components/LandingPage";
 import ProtectedRoute from "components/ProtectedRoute";
 import Urls from "constants/urls";
@@ -25,7 +25,10 @@ const App = () => {
         <Switch>
           <Route exact path={Urls.routes.root} component={LandingPage} />
           <ProtectedRoute path={Urls.routes.app} component={Dashboard} />
-          <ProtectedRoute path={Urls.routes.account} component={Account} />
+          <ProtectedRoute
+            path={Urls.routes["journal:list"]}
+            component={JournalList}
+          />
         </Switch>
       </Router>
     </QueryClientProvider>

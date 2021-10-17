@@ -14,8 +14,8 @@ const themeMap = {
   // Common theme styles for both regular variants and link variants
   common: "inline-flex items-center justify-center space-x-2 transition-colors",
   // Common theme styles for non-link variants
-  commonNonLink: "rounded-lg h-12 px-4",
-  primary: "bg-primary-600 hover:bg-primary-700 text-white",
+  commonNonLink: "rounded-lg h-12 px-6",
+  primary: "bg-primary-700 hover:bg-primary-800 text-primary-50 rounded-full",
   secondary:
     "bg-transparent border-2 border-primary-600 text-primary-600 hover:border-primary-700 hover:text-primary-700",
   "link--danger": "text-danger-600 hover:text-danger-700",
