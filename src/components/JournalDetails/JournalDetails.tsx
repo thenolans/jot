@@ -65,16 +65,20 @@ export default function JournalList() {
   return (
     <TagProvider>
       <Layout>
-        <div className="space-y-8 lg:space-y-16 pb-24 lg:pb-0">
+        <div className="space-y-8 lg:space-y-16 pb-6 lg:pb-0">
           <div className="flex items-center justify-between">
             <PageTitle>{displayName}</PageTitle>
-            <div className="fixed bottom-4 left-4 right-4 md:static flex-shrink-0">
+            <div className="fixed bottom-0 left-0 right-0 p-4 md:p-0 md:static flex-shrink-0 flex justify-between">
+              <Button className="md:hidden shadow" aria-label="Filter entries">
+                <Icon variant="fa-filter" />
+              </Button>
               <Button
                 onClick={() => setIsLoggingEntry(true)}
-                className="flex-shrink-0"
-                fluid
+                className="shadow md:shadow-none"
+                aria-label="Log entry"
               >
-                Log entry
+                <Icon className="block md:hidden" variant="fa-plus" />
+                <span className="hidden md:block">Log entry</span>
               </Button>
             </div>
           </div>
