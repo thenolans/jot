@@ -2,6 +2,7 @@ import "./Modal.css";
 
 import { Dialog } from "@reach/dialog";
 import Button from "components/Button";
+import Container from "components/Container";
 import Icon from "components/Icon";
 import SROnly from "components/SROnly";
 import { ReactNode } from "react";
@@ -32,28 +33,40 @@ const Modal = ({
       onDismiss={() => onClose()}
       aria-label={ariaLabel}
     >
-      {(title || !hideClose) && (
-        <div className="c-modal__header">
-          <div className="text-xl text-primary-700 font-semibold">{title}</div>
-          {!hideClose && (
-            <Button onClick={() => onClose()} theme="link--muted">
-              <Icon variant="fa-close" />
-              <SROnly>Close</SROnly>
-            </Button>
-          )}
-        </div>
-      )}
+      <Container>
+        {(title || !hideClose) && (
+          <div className="c-modal__header">
+            <div className="text-xl text-primary-700 font-semibold">
+              {title}
+            </div>
+            {!hideClose && (
+              <Button onClick={() => onClose()} theme="link--muted">
+                <Icon variant="fa-close" />
+                <SROnly>Close</SROnly>
+              </Button>
+            )}
+          </div>
+        )}
+      </Container>
       {children}
     </Dialog>
   );
 };
 
 Modal.Body = ({ children }: { children: ReactNode }) => {
-  return <div className="c-modal__body">{children}</div>;
+  return (
+    <div className="c-modal__body">
+      <Container>{children}</Container>
+    </div>
+  );
 };
 
 Modal.Footer = ({ children }: { children: ReactNode }) => {
-  return <div className="c-modal__footer">{children}</div>;
+  return (
+    <div className="c-modal__footer">
+      <Container>{children}</Container>
+    </div>
+  );
 };
 
 export default Modal;

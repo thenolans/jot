@@ -7,11 +7,11 @@
 }
 
 .c-journal-entry__date {
-  @apply px-8 border-r-2 border-primary-300 py-8 text-center text-primary-700 font-semibold;
+  @apply px-4 lg:px-8 border-r-2 border-primary-300 py-8 text-center text-primary-700 font-semibold;
 }
 
 .c-journal-entry__content {
-  @apply px-8 py-8 space-y-4 text-primary-900 w-full;
+  @apply px-4 lg:px-8 py-8 space-y-4 text-primary-900 w-full;
 }
 
 .c-journal-entry__title {

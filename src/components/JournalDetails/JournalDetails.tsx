@@ -65,36 +65,37 @@ export default function JournalList() {
   return (
     <TagProvider>
       <Layout>
-        <div className="space-y-16">
-          <PageTitle>{displayName}</PageTitle>
-          {displayName && (
-            <div className="grid grid-cols-7 gap-4">
-              <div className="col-span-4">
-                <Input
-                  placeholder="Search journal..."
-                  className="flex-grow"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                />
-              </div>
-              <div className="col-span-2">
-                <TagSelect
-                  placeholder="Filter by tag..."
-                  inputId=""
-                  onChange={(selectedTags) =>
-                    setSearchParams({
-                      tag: selectedTags,
-                    })
-                  }
-                  value={selectedTags}
-                />
-              </div>
+        <div className="space-y-8 lg:space-y-16 pb-24 lg:pb-0">
+          <div className="flex items-center justify-between">
+            <PageTitle>{displayName}</PageTitle>
+            <div className="fixed bottom-4 left-4 right-4 md:static flex-shrink-0">
               <Button
                 onClick={() => setIsLoggingEntry(true)}
                 className="flex-shrink-0"
+                fluid
               >
                 Log entry
               </Button>
+            </div>
+          </div>
+          {displayName && (
+            <div className="hidden md:grid grid-cols-2 gap-4">
+              <Input
+                placeholder="Search journal..."
+                className="flex-grow"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+              <TagSelect
+                placeholder="Tags..."
+                inputId=""
+                onChange={(selectedTags) =>
+                  setSearchParams({
+                    tag: selectedTags,
+                  })
+                }
+                value={selectedTags}
+              />
             </div>
           )}
           {(() => {

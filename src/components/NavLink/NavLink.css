@@ -1,5 +1,5 @@
 .c-nav-link {
-  @apply text-xl block px-12 py-4 rounded-full;
+  @apply lg:text-xl block px-8 lg:px-12 py-4 rounded-full;
 }
 
 .c-nav-link[aria-current="page"] {

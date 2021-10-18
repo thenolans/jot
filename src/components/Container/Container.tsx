@@ -8,7 +8,12 @@ type Props = {
 
 export default function Container({ className, children }: Props) {
   return (
-    <div className={classNames("container mx-auto px-2", className)}>
+    <div
+      className={classNames(
+        "container mx-auto px-2 max-w-container md:max-w-none",
+        className
+      )}
+    >
       {children}
     </div>
   );

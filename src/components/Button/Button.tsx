@@ -38,7 +38,8 @@ export default function Button({
         themeMap[theme],
         themeMap.common,
         !isLinkVariant && themeMap.commonNonLink,
-        fluid && "w-full"
+        fluid && "w-full",
+        className
       )}
       type={type}
       {...props}

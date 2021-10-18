@@ -11,7 +11,7 @@ export default function Layout({ children }: Props) {
     <div className="h-screen flex">
       <Sidebar />
       <div className="flex-grow max-h-screen overflow-auto">
-        <div className="p-16">
+        <div className="py-16 px-2 md:px-8 xl:px-16">
           <Container>{children}</Container>
         </div>
       </div>

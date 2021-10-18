@@ -29,7 +29,7 @@ export default function JournalList() {
 
   return (
     <Layout>
-      <div className="space-y-16">
+      <div className="space-y-8 lg:space-y-16">
         <div className="flex justify-between items-center">
           <PageTitle>Journals</PageTitle>
           <Button onClick={() => setIsCreatingJournal(true)}>
@@ -54,7 +54,7 @@ export default function JournalList() {
             );
           } else {
             return (
-              <div className="grid grid-cols-4 gap-16">
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-8">
                 {journals.map(({ _id, name }) => {
                   return <JournalLink id={_id} key={_id} name={name} />;
                 })}

@@ -49,7 +49,7 @@ export default function LogEntryModal({ journalId, ...props }: Props) {
               <SROnly>Saving...</SROnly>
             </>
           ) : (
-            "Log Entry"
+            "Save entry"
           )}
         </Button>
       </Modal.Footer>
