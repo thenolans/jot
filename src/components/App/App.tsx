@@ -4,6 +4,7 @@ import Dashboard from "components/Dashboard";
 import JournalDetails from "components/JournalDetails";
 import JournalList from "components/JournalList";
 import LandingPage from "components/LandingPage";
+import Notes from "components/Notes";
 import ProtectedRoute from "components/ProtectedRoute";
 import Urls from "constants/urls";
 import { QueryClient, QueryClientProvider } from "react-query";
@@ -43,6 +44,11 @@ const App = () => {
           <ProtectedRoute
             path={Urls.routes["journal:details"]}
             component={JournalDetails}
+          />
+          <ProtectedRoute
+            exact
+            path={Urls.routes["notes:list"]}
+            component={Notes}
           />
         </Switch>
       </Router>
