@@ -4,6 +4,7 @@ import Dashboard from "components/Dashboard";
 import JournalDetails from "components/JournalDetails";
 import JournalList from "components/JournalList";
 import LandingPage from "components/LandingPage";
+import Lists from "components/Lists";
 import Notes from "components/Notes";
 import ProtectedRoute from "components/ProtectedRoute";
 import Urls from "constants/urls";
@@ -49,6 +50,11 @@ const App = () => {
             exact
             path={Urls.routes["notes:list"]}
             component={Notes}
+          />
+          <ProtectedRoute
+            exact
+            path={Urls.routes["lists:list"]}
+            component={Lists}
           />
         </Switch>
       </Router>
