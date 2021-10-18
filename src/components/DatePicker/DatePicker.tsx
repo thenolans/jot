@@ -1,4 +1,5 @@
 import "react-day-picker/lib/style.css";
+import "./DatePicker.css";
 
 import dayjs from "dayjs";
 import DayPicker from "react-day-picker";
@@ -12,34 +13,34 @@ export default function DatePicker({ onChange, value }: Props) {
   return (
     <DayPicker
       classNames={{
-        container: "DayPicker bg-primary-100 rounded w-full",
+        container: "DayPicker",
         wrapper: "DayPicker-wrapper",
         interactionDisabled: "DayPicker--interactionDisabled",
         months: "DayPicker-Months",
         month: "DayPicker-Month",
 
         navBar: "DayPicker-NavBar",
-        navButtonPrev: "DayPicker-NavButton DayPicker-NavButton--prev right-5",
-        navButtonNext: "DayPicker-NavButton DayPicker-NavButton--next right-5",
+        navButtonPrev: "DayPicker-NavButton DayPicker-NavButton--prev",
+        navButtonNext: "DayPicker-NavButton DayPicker-NavButton--next",
         navButtonInteractionDisabled:
           "DayPicker-NavButton--interactionDisabled",
 
-        caption: "DayPicker-Caption px-0",
+        caption: "DayPicker-Caption",
         weekdays: "DayPicker-Weekdays",
         weekdaysRow: "DayPicker-WeekdaysRow",
         weekday: "DayPicker-Weekday",
         body: "DayPicker-Body",
         week: "DayPicker-Week",
         weekNumber: "DayPicker-WeekNumber",
-        day: "DayPicker-Day p-0 w-10 h-10 hover:bg-primary-200",
+        day: "DayPicker-Day",
         footer: "DayPicker-Footer",
         todayButton: "DayPicker-TodayButton",
 
         // default modifiers
         today: "today",
-        selected: "text-primary-50 bg-primary-800",
-        disabled: "disabled",
-        outside: "outside",
+        selected: "DayPicker-Day--selected",
+        disabled: "DayPicker-Day--disabled",
+        outside: "DayPicker-Day--outside",
       }}
       onDayClick={onChange}
       selectedDays={value ? dayjs(value).toDate() : undefined}
