@@ -131,7 +131,11 @@ export default function JournalList() {
                   {
                     // @ts-expect-error
                     entries?.map((entry) => (
-                      <JournalEntry key={entry._id} entry={entry} />
+                      <JournalEntry
+                        refetch={refetch}
+                        key={entry._id}
+                        entry={entry}
+                      />
                     ))
                   }
                 </div>

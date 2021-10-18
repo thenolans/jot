@@ -70,7 +70,7 @@ export default function EntryForm({ formId, initialData, onSubmit }: Props) {
           id="create-entry--notes"
           name="notes"
           onChange={handleChange}
-          value={values.notes}
+          value={values.notes || ""}
         />
       </div>
       <div>

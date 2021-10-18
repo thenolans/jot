@@ -16,6 +16,7 @@ const Urls = {
     "journals:list": "/jot/journals",
     "journal:details": "/jot/journals/:id",
     "journal:entries": "/jot/journals/:id/entries",
+    "journal:entry": "/jot/journals/:journalId/entries/:entryId",
   },
 };
 

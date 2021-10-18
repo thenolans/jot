@@ -1,18 +1,25 @@
 import "./JournalEntry.css";
 
+import Button from "components/Button";
 import Highlighter from "components/Highlighter";
+import Icon from "components/Icon";
 import Tag from "components/Tag";
 import dayjs from "dayjs";
 import useSearchParams, { asStringParam } from "hooks/useSearchParams";
+import { useState } from "react";
 import { Entry } from "types";
+
+import EditJournalEntryModal from "./EditJournalEntryModal";
 
 type Props = {
   entry: Entry;
+  refetch: () => void;
 };
 
-export default function JournalEntry({ entry }: Props) {
+export default function JournalEntry({ entry, refetch }: Props) {
   const [searchParams] = useSearchParams();
   const highlightTerm = asStringParam(searchParams.q) || "";
+  const [isEditing, setIsEditing] = useState(false);
 
   return (
     <div className="c-journal-entry">
@@ -21,13 +28,24 @@ export default function JournalEntry({ entry }: Props) {
         <div>{dayjs(entry.date).format("D")}</div>
       </div>
       <div className="c-journal-entry__content">
-        <h3 className="c-journal-entry__title">
-          <Highlighter
-            autoEscape
-            searchWords={[highlightTerm]}
-            textToHighlight={entry.title}
-          />
-        </h3>
+        <div>
+          <div className="flex items-center justify-between">
+            <h3 className="c-journal-entry__title">
+              <Highlighter
+                autoEscape
+                searchWords={[highlightTerm]}
+                textToHighlight={entry.title}
+              />
+            </h3>
+            <Button
+              onClick={() => setIsEditing(true)}
+              className="ml-auto"
+              theme="link--muted"
+            >
+              <Icon variant="fa-pencil" />
+            </Button>
+          </div>
+        </div>
         {entry.notes && (
           <div>
             <Highlighter
@@ -43,6 +61,18 @@ export default function JournalEntry({ entry }: Props) {
           ))}
         </div>
       </div>
+
+      <EditJournalEntryModal
+        entry={entry}
+        isOpen={isEditing}
+        onClose={(shouldRefetch?: boolean) => {
+          if (shouldRefetch) {
+            refetch();
+          }
+
+          setIsEditing(false);
+        }}
+      />
     </div>
   );
 }

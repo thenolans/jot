@@ -20,13 +20,7 @@ export type Entry = {
   title: string;
   notes: string | null;
   tags: Tag[];
-};
-
-export type EntryFormData = {
-  date: Date;
-  title: string;
-  notes: string;
-  tags: string[];
+  journalId: string;
 };
 
 export type SortedEntries = {
@@ -46,6 +40,9 @@ export type PaginatedEntries = {
 };
 
 export type JournalFormData = Pick<Journal, "name">;
+export type EntryFormData = Omit<Entry, "_id" | "journalId" | "tags"> & {
+  tags: string[];
+};
 
 export type Response<T> = {
   data: T;

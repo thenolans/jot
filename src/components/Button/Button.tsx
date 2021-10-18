@@ -20,7 +20,7 @@ const themeMap = {
   secondary:
     "bg-transparent border-2 border-primary-600 text-primary-600 hover:border-primary-700 hover:text-primary-700",
   "link--danger": "text-danger-600 hover:text-danger-700",
-  "link--muted": "text-gray-500 hover:text-primary-600",
+  "link--muted": "text-primary-500 hover:text-primary-600",
 };
 
 export default function Button({
