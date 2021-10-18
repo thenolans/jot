@@ -6,7 +6,7 @@ type Props = {
 
 export default function Note({ children }: Props) {
   return (
-    <div className="rounded-3xl bg-primary-100 p-6 text-primary-800 shadow">
+    <div className="rounded-3xl bg-primary-100 p-6 text-primary-800">
       {children}
     </div>
   );

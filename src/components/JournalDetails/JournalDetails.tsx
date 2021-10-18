@@ -69,12 +69,11 @@ export default function JournalList() {
           <div className="flex items-center justify-between">
             <PageTitle>{displayName}</PageTitle>
             <div className="fixed bottom-0 left-0 right-0 p-4 md:p-0 md:static flex-shrink-0 flex justify-between">
-              <Button className="md:hidden shadow" aria-label="Filter entries">
+              <Button className="md:hidden" aria-label="Filter entries">
                 <Icon variant="fa-filter" />
               </Button>
               <Button
                 onClick={() => setIsLoggingEntry(true)}
-                className="shadow md:shadow-none"
                 aria-label="Log entry"
               >
                 <Icon className="block md:hidden" variant="fa-plus" />
