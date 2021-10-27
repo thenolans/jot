@@ -9,9 +9,15 @@ export enum FilterKeys {
   TAGS = "tag",
 }
 
+export enum TagTypes {
+  JOURNAL = "journal",
+}
+
 export type Tag = {
   _id: string;
   name: string;
+  type: TagTypes;
+  typeId: string;
 };
 
 export type Entry = {

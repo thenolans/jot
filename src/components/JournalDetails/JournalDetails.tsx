@@ -18,7 +18,7 @@ import useSearchParams, {
 import { reverse } from "named-urls";
 import { useEffect, useState } from "react";
 import { useLocation, useRouteMatch } from "react-router";
-import { PaginatedEntries } from "types";
+import { PaginatedEntries, TagTypes } from "types";
 
 import LogEntryModal from "./LogEntryModal";
 
@@ -63,7 +63,7 @@ export default function JournalList() {
   }
 
   return (
-    <TagProvider>
+    <TagProvider type={TagTypes.JOURNAL} typeId={journalId}>
       <Layout>
         <div className="space-y-8 lg:space-y-16 pb-6 lg:pb-0">
           <div className="flex items-center justify-between">
