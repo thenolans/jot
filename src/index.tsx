@@ -1,7 +1,7 @@
 import "./index.css";
 
-import App from "components/App";
-import AuthProvider from "components/AuthProvider";
+import AuthProvider from "components/auth/AuthProvider";
+import App from "components/modules/app";
 import React from "react";
 import ReactDOM from "react-dom";
 
