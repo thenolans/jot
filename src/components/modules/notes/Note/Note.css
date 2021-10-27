@@ -1,0 +1,15 @@
+.c-note {
+  @apply rounded-3xl bg-primary-100 p-6 text-primary-800 space-y-4;
+}
+
+.c-note h1 {
+  @apply text-lg font-bold;
+}
+
+.c-note ul {
+  @apply list-disc ml-6;
+}
+
+.c-note ol {
+  @apply list-decimal ml-6;
+}

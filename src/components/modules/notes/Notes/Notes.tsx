@@ -47,9 +47,11 @@ export default function Notes() {
         <MasonryGrid>
           {notes.map((note) => {
             return (
-              <Note onClick={() => setNoteToEdit(note)} key={note._id}>
-                {note.content}
-              </Note>
+              <Note
+                content={note.content}
+                onClick={() => setNoteToEdit(note)}
+                key={note._id}
+              />
             );
           })}
         </MasonryGrid>

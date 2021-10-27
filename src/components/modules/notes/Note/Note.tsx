@@ -1,18 +1,16 @@
-import { ReactNode } from "react";
+import "./Note.css";
+
+import ReactMarkdown from "react-markdown";
 
 type Props = {
-  children: ReactNode;
+  content: string;
   onClick: () => void;
 };
 
-export default function Note({ children, onClick }: Props) {
+export default function Note({ content, onClick }: Props) {
   return (
-    <div
-      role="button"
-      className="rounded-3xl bg-primary-100 p-6 text-primary-800"
-      onClick={onClick}
-    >
-      {children}
+    <div role="button" className="c-note" onClick={onClick}>
+      <ReactMarkdown children={content} />
     </div>
   );
 }
