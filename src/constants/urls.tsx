@@ -27,6 +27,8 @@ const Urls = {
     "listItems:reorder": "/jot/list-items/reorder",
     "lists:list": "/jot/lists",
     "list:details": "/jot/lists/:id",
+    "notes:list": "/jot/notes",
+    "notes:details": "/jot/notes/:id",
   },
 };
 

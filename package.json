@@ -19,6 +19,7 @@
     "dayjs": "^1.10.7",
     "formik": "^2.2.9",
     "highlight-words-core": "^1.2.2",
+    "lodash": "^4.17.21",
     "named-urls": "^2.0.1",
     "query-string": "^7.0.1",
     "react": "^17.0.2",
