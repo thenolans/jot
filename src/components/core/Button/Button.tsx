@@ -7,6 +7,7 @@ type ButtonTheme =
   | "danger"
   | "link--danger"
   | "link--muted"
+  | "link--primary"
   | "none";
 
 type Props = ButtonHTMLAttributes<HTMLButtonElement> & {
@@ -28,6 +29,7 @@ const themeMap = {
     "bg-transparent border-2 border-primary-600 text-primary-600 hover:border-primary-700 hover:text-primary-700",
   "link--danger": "text-danger-600 hover:text-danger-700",
   "link--muted": "text-primary-500 hover:text-primary-600",
+  "link--primary": "text-primary-700 hover:text-primary-800",
   none: "",
 };
 

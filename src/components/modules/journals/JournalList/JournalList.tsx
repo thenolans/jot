@@ -6,7 +6,7 @@ import Tip from "components/core/Tip";
 import Urls from "constants/urls";
 import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
-import { Journal } from "types";
+import { Journal, QueryKeys } from "types";
 import http from "utils/http";
 
 import CreateJournalModal from "../CreateJournalModal";
@@ -18,7 +18,10 @@ function fetchJournals(): Promise<Journal[]> {
 
 export default function JournalList() {
   const [isCreatingJournal, setIsCreatingJournal] = useState(false);
-  const { data = [], isLoading } = useQuery("journal-list", fetchJournals);
+  const { data = [], isLoading } = useQuery(
+    QueryKeys.JOURNAL_LIST,
+    fetchJournals
+  );
   const [journals, setJournals] = useState<Journal[]>(data);
 
   useEffect(() => {

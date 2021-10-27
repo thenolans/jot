@@ -92,3 +92,7 @@ export type List = {
 export type ListFormData = Omit<List, "_id" | "groups">;
 export type ListGroupFormData = Pick<ListGroup, "name">;
 export type ListItemFormData = Pick<ListItem, "title">;
+
+export enum QueryKeys {
+  JOURNAL_LIST = "journal-list",
+}

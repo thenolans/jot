@@ -3,6 +3,7 @@ import Icon from "components/core/Icon";
 import Input from "components/core/Input";
 import Layout from "components/core/Layout";
 import PageTitle from "components/core/PageTitle";
+import SROnly from "components/core/SROnly";
 import TagSelect from "components/core/TagSelect";
 import Tip from "components/core/Tip";
 import Urls from "constants/urls";
@@ -16,9 +17,10 @@ import useSearchParams, {
 } from "hooks/useSearchParams";
 import { reverse } from "named-urls";
 import { useEffect, useState } from "react";
-import { useLocation, useRouteMatch } from "react-router";
+import { useHistory, useLocation, useRouteMatch } from "react-router-dom";
 import { PaginatedEntries, TagTypes } from "types";
 
+import EditJournalModal from "../EditJournalModal";
 import JournalEntry from "../JournalEntry";
 import LogJournalEntryModal from "../LogJournalEntryModal";
 
@@ -29,10 +31,12 @@ type Location = {
 };
 
 export default function JournalList() {
+  const history = useHistory();
   const location = useLocation();
   const match = useRouteMatch<{ id: string }>();
   const journalId = match.params.id;
   const [searchParams, setSearchParams] = useSearchParams();
+  const [isEditingJournal, setIsEditingJournal] = useState(false);
   const [isLoggingEntry, setIsLoggingEntry] = useState(false);
   const [searchTerm, setSearchTerm] = useState(
     asStringParam(searchParams.q) || ""
@@ -46,7 +50,9 @@ export default function JournalList() {
     );
 
   const passedName = (location as Location).state?.name;
-  const displayName = passedName || data?.pages[0].meta.journal.name;
+  const [displayName, setDisplayName] = useState(
+    passedName || data?.pages[0].meta.journal.name || ""
+  );
   const entries = // @ts-expect-error
     data?.pages.reduce((entries, page) => {
       return [...entries, ...page.data];
@@ -78,6 +84,14 @@ export default function JournalList() {
               >
                 <Icon className="block md:hidden" variant="fa-plus" />
                 <span className="hidden md:block">Log entry</span>
+              </Button>
+              <Button
+                onClick={() => setIsEditingJournal(true)}
+                className="ml-4"
+                theme="link--primary"
+              >
+                <Icon size="fa-2x" variant="fa-gear" />
+                <SROnly>Edit journal</SROnly>
               </Button>
             </div>
           </div>
@@ -148,6 +162,23 @@ export default function JournalList() {
           })()}
         </div>
       </Layout>
+
+      <EditJournalModal
+        journal={{
+          _id: journalId,
+          name: displayName,
+        }}
+        isOpen={isEditingJournal}
+        onClose={(updatedJournal) => {
+          if (updatedJournal) {
+            setDisplayName(updatedJournal.name);
+            refetch();
+            history.replace({ state: { name: updatedJournal.name } });
+          }
+
+          setIsEditingJournal(false);
+        }}
+      />
       <LogJournalEntryModal
         journalId={journalId}
         isOpen={isLoggingEntry}

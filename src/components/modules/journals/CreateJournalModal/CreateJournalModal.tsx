@@ -1,7 +1,13 @@
+import Button from "components/core/Button";
+import Icon from "components/core/Icon";
 import Modal, { ModalProps } from "components/core/Modal";
+import SROnly from "components/core/SROnly";
 import Urls from "constants/urls";
+import { reverse } from "named-urls";
 import { useState } from "react";
-import { Journal, JournalFormData } from "types";
+import { useQueryClient } from "react-query";
+import { useHistory } from "react-router-dom";
+import { Journal, JournalFormData, QueryKeys } from "types";
 import http from "utils/http";
 
 import JournalForm from "../JournalForm";
@@ -17,6 +23,8 @@ async function createJournal(data: JournalFormData): Promise<Journal> {
 }
 
 export default function CreateJournalModal(props: Props) {
+  const queryClient = useQueryClient();
+  const history = useHistory();
   const [isSaving, setIsSaving] = useState(false);
 
   async function saveItem(values: JournalFormData) {
@@ -26,18 +34,39 @@ export default function CreateJournalModal(props: Props) {
 
     setIsSaving(false);
 
-    props.onClose(newJournal);
+    queryClient.removeQueries(QueryKeys.JOURNAL_LIST);
+    history.push(
+      reverse(Urls.routes["journal:details"], { id: newJournal._id }),
+      {
+        name: newJournal.name,
+      }
+    );
   }
 
   return (
     <Modal ariaLabel="Create a new journal" title="Create journal" {...props}>
       <Modal.Body>
         <JournalForm
+          formId="create-journal-form"
           submitButtonLabel="Save"
           isSubmitting={isSaving}
           onSubmit={saveItem}
         />
       </Modal.Body>
+      <Modal.Footer>
+        <div className="text-right">
+          <Button disabled={isSaving} type="submit" form="create-journal-form">
+            {isSaving ? (
+              <>
+                <Icon variant="fa-circle-o-notch" spin />
+                <SROnly>Saving...</SROnly>
+              </>
+            ) : (
+              "Create journal"
+            )}
+          </Button>
+        </div>
+      </Modal.Footer>
     </Modal>
   );
 }
