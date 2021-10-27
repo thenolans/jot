@@ -74,7 +74,7 @@ export default function JournalList() {
         <div className="space-y-8 lg:space-y-16 pb-6 lg:pb-0">
           <div className="flex items-center justify-between">
             <PageTitle>{displayName}</PageTitle>
-            <div className="fixed bottom-0 left-0 right-0 p-4 md:p-0 md:static flex-shrink-0 flex justify-between">
+            <div className="fixed bottom-0 left-0 right-0 p-4 md:p-0 md:static flex-shrink-0 flex justify-between ml-auto">
               <Button className="md:hidden" aria-label="Filter entries">
                 <Icon variant="fa-filter" />
               </Button>
@@ -85,15 +85,15 @@ export default function JournalList() {
                 <Icon className="block md:hidden" variant="fa-plus" />
                 <span className="hidden md:block">Log entry</span>
               </Button>
-              <Button
-                onClick={() => setIsEditingJournal(true)}
-                className="ml-4"
-                theme="link--primary"
-              >
-                <Icon size="fa-2x" variant="fa-gear" />
-                <SROnly>Edit journal</SROnly>
-              </Button>
             </div>
+            <Button
+              onClick={() => setIsEditingJournal(true)}
+              className="ml-4"
+              theme="link--primary"
+            >
+              <Icon size="fa-2x" variant="fa-gear" />
+              <SROnly>Edit journal</SROnly>
+            </Button>
           </div>
           {displayName && (
             <div className="hidden md:grid grid-cols-2 gap-4">

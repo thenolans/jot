@@ -1,5 +1,5 @@
 .c-journal-entry {
-  @apply flex;
+  @apply flex flex-col sm:flex-row p-4 sm:p-0 space-y-2 sm:space-y-0;
 }
 
 .c-journal-entry:nth-child(even) {
@@ -7,11 +7,11 @@
 }
 
 .c-journal-entry__date {
-  @apply px-4 lg:px-8 border-r-2 border-primary-300 py-8 text-center text-primary-700 font-semibold;
+  @apply sm:w-16 md:w-20 sm:border-r-2 sm:border-primary-300 sm:text-center sm:py-8 flex sm:block space-x-1 sm:space-x-0 text-primary-700 font-semibold;
 }
 
 .c-journal-entry__content {
-  @apply px-4 lg:px-8 py-8 space-y-4 text-primary-900 w-full;
+  @apply sm:px-4 lg:px-8 sm:py-8 space-y-4 text-primary-900 w-full;
 }
 
 .c-journal-entry__title {

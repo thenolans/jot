@@ -39,7 +39,7 @@ export default function JournalEntry({ entry, refetch }: Props) {
             </h3>
             <Button
               onClick={() => setIsEditing(true)}
-              className="ml-auto"
+              className="ml-auto pl-4"
               theme="link--muted"
             >
               <Icon variant="fa-pencil" />
@@ -55,11 +55,13 @@ export default function JournalEntry({ entry, refetch }: Props) {
             />
           </div>
         )}
-        <div className="c-journal-entry__tags">
-          {entry.tags.map((tag) => (
-            <Tag key={tag._id}>{tag.name}</Tag>
-          ))}
-        </div>
+        {!!entry.tags.length && (
+          <div className="c-journal-entry__tags">
+            {entry.tags.map((tag) => (
+              <Tag key={tag._id}>{tag.name}</Tag>
+            ))}
+          </div>
+        )}
       </div>
 
       <EditJournalEntryModal

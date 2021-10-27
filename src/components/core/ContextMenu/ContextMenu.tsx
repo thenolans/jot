@@ -26,7 +26,10 @@ const ContextMenu = ({ children }: Props) => {
     <Tooltip
       interactive
       html={
-        <div ref={menuRef} className="flex flex-col py-2 space-y-2">
+        <div
+          ref={menuRef}
+          className="flex flex-col space-y-2 bg-primary-50 rounded-lg py-4 px-8 shadow"
+        >
           {Children.map(children, (child) =>
             // @ts-expect-error
             cloneElement(child, {
@@ -55,7 +58,7 @@ const ContextMenu = ({ children }: Props) => {
 ContextMenu.Action = (props: ComponentPropsWithoutRef<"button">) => {
   return (
     <button
-      className="text-right px-2 text-gray-600 hover:text-primary-600"
+      className="text-right text-gray-600 hover:text-primary-600"
       {...props}
     />
   );
