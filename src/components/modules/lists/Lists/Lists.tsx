@@ -10,7 +10,7 @@ import { List } from "types";
 import http from "utils/http";
 
 import AddListModal from "../AddListModal";
-import ListTile from "../ListTile";
+import ListCard from "../ListCard";
 
 function fetchLists(): Promise<List[]> {
   return http.get(Urls.api["lists:list"]).then((res) => res.data.data);
@@ -52,9 +52,9 @@ export default function Lists() {
               );
             } else {
               return (
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-8">
+                <div className="grid grid-cols-3 gap-4">
                   {lists.map((list) => {
-                    return <ListTile list={list} key={list._id} />;
+                    return <ListCard list={list} key={list._id} />;
                   })}
                 </div>
               );

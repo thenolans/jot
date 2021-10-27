@@ -1,6 +1,8 @@
 import Button from "components/core/Button";
 import Container from "components/core/Container";
 import Icon from "components/core/Icon";
+import Layout from "components/core/Layout";
+import PageTitle from "components/core/PageTitle";
 import Urls from "constants/urls";
 import ListContext from "contexts/list";
 import useNProgress from "hooks/useNProgress";
@@ -13,7 +15,7 @@ import {
   DropResult,
 } from "react-beautiful-dnd";
 import { useQuery } from "react-query";
-import { useRouteMatch } from "react-router";
+import { useLocation, useRouteMatch } from "react-router-dom";
 import { List as ListType, ListGroup as ListGroupType, ListItem } from "types";
 import { useImmer } from "use-immer";
 import http from "utils/http";
@@ -25,6 +27,12 @@ import ListGroup from "../ListGroup";
 
 type Params = {
   id: string;
+};
+
+type Location = {
+  state: {
+    name?: string;
+  };
 };
 
 function fetchList(listId: string): Promise<ListType> {
@@ -52,19 +60,16 @@ function saveItemOrder(items: ListItem[]) {
 }
 
 export default function List() {
+  const location = useLocation();
   const match = useRouteMatch<Params>();
   const listId = match.params.id;
   const [isProcessing, setIsProcessing] = useState(false);
   const [isAddingGroup, setIsAddingGroup] = useState(false);
-  const [groups, updateGroups] = useImmer<ListGroupType[]>([]);
-  const { data, isFetching } = useQuery(
-    ["list", listId],
-    () => fetchList(listId),
-    {
-      retry: false,
-      refetchOnWindowFocus: false,
-    }
+  const { data, isLoading } = useQuery(["list", listId], () =>
+    fetchList(listId)
   );
+  const [groups, updateGroups] = useImmer<ListGroupType[]>(data?.groups || []);
+  const passedName = (location as Location).state?.name;
 
   useNProgress(isProcessing);
 
@@ -158,7 +163,7 @@ export default function List() {
     }
   }
 
-  if (isFetching) {
+  if (isLoading) {
     return (
       <Container>
         <div className="text-center py-4 space-y-4">
@@ -177,16 +182,20 @@ export default function List() {
   if (!data) return null;
 
   return (
-    <ListContext.Provider
-      value={{
-        listId,
-        groups,
-        updateGroups,
-      }}
-    >
-      <Container>
+    <Layout>
+      <div className="space-y-8 lg:space-y-16">
+        <div className="flex justify-between items-center">
+          <PageTitle>{passedName || data.name}</PageTitle>
+        </div>
+      </div>
+      <ListContext.Provider
+        value={{
+          listId,
+          groups,
+          updateGroups,
+        }}
+      >
         <div className="space-y-8 py-16">
-          <h2 className="text-center text-3xl text-primary-700">{data.name}</h2>
           {!groups.length ? (
             <div className="text-center space-y-6 py-6">
               <div className="px-24 text-lg text-gray-500">
@@ -216,8 +225,7 @@ export default function List() {
               </DragDropContext>
               <div className="text-center mt-8">
                 <Button
-                  className="bg-gray-100 text-gray-400 hover:bg-primary-600 hover:text-white h-auto py-2"
-                  theme="none"
+                  theme="secondary"
                   onClick={() => setIsAddingGroup(true)}
                   fluid
                 >
@@ -234,7 +242,7 @@ export default function List() {
           isOpen={isAddingGroup}
           onClose={() => setIsAddingGroup(false)}
         />
-      </Container>
-    </ListContext.Provider>
+      </ListContext.Provider>
+    </Layout>
   );
 }
