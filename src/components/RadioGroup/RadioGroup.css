@@ -1,0 +1,23 @@
+.radio-group {
+  @apply flex space-x-1;
+}
+
+.radio-group__option {
+  @apply flex-1 text-center py-3 cursor-pointer text-gray-400 border-2 border-transparent focus-within:border-primary-700;
+}
+
+.radio-group__option:not(.radio-group__option--checked) {
+  @apply bg-gray-100 hover:bg-gray-200;
+}
+
+.radio-group__option:first-child {
+  @apply rounded-l-full;
+}
+
+.radio-group__option:last-child {
+  @apply rounded-r-full;
+}
+
+.radio-group__option--checked {
+  @apply bg-primary-100 text-primary-700;
+}

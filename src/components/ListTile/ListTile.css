@@ -1,0 +1,54 @@
+.tile {
+  @apply relative border-b-2 border-gray-100 w-full;
+}
+
+.tile__title {
+  @apply text-base md:text-lg text-gray-600 mb-1 leading-snug;
+}
+
+.tile__content:hover .tile__title {
+  @apply text-primary-700;
+}
+
+/*
+  Create the illusion of a 3 to 2 aspect ratio with
+  absolute position and a padding filler
+*/
+.tile:before {
+  @apply block;
+  content: "";
+  padding-top: 66%;
+}
+
+.tile__content {
+  @apply absolute top-0 left-0 bottom-0 right-0 p-2 flex items-center justify-center text-center hover:bg-purple-50;
+}
+
+/*
+  Apply border right to odd tiles
+*/
+.tile:nth-child(odd) {
+  @apply border-r-2;
+}
+
+/* 
+  Remove the last tile's border right if it's the only tile
+*/
+.tile:last-child:nth-child(1) {
+  @apply border-r-0;
+}
+
+/* 
+  Always remove the last tile's border bottom
+*/
+.tile:last-child {
+  @apply border-b-0;
+}
+
+/*
+  Also remove 2nd to last tile's border bottom
+  if it is odd
+*/
+.tile:nth-last-child(2):nth-child(odd) {
+  @apply border-b-0;
+}

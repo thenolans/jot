@@ -54,3 +54,35 @@ export type PaginatedResponse<T> = {
     page: 1;
   };
 };
+
+export type ListItem = {
+  _id: string;
+  title: string;
+  isCompleted: boolean;
+  groupId: string;
+  sortOrder: number;
+};
+
+export type ListGroup = {
+  _id: string;
+  name: string;
+  items: ListItem[];
+  sortOrder: number;
+};
+
+export enum ListType {
+  ONE_TIME = "one_time",
+  REUSABLE = "reusable",
+}
+
+export type List = {
+  _id: string;
+  name: string;
+  type: ListType;
+  showCompletedItems: boolean;
+  groups: ListGroup[];
+};
+
+export type ListFormData = Omit<List, "_id" | "groups">;
+export type ListGroupFormData = Pick<ListGroup, "name">;
+export type ListItemFormData = Pick<ListItem, "title">;

@@ -1,7 +1,13 @@
 import classNames from "classnames";
 import { ButtonHTMLAttributes, ReactNode } from "react";
 
-type ButtonTheme = "primary" | "secondary" | "link--danger" | "link--muted";
+type ButtonTheme =
+  | "primary"
+  | "secondary"
+  | "danger"
+  | "link--danger"
+  | "link--muted"
+  | "none";
 
 type Props = ButtonHTMLAttributes<HTMLButtonElement> & {
   children?: ReactNode;
@@ -17,10 +23,12 @@ const themeMap = {
   // Common theme styles for non-link variants
   commonNonLink: "rounded-lg h-12 px-6",
   primary: "bg-primary-700 hover:bg-primary-800 text-primary-50 rounded-full",
+  danger: "bg-danger-700 hover:bg-danger-800 text-danger-50 rounded-full",
   secondary:
     "bg-transparent border-2 border-primary-600 text-primary-600 hover:border-primary-700 hover:text-primary-700",
   "link--danger": "text-danger-600 hover:text-danger-700",
   "link--muted": "text-primary-500 hover:text-primary-600",
+  none: "",
 };
 
 export default function Button({
