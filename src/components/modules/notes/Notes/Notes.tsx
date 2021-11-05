@@ -67,6 +67,14 @@ export default function Notes() {
               existingNotes[updatedIndex] = note;
             });
           }}
+          onDelete={(noteId) => {
+            updateNotes((prevNotes) => {
+              const deletedIndex = prevNotes.findIndex(
+                (note) => note._id === noteId
+              );
+              delete prevNotes[deletedIndex];
+            });
+          }}
           note={noteToEdit}
           isOpen={Boolean(noteToEdit)}
           onClose={() => setNoteToEdit(null)}
