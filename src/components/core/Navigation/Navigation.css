@@ -1,3 +1,7 @@
 .c-navigation {
   @apply flex w-full md:w-48 lg:w-64 xl:w-80 flex-col bg-primary-100 items-center justify-between px-8 py-2 md:py-16 flex-shrink-0;
 }
+
+.c-navigation__mobile {
+  @apply block md:hidden text-primary-800 hover:text-primary-900;
+}
