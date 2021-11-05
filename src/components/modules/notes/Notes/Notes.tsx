@@ -1,6 +1,8 @@
 import Button from "components/core/Button";
+import Icon from "components/core/Icon";
 import Layout from "components/core/Layout";
 import PageTitle from "components/core/PageTitle";
+import Tip from "components/core/Tip";
 import Urls from "constants/urls";
 import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
@@ -44,17 +46,37 @@ export default function Notes() {
           <PageTitle>Notes</PageTitle>
           <Button onClick={() => addNote()}>Create note</Button>
         </div>
-        <MasonryGrid>
-          {notes.map((note) => {
+        {(() => {
+          if (isLoading) {
             return (
-              <Note
-                content={note.content}
-                onClick={() => setNoteToEdit(note)}
-                key={note._id}
+              <div className="text-center space-y-4 text-primary-600">
+                <Icon size="fa-3x" variant="fa-circle-o-notch" spin />
+                <div>Fetching notes...</div>
+              </div>
+            );
+          } else if (!notes.length) {
+            return (
+              <Tip
+                title="You have not created any notes, yet!"
+                description="Use markdown to create notes with bulleted lists, links, and more!"
               />
             );
-          })}
-        </MasonryGrid>
+          } else {
+            return (
+              <MasonryGrid>
+                {notes.map((note) => {
+                  return (
+                    <Note
+                      content={note.content}
+                      onClick={() => setNoteToEdit(note)}
+                      key={note._id}
+                    />
+                  );
+                })}
+              </MasonryGrid>
+            );
+          }
+        })()}
       </div>
 
       {noteToEdit && (
@@ -72,7 +94,7 @@ export default function Notes() {
               const deletedIndex = prevNotes.findIndex(
                 (note) => note._id === noteId
               );
-              delete prevNotes[deletedIndex];
+              prevNotes.splice(deletedIndex, 1);
             });
           }}
           note={noteToEdit}
