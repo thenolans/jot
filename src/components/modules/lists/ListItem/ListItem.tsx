@@ -20,15 +20,13 @@ type Props = {
 };
 
 export default function Item({ canDrag, index, item }: Props) {
-  const { updateGroups, groups } = useList();
+  const { updateList, list } = useList();
   const [isCompleted, setIsCompleted] = useState(item.isCompleted);
   const [isConfirmingDelete, setIsConfirmingDelete] = useState(false);
   const [isEditingItem, setIsEditingItem] = useState(false);
 
-  async function deleteItem() {
-    await http.delete(reverse(Urls.api["listItem:details"], { id: item._id }));
-
-    updateGroups((currentGroups) => {
+  function removeItemFromList() {
+    updateList(({ groups: currentGroups }) => {
       const currentGroupIndex = currentGroups.findIndex(
         (g) => g._id === item.groupId
       );
@@ -39,8 +37,8 @@ export default function Item({ canDrag, index, item }: Props) {
     });
   }
 
-  async function toggleCompleted(newCompletedState: boolean) {
-    updateGroups((currentGroups) => {
+  function updateItemInList(data: Partial<ListItemType>) {
+    updateList(({ groups: currentGroups }) => {
       const currentGroupIndex = currentGroups.findIndex(
         (g) => g._id === item.groupId
       );
@@ -49,12 +47,25 @@ export default function Item({ canDrag, index, item }: Props) {
         if (i._id === item._id) {
           return {
             ...item,
-            isCompleted: newCompletedState,
+            ...data,
           };
         }
         return i;
       });
     });
+  }
+
+  async function deleteItem() {
+    await http.delete(reverse(Urls.api["listItem:details"], { id: item._id }));
+    removeItemFromList();
+  }
+
+  async function toggleCompleted(newCompletedState: boolean) {
+    if (!list.showCompletedItems && newCompletedState) {
+      removeItemFromList();
+    } else {
+      updateItemInList({ isCompleted: newCompletedState });
+    }
 
     http.patch(reverse(Urls.api["listItem:details"], { id: item._id }), {
       isCompleted: newCompletedState,
@@ -64,7 +75,7 @@ export default function Item({ canDrag, index, item }: Props) {
   return (
     <>
       <Draggable
-        isDragDisabled={!(canDrag || groups.length > 1)}
+        isDragDisabled={!(canDrag || list.groups.length > 1)}
         key={item._id}
         draggableId={item._id}
         index={index}
@@ -90,7 +101,7 @@ export default function Item({ canDrag, index, item }: Props) {
                 className={classNames(
                   "cursor-move text-gray-300 hover:text-primary-600",
                   {
-                    hidden: !(canDrag || groups.length > 1),
+                    hidden: !(canDrag || list.groups.length > 1),
                   }
                 )}
                 {...dragProvided.dragHandleProps}

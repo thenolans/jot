@@ -30,13 +30,16 @@ export default function Group({ canDrag, index, group }: Props) {
   const [isAddingItem, setIsAddingItem] = useState(false);
   const [isConfirmingDelete, setIsConfirmingDelete] = useState(false);
   const [isEditingGroup, setIsEditingGroup] = useState(false);
-  const { groups, updateGroups } = useList();
+  const { updateList } = useList();
 
   async function deleteGroup() {
     await http.delete(
       reverse(Urls.api["listGroup:details"], { id: group._id })
     );
-    updateGroups(groups.filter((g) => g._id !== group._id));
+    updateList((list) => ({
+      ...list,
+      groups: list.groups.filter((g) => g._id !== group._id),
+    }));
   }
 
   return (

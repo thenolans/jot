@@ -19,16 +19,18 @@ async function saveItemRequest(data: ListItemFormData, itemId: string) {
 }
 
 export default function EditItemModal({ item, ...props }: Props) {
-  const { groups, updateGroups } = useList();
+  const { list, updateList } = useList();
   const [isSaving, setIsSaving] = useState(false);
 
   async function saveItem(values: ListItemFormData) {
     setIsSaving(true);
 
-    const relatedGroupIndex = groups.findIndex((g) => g._id === item.groupId)!;
+    const relatedGroupIndex = list.groups.findIndex(
+      (g) => g._id === item.groupId
+    )!;
     const updatedItem = await saveItemRequest(values, item._id);
 
-    updateGroups((currentGroups) => {
+    updateList(({ groups: currentGroups }) => {
       currentGroups[relatedGroupIndex].items[item.sortOrder] = updatedItem;
     });
 

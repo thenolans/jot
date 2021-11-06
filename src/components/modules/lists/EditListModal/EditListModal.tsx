@@ -3,6 +3,7 @@ import Icon from "components/core/Icon";
 import Modal, { ModalProps } from "components/core/Modal";
 import SROnly from "components/core/SROnly";
 import Urls from "constants/urls";
+import useList from "hooks/useList";
 import { reverse } from "named-urls";
 import { useState } from "react";
 import { useQueryClient } from "react-query";
@@ -28,6 +29,7 @@ export default function EditItemModal({ list, ...props }: Props) {
   const history = useHistory();
   const queryClient = useQueryClient();
   const [isSaving, setIsSaving] = useState(false);
+  const { list: listData, updateList } = useList();
 
   async function saveList(values: ListFormData) {
     setIsSaving(true);
@@ -52,6 +54,7 @@ export default function EditItemModal({ list, ...props }: Props) {
     }));
 
     setIsSaving(false);
+    updateList({ ...listData, ...updatedList });
     props.onUpdate(updatedList);
     props.onClose();
   }

@@ -22,7 +22,7 @@ async function saveNewGroup(
 }
 
 export default function AddGroupModal({ isOpen, onClose }: Props) {
-  const { listId, groups, updateGroups } = useList();
+  const { list, updateList } = useList();
   const [isProcessing, setIsProcessing] = useState(false);
 
   async function handleSubmit(values: ListGroupFormData) {
@@ -31,11 +31,14 @@ export default function AddGroupModal({ isOpen, onClose }: Props) {
     const addedGroup = await saveNewGroup(
       {
         ...values,
-        sortOrder: groups.length,
+        sortOrder: list.groups.length,
       },
-      listId
+      list._id
     );
-    updateGroups([...groups, addedGroup]);
+    updateList((list) => ({
+      ...list,
+      groups: [...list.groups, addedGroup],
+    }));
 
     setIsProcessing(false);
     onClose();

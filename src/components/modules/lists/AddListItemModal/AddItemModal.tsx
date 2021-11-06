@@ -18,14 +18,14 @@ async function createItem(data: Omit<ListItem, "_id" | "isCompleted">) {
 }
 
 export default function AddItemModal({ groupId, ...props }: Props) {
-  const { groups, updateGroups } = useList();
+  const { list, updateList } = useList();
   const [isSaving, setIsSaving] = useState(false);
 
   async function saveItem(values: ListItemFormData) {
     setIsSaving(true);
 
-    const relatedGroupIndex = groups.findIndex((g) => g._id === groupId)!;
-    const relatedItems = groups[relatedGroupIndex].items;
+    const relatedGroupIndex = list.groups.findIndex((g) => g._id === groupId)!;
+    const relatedItems = list.groups[relatedGroupIndex].items;
     const [lastRelatedItem] = relatedItems.slice(-1);
 
     const newItem = await createItem({
@@ -34,7 +34,7 @@ export default function AddItemModal({ groupId, ...props }: Props) {
       sortOrder: lastRelatedItem ? lastRelatedItem.sortOrder + 1 : 0,
     });
 
-    updateGroups((currentGroups) => {
+    updateList(({ groups: currentGroups }) => {
       currentGroups[relatedGroupIndex].items = [...relatedItems, newItem];
     });
 

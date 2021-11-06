@@ -1,17 +1,16 @@
 import { createContext } from "react";
-import { ListGroup } from "types";
+import { List } from "types";
 import { Updater } from "use-immer";
 
 type ListContextType = {
-  listId: string;
-  groups: ListGroup[];
-  updateGroups: Updater<ListGroup[]>;
+  list: List;
+  updateList: Updater<List>;
 };
 
 const ListContext = createContext<ListContextType>({
-  listId: "",
-  groups: [],
-  updateGroups() {},
+  // @ts-expect-error
+  list: {},
+  updateList() {},
 });
 
 export default ListContext;

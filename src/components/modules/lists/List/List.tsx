@@ -16,7 +16,7 @@ import {
   DropResult,
 } from "react-beautiful-dnd";
 import { useQuery, useQueryClient } from "react-query";
-import { useHistory, useLocation, useRouteMatch } from "react-router-dom";
+import { useLocation, useRouteMatch } from "react-router-dom";
 import { List as ListType, ListGroup as ListGroupType, ListItem } from "types";
 import { useImmer } from "use-immer";
 import http from "utils/http";
@@ -63,7 +63,6 @@ function saveItemOrder(items: ListItem[]) {
 }
 
 export default function List() {
-  const history = useHistory();
   const queryClient = useQueryClient();
   const location = useLocation();
   const match = useRouteMatch<Params>();
@@ -71,37 +70,27 @@ export default function List() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [isEditingList, setIsEditingList] = useState(false);
   const [isAddingGroup, setIsAddingGroup] = useState(false);
-  const { data, isLoading } = useQuery(["list", listId], () =>
+  const { data, isLoading, refetch } = useQuery(["list", listId], () =>
     fetchList(listId)
   );
-  const [groups, updateGroups] = useImmer<ListGroupType[]>(data?.groups || []);
+  const [list, updateList] = useImmer<ListType>(data!);
   const passedName = (location as Location).state?.name;
-  const [displayName, setDisplayName] = useState(
-    passedName || data?.name || ""
-  );
+  const displayName = passedName || list?.name || "";
 
   useNProgress(isProcessing);
 
   useEffect(() => {
     if (data) {
-      updateGroups(data.groups);
+      updateList(data);
     }
-  }, [data, updateGroups]);
+  }, [data, updateList]);
 
   useEffect(() => {
-    console.log("update");
-    updateQueryCacheIfExists(
-      queryClient,
-      ["list", listId],
-      (list: ListType) => ({
-        ...list,
-        groups,
-      })
-    );
-  }, [queryClient, listId, groups]);
+    updateQueryCacheIfExists(queryClient, ["list", listId], list);
+  }, [queryClient, listId, list]);
 
   async function handleDragEnd(result: DropResult) {
-    if (!result.destination) {
+    if (!result.destination || !list) {
       return;
     }
 
@@ -113,9 +102,9 @@ export default function List() {
       // Moved within same list
       if (source.droppableId === destination.droppableId) {
         const groupId = source.droppableId;
-        const groupIndex = groups.findIndex((g) => g._id === groupId)!;
+        const groupIndex = list.groups.findIndex((g) => g._id === groupId)!;
         const newItemOrder = reorder(
-          groups[groupIndex].items,
+          list.groups[groupIndex].items,
           source.index,
           destination.index
         ).map((item, index) => ({
@@ -123,23 +112,23 @@ export default function List() {
           sortOrder: index,
         }));
 
-        updateGroups((groups) => {
-          groups[groupIndex].items = newItemOrder;
+        updateList((list) => {
+          list.groups[groupIndex].items = newItemOrder;
         });
 
         await saveItemOrder(newItemOrder);
       } else {
         // Moved between lists
-        const sourceGroupIndex = groups.findIndex(
+        const sourceGroupIndex = list.groups.findIndex(
           (g) => g._id === source.droppableId
         )!;
-        const destinationGroupIndex = groups.findIndex(
+        const destinationGroupIndex = list.groups.findIndex(
           (g) => g._id === destination.droppableId
         )!;
         const [newOrderedSourceItems, newOrderedDestinationItems] =
           moveItemBetweenArrays<ListItem>(
-            groups[sourceGroupIndex].items,
-            groups[destinationGroupIndex].items,
+            list.groups[sourceGroupIndex].items,
+            list.groups[destinationGroupIndex].items,
             source.index,
             destination.index
           );
@@ -157,9 +146,9 @@ export default function List() {
           })
         );
 
-        updateGroups((groups) => {
-          groups[sourceGroupIndex].items = newSourceItems;
-          groups[destinationGroupIndex].items = newDestinationItems;
+        updateList((list) => {
+          list.groups[sourceGroupIndex].items = newSourceItems;
+          list.groups[destinationGroupIndex].items = newDestinationItems;
         });
         await saveItemOrder([...newSourceItems, ...newDestinationItems]);
       }
@@ -169,7 +158,7 @@ export default function List() {
 
     if (result.type === "GROUP") {
       const reorderedGroups = reorder(
-        groups,
+        list.groups,
         source.index,
         destination.index
       ).map((g, index) => ({
@@ -177,7 +166,7 @@ export default function List() {
         sortOrder: index,
       }));
 
-      updateGroups(reorderedGroups);
+      updateList((list) => ({ ...list, groups: reorderedGroups }));
       await saveGroupOrder(reorderedGroups);
 
       return;
@@ -199,39 +188,46 @@ export default function List() {
           </Button>
         </div>
       </div>
-      <ListContext.Provider
-        value={{
-          listId,
-          groups,
-          updateGroups,
-        }}
-      >
-        <div className="space-y-8 py-16">
-          {(() => {
-            if (isLoading) {
-              return (
-                <div className="text-center space-y-4 text-primary-600">
-                  <Icon size="fa-3x" variant="fa-circle-o-notch" spin />
-                  <div>Fetching list details...</div>
-                </div>
-              );
-            } else if (!groups.length) {
-              return (
-                <Tip
-                  title="You have not added any groups to this list, yet!"
-                  description="Groups allow you to organize list items into sections"
-                  action={
-                    <Button
-                      theme="primary"
-                      onClick={() => setIsAddingGroup(true)}
-                    >
-                      Add group
-                    </Button>
-                  }
-                />
-              );
-            } else {
-              return (
+
+      <div className="space-y-8 py-16">
+        {(() => {
+          if (isLoading) {
+            return (
+              <div className="text-center space-y-4 text-primary-600">
+                <Icon size="fa-3x" variant="fa-circle-o-notch" spin />
+                <div>Fetching list details...</div>
+              </div>
+            );
+          } else if (!list) {
+            return (
+              <Tip
+                title="There was a problem fetching this list"
+                description="Please refresh the page and try again"
+              />
+            );
+          } else if (!list.groups.length) {
+            return (
+              <Tip
+                title="You have not added any groups to this list, yet!"
+                description="Groups allow you to organize list items into sections"
+                action={
+                  <Button
+                    theme="primary"
+                    onClick={() => setIsAddingGroup(true)}
+                  >
+                    Add group
+                  </Button>
+                }
+              />
+            );
+          } else {
+            return (
+              <ListContext.Provider
+                value={{
+                  list,
+                  updateList,
+                }}
+              >
                 <div>
                   <DragDropContext onDragEnd={handleDragEnd}>
                     <Droppable droppableId="groups" type="GROUP">
@@ -240,10 +236,10 @@ export default function List() {
                           ref={provided.innerRef}
                           {...provided.droppableProps}
                         >
-                          {groups.map((group, index) => {
+                          {list.groups.map((group, index) => {
                             return (
                               <ListGroup
-                                canDrag={groups.length > 1}
+                                canDrag={list.groups.length > 1}
                                 index={index}
                                 key={group._id}
                                 group={group}
@@ -266,28 +262,27 @@ export default function List() {
                     </Button>
                   </div>
                 </div>
-              );
-            }
-          })()}
-        </div>
 
-        {/* Modal Actions */}
-        <AddListGroupModal
-          isOpen={isAddingGroup}
-          onClose={() => setIsAddingGroup(false)}
-        />
-        {data && (
-          <EditListModal
-            list={data}
-            isOpen={isEditingList}
-            onClose={() => setIsEditingList(false)}
-            onUpdate={(updatedList) => {
-              setDisplayName(updatedList.name);
-              history.replace({ state: { name: updatedList.name } });
-            }}
-          />
-        )}
-      </ListContext.Provider>
+                {/* Modal Actions */}
+                <AddListGroupModal
+                  isOpen={isAddingGroup}
+                  onClose={() => setIsAddingGroup(false)}
+                />
+                {data && (
+                  <EditListModal
+                    list={data}
+                    isOpen={isEditingList}
+                    onClose={() => setIsEditingList(false)}
+                    onUpdate={() => {
+                      refetch();
+                    }}
+                  />
+                )}
+              </ListContext.Provider>
+            );
+          }
+        })()}
+      </div>
     </Layout>
   );
 }

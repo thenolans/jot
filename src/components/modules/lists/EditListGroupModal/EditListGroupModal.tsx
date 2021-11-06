@@ -19,14 +19,14 @@ async function saveGroupRequest(data: ListGroupFormData, groupId: string) {
 }
 
 export default function EditGroupModal({ isOpen, onClose, group }: Props) {
-  const { updateGroups } = useList();
+  const { updateList } = useList();
   const [isProcessing, setIsProcessing] = useState(false);
 
   async function handleSubmit(values: ListGroupFormData) {
     setIsProcessing(true);
 
     const updatedGroup = await saveGroupRequest(values, group._id);
-    updateGroups((currentGroups) => {
+    updateList(({ groups: currentGroups }) => {
       const updatedIndex = currentGroups.findIndex((g) => g._id === group._id);
       currentGroups[updatedIndex] = updatedGroup;
     });
