@@ -42,13 +42,15 @@ export default function EditGroupModal({ isOpen, onClose, group }: Props) {
       isOpen={isOpen}
       onClose={onClose}
     >
-      <ListGroupForm
-        initialData={{
-          name: group.name,
-        }}
-        isSubmitting={isProcessing}
-        onSubmit={handleSubmit}
-      />
+      <Modal.Body>
+        <ListGroupForm
+          initialData={{
+            name: group.name,
+          }}
+          isSubmitting={isProcessing}
+          onSubmit={handleSubmit}
+        />
+      </Modal.Body>
     </Modal>
   );
 }

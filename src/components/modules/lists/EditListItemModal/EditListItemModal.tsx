@@ -38,13 +38,15 @@ export default function EditItemModal({ item, ...props }: Props) {
 
   return (
     <Modal ariaLabel="Edit item" title="Edit item" {...props}>
-      <ListItemForm
-        initialData={{
-          title: item.title,
-        }}
-        isSubmitting={isSaving}
-        onSubmit={saveItem}
-      />
+      <Modal.Body>
+        <ListItemForm
+          initialData={{
+            title: item.title,
+          }}
+          isSubmitting={isSaving}
+          onSubmit={saveItem}
+        />
+      </Modal.Body>
     </Modal>
   );
 }
