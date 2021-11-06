@@ -35,7 +35,8 @@ export default function GroupForm({
       validateOnBlur={false}
       validateOnChange={false}
       onSubmit={onSubmit}
-      render={({ handleChange, values, errors, resetForm }) => (
+    >
+      {({ handleChange, values, errors, resetForm }) => (
         <Form className="space-y-4">
           <div>
             <Label htmlFor="group-form--name">Title</Label>
@@ -63,6 +64,6 @@ export default function GroupForm({
           </div>
         </Form>
       )}
-    />
+    </Formik>
   );
 }

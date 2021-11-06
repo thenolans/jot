@@ -23,7 +23,7 @@ export default function EditNoteModal({
 }: Props) {
   const [content, setContent] = useState(note.content);
 
-  const throttleSave = useMemo(() => throttle(saveContentUpdate, 1000), []);
+  const throttleSave = useMemo(() => throttle(saveContentUpdate, 1000), []); // eslint-disable-line react-hooks/exhaustive-deps
 
   async function saveContentUpdate(noteId: string, content: string) {
     const updatedNote = await http

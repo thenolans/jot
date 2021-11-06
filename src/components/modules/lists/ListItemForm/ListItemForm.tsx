@@ -35,7 +35,8 @@ export default function ItemForm({
       validateOnBlur={false}
       validateOnChange={false}
       onSubmit={onSubmit}
-      render={({ handleChange, values, errors, resetForm }) => (
+    >
+      {({ handleChange, values, errors, resetForm }) => (
         <Form className="space-y-4">
           <div>
             <Label htmlFor="item-form--title">Title</Label>
@@ -63,6 +64,6 @@ export default function ItemForm({
           </div>
         </Form>
       )}
-    />
+    </Formik>
   );
 }

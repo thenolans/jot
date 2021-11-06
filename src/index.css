@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --reach-dialog: 1;
+}
+
 body * {
   @apply font-body;
 }

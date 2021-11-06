@@ -28,7 +28,8 @@ export default function ItemForm({ initialData, onSubmit, formId }: Props) {
       validateOnBlur={false}
       validateOnChange={false}
       onSubmit={onSubmit}
-      render={({ handleChange, values, errors, resetForm }) => (
+    >
+      {({ handleChange, values, errors, resetForm }) => (
         <Form id={formId} className="space-y-4">
           <div>
             <Label htmlFor="journal-form--name">Name</Label>
@@ -44,6 +45,6 @@ export default function ItemForm({ initialData, onSubmit, formId }: Props) {
           </div>
         </Form>
       )}
-    />
+    </Formik>
   );
 }
