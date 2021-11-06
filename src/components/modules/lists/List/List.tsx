@@ -89,6 +89,7 @@ export default function List() {
   }, [data, updateGroups]);
 
   useEffect(() => {
+    console.log("update");
     updateQueryCacheIfExists(
       queryClient,
       ["list", listId],

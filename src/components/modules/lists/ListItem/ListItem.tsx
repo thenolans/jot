@@ -58,6 +58,7 @@ export default function Item({ canDrag, index, item }: Props) {
               onChange={(e) => setIsCompleted(e.target.checked)}
               checked={isCompleted}
               label={item.title}
+              strikeThrough
             />
             <div className="flex items-center space-x-4 pl-4">
               <div
