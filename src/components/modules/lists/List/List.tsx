@@ -188,46 +188,45 @@ export default function List() {
           </Button>
         </div>
       </div>
-
-      <div className="space-y-8 py-16">
-        {(() => {
-          if (isLoading) {
-            return (
-              <div className="text-center space-y-4 text-primary-600">
-                <Icon size="fa-3x" variant="fa-circle-o-notch" spin />
-                <div>Fetching list details...</div>
-              </div>
-            );
-          } else if (!list) {
-            return (
-              <Tip
-                title="There was a problem fetching this list"
-                description="Please refresh the page and try again"
-              />
-            );
-          } else if (!list.groups.length) {
-            return (
-              <Tip
-                title="You have not added any groups to this list, yet!"
-                description="Groups allow you to organize list items into sections"
-                action={
-                  <Button
-                    theme="primary"
-                    onClick={() => setIsAddingGroup(true)}
-                  >
-                    Add group
-                  </Button>
-                }
-              />
-            );
-          } else {
-            return (
-              <ListContext.Provider
-                value={{
-                  list,
-                  updateList,
-                }}
-              >
+      <ListContext.Provider
+        value={{
+          list,
+          updateList,
+        }}
+      >
+        <div className="space-y-8 py-16">
+          {(() => {
+            if (isLoading) {
+              return (
+                <div className="text-center space-y-4 text-primary-600">
+                  <Icon size="fa-3x" variant="fa-circle-o-notch" spin />
+                  <div>Fetching list details...</div>
+                </div>
+              );
+            } else if (!list) {
+              return (
+                <Tip
+                  title="There was a problem fetching this list"
+                  description="Please refresh the page and try again"
+                />
+              );
+            } else if (!list.groups.length) {
+              return (
+                <Tip
+                  title="You have not added any groups to this list, yet!"
+                  description="Groups allow you to organize list items into sections"
+                  action={
+                    <Button
+                      theme="primary"
+                      onClick={() => setIsAddingGroup(true)}
+                    >
+                      Add group
+                    </Button>
+                  }
+                />
+              );
+            } else {
+              return (
                 <div>
                   <DragDropContext onDragEnd={handleDragEnd}>
                     <Droppable droppableId="groups" type="GROUP">
@@ -262,27 +261,27 @@ export default function List() {
                     </Button>
                   </div>
                 </div>
+              );
+            }
+          })()}
+        </div>
 
-                {/* Modal Actions */}
-                <AddListGroupModal
-                  isOpen={isAddingGroup}
-                  onClose={() => setIsAddingGroup(false)}
-                />
-                {data && (
-                  <EditListModal
-                    list={data}
-                    isOpen={isEditingList}
-                    onClose={() => setIsEditingList(false)}
-                    onUpdate={() => {
-                      refetch();
-                    }}
-                  />
-                )}
-              </ListContext.Provider>
-            );
-          }
-        })()}
-      </div>
+        {/* Modal Actions */}
+        <AddListGroupModal
+          isOpen={isAddingGroup}
+          onClose={() => setIsAddingGroup(false)}
+        />
+        {data && (
+          <EditListModal
+            list={data}
+            isOpen={isEditingList}
+            onClose={() => setIsEditingList(false)}
+            onUpdate={() => {
+              refetch();
+            }}
+          />
+        )}
+      </ListContext.Provider>
     </Layout>
   );
 }
