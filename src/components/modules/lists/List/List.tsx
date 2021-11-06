@@ -194,7 +194,7 @@ export default function List() {
           updateList,
         }}
       >
-        <div className="space-y-8 py-16">
+        <div className="space-y-8 py-8 md:py-16">
           {(() => {
             if (isLoading) {
               return (
