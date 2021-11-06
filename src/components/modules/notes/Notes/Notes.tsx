@@ -5,8 +5,8 @@ import PageTitle from "components/core/PageTitle";
 import Tip from "components/core/Tip";
 import Urls from "constants/urls";
 import { useEffect, useState } from "react";
-import { useQuery } from "react-query";
-import { Note as NoteType } from "types";
+import { useQuery, useQueryClient } from "react-query";
+import { Note as NoteType, QueryKeys } from "types";
 import { useImmer } from "use-immer";
 import http from "utils/http";
 
@@ -23,15 +23,22 @@ function createEmptyNote(): Promise<NoteType> {
 }
 
 export default function Notes() {
-  const { data = [], isLoading } = useQuery("notes-list", fetchNotes);
-  const [notes, updateNotes] = useImmer<NoteType[]>([]);
+  const queryClient = useQueryClient();
+  const [hasFetched, setHasFetched] = useState(false);
+  const { data = [], isLoading } = useQuery(QueryKeys.NOTES_LIST, fetchNotes);
+  const [notes, updateNotes] = useImmer<NoteType[]>(data);
   const [noteToEdit, setNoteToEdit] = useState<NoteType | null>(null);
 
   useEffect(() => {
     if (!!data.length) {
       updateNotes(data);
     }
+    setHasFetched(true);
   }, [data, updateNotes]);
+
+  useEffect(() => {
+    queryClient.setQueryData(QueryKeys.NOTES_LIST, notes);
+  }, [queryClient, notes]);
 
   async function addNote() {
     const newNote = await createEmptyNote();
@@ -54,7 +61,7 @@ export default function Notes() {
                 <div>Fetching notes...</div>
               </div>
             );
-          } else if (!notes.length) {
+          } else if (!notes.length && hasFetched) {
             return (
               <Tip
                 title="You have not created any notes, yet!"

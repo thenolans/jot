@@ -40,7 +40,9 @@ export default function EditNoteModal({
   }
 
   function handleClose() {
-    saveContentUpdate(note._id, content);
+    if (content !== note.content) {
+      saveContentUpdate(note._id, content);
+    }
     onClose();
   }
 
