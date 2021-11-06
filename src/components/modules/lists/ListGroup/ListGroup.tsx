@@ -1,3 +1,4 @@
+import classNames from "classnames";
 import Button from "components/core/Button";
 import ConfirmModal from "components/core/ConfirmModal";
 import ContextMenu from "components/core/ContextMenu";
@@ -20,11 +21,12 @@ import EditGroupModal from "../EditListGroupModal";
 import ListItem from "../ListItem";
 
 type Props = {
+  canDrag?: boolean;
   group: ListGroupType;
   index: number;
 };
 
-export default function Group({ index, group }: Props) {
+export default function Group({ canDrag, index, group }: Props) {
   const [isAddingItem, setIsAddingItem] = useState(false);
   const [isConfirmingDelete, setIsConfirmingDelete] = useState(false);
   const [isEditingGroup, setIsEditingGroup] = useState(false);
@@ -38,7 +40,7 @@ export default function Group({ index, group }: Props) {
   }
 
   return (
-    <Draggable draggableId={group._id} index={index}>
+    <Draggable isDragDisabled={!canDrag} draggableId={group._id} index={index}>
       {(provided: DraggableProvided) => (
         <div
           ref={provided.innerRef}
@@ -49,7 +51,12 @@ export default function Group({ index, group }: Props) {
             <div className="text-primary-800">{group.name}</div>
             <div className="flex items-center space-x-4">
               <div
-                className="cursor-move text-primary-400 hover:text-primary-600"
+                className={classNames(
+                  "cursor-move text-primary-400 hover:text-primary-600",
+                  {
+                    hidden: !canDrag,
+                  }
+                )}
                 {...provided.dragHandleProps}
                 aria-label="Move group"
               >
@@ -75,7 +82,12 @@ export default function Group({ index, group }: Props) {
                 >
                   {group?.items?.map((item, index) => {
                     return (
-                      <ListItem index={index} item={item} key={item._id} />
+                      <ListItem
+                        canDrag={group?.items.length > 1}
+                        index={index}
+                        item={item}
+                        key={item._id}
+                      />
                     );
                   })}
                   {dropProvided.placeholder}

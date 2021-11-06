@@ -1,3 +1,4 @@
+import classNames from "classnames";
 import Checkbox from "components/core/Checkbox";
 import ConfirmModal from "components/core/ConfirmModal";
 import ContextMenu from "components/core/ContextMenu";
@@ -13,12 +14,13 @@ import http from "utils/http";
 import EditListItemModal from "../EditListItemModal";
 
 type Props = {
+  canDrag?: boolean;
   index: number;
   item: ListItemType;
 };
 
-export default function Item({ index, item }: Props) {
-  const { updateGroups } = useList();
+export default function Item({ canDrag, index, item }: Props) {
+  const { updateGroups, groups } = useList();
   const [isCompleted, setIsCompleted] = useState(item.isCompleted);
   const [isConfirmingDelete, setIsConfirmingDelete] = useState(false);
   const [isEditingItem, setIsEditingItem] = useState(false);
@@ -39,7 +41,12 @@ export default function Item({ index, item }: Props) {
 
   return (
     <>
-      <Draggable key={item._id} draggableId={item._id} index={index}>
+      <Draggable
+        isDragDisabled={!(canDrag || groups.length > 1)}
+        key={item._id}
+        draggableId={item._id}
+        index={index}
+      >
         {(dragProvided: DraggableProvided) => (
           <div
             className="py-2 flex items-center justify-between space-x-2"
@@ -54,7 +61,12 @@ export default function Item({ index, item }: Props) {
             />
             <div className="flex items-center space-x-4 pl-4">
               <div
-                className="cursor-move text-gray-300 hover:text-primary-600"
+                className={classNames(
+                  "cursor-move text-gray-300 hover:text-primary-600",
+                  {
+                    hidden: !(canDrag || groups.length > 1),
+                  }
+                )}
                 {...dragProvided.dragHandleProps}
                 aria-label="Move item"
               >
