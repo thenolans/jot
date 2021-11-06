@@ -96,6 +96,7 @@ export type ListItemFormData = Pick<ListItem, "title">;
 export enum QueryKeys {
   JOURNAL_LIST = "journal-list",
   NOTES_LIST = "notes-list",
+  LISTS_LIST = "lists-list",
 }
 
 export type Note = {

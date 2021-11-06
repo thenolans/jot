@@ -5,8 +5,8 @@ import PageTitle from "components/core/PageTitle";
 import Tip from "components/core/Tip";
 import Urls from "constants/urls";
 import { useEffect, useState } from "react";
-import { useQuery } from "react-query";
-import { List } from "types";
+import { useQuery, useQueryClient } from "react-query";
+import { List, QueryKeys } from "types";
 import http from "utils/http";
 
 import AddListModal from "../AddListModal";
@@ -17,8 +17,11 @@ function fetchLists(): Promise<List[]> {
 }
 
 export default function Lists() {
+  const queryClient = useQueryClient();
   const [isCreatingList, setIsCreatingList] = useState(false);
-  const { data = [], isLoading } = useQuery(["lists"], () => fetchLists());
+  const { data = [], isLoading } = useQuery([QueryKeys.LISTS_LIST], () =>
+    fetchLists()
+  );
   const [lists, setLists] = useState<List[]>(data);
 
   useEffect(() => {
@@ -26,6 +29,10 @@ export default function Lists() {
       setLists(data);
     }
   }, [data]);
+
+  useEffect(() => {
+    queryClient.setQueryData(QueryKeys.LISTS_LIST, lists);
+  }, [lists, queryClient]);
 
   return (
     <Layout>
