@@ -1,8 +1,8 @@
 import Button from "components/core/Button";
-import Container from "components/core/Container";
 import Icon from "components/core/Icon";
 import Layout from "components/core/Layout";
 import PageTitle from "components/core/PageTitle";
+import Tip from "components/core/Tip";
 import Urls from "constants/urls";
 import ListContext from "contexts/list";
 import useNProgress from "hooks/useNProgress";
@@ -14,7 +14,7 @@ import {
   DroppableProvided,
   DropResult,
 } from "react-beautiful-dnd";
-import { useQuery } from "react-query";
+import { useQuery, useQueryClient } from "react-query";
 import { useLocation, useRouteMatch } from "react-router-dom";
 import { List as ListType, ListGroup as ListGroupType, ListItem } from "types";
 import { useImmer } from "use-immer";
@@ -60,16 +60,18 @@ function saveItemOrder(items: ListItem[]) {
 }
 
 export default function List() {
+  const queryClient = useQueryClient();
   const location = useLocation();
   const match = useRouteMatch<Params>();
   const listId = match.params.id;
   const [isProcessing, setIsProcessing] = useState(false);
   const [isAddingGroup, setIsAddingGroup] = useState(false);
-  const { data, isLoading } = useQuery(["list", listId], () =>
+  const { data = null, isLoading } = useQuery(["list", listId], () =>
     fetchList(listId)
   );
   const [groups, updateGroups] = useImmer<ListGroupType[]>(data?.groups || []);
   const passedName = (location as Location).state?.name;
+  const displayName = passedName || data?.name || "";
 
   useNProgress(isProcessing);
 
@@ -78,6 +80,16 @@ export default function List() {
       updateGroups(data.groups);
     }
   }, [data, updateGroups]);
+
+  useEffect(() => {
+    queryClient.setQueryData(["list", listId], (list) => {
+      return {
+        // @ts-expect-error
+        ...list,
+        groups,
+      };
+    });
+  }, [queryClient, listId, groups]);
 
   async function handleDragEnd(result: DropResult) {
     if (!result.destination) {
@@ -163,29 +175,11 @@ export default function List() {
     }
   }
 
-  if (isLoading) {
-    return (
-      <Container>
-        <div className="text-center py-4 space-y-4">
-          <Icon
-            className="text-gray-300"
-            variant="fa-circle-o-notch"
-            size="fa-3x"
-            spin
-          />
-          <div className="sr-only">Loading...</div>
-        </div>
-      </Container>
-    );
-  }
-
-  if (!data) return null;
-
   return (
     <Layout>
       <div className="space-y-8 lg:space-y-16">
         <div className="flex justify-between items-center">
-          <PageTitle>{passedName || data.name}</PageTitle>
+          <PageTitle>{displayName}</PageTitle>
         </div>
       </div>
       <ListContext.Provider
@@ -196,45 +190,68 @@ export default function List() {
         }}
       >
         <div className="space-y-8 py-16">
-          {!groups.length ? (
-            <div className="text-center space-y-6 py-6">
-              <div className="px-24 text-lg text-gray-500">
-                You have not added any items to this list, yet!
-              </div>
-              <Button onClick={() => setIsAddingGroup(true)}>Add group</Button>
-            </div>
-          ) : (
-            <div>
-              <DragDropContext onDragEnd={handleDragEnd}>
-                <Droppable droppableId="groups" type="GROUP">
-                  {(provided: DroppableProvided) => (
-                    <div ref={provided.innerRef} {...provided.droppableProps}>
-                      {groups.map((group, index) => {
-                        return (
-                          <ListGroup
-                            index={index}
-                            key={group._id}
-                            group={group}
-                          />
-                        );
-                      })}
-                      {provided.placeholder}
-                    </div>
-                  )}
-                </Droppable>
-              </DragDropContext>
-              <div className="text-center mt-8">
-                <Button
-                  theme="secondary"
-                  onClick={() => setIsAddingGroup(true)}
-                  fluid
-                >
-                  <Icon variant="fa-plus" />
-                  <span>Add group</span>
-                </Button>
-              </div>
-            </div>
-          )}
+          {(() => {
+            if (isLoading) {
+              return (
+                <div className="text-center space-y-4 text-primary-600">
+                  <Icon size="fa-3x" variant="fa-circle-o-notch" spin />
+                  <div>Fetching list details...</div>
+                </div>
+              );
+            } else if (!groups.length) {
+              return (
+                <Tip
+                  title="You have not added any groups to this list, yet!"
+                  description="Groups allow you to organize list items into sections"
+                  action={
+                    <Button
+                      theme="primary"
+                      onClick={() => setIsAddingGroup(true)}
+                    >
+                      Add group
+                    </Button>
+                  }
+                />
+              );
+            } else {
+              return (
+                <div>
+                  <DragDropContext onDragEnd={handleDragEnd}>
+                    <Droppable droppableId="groups" type="GROUP">
+                      {(provided: DroppableProvided) => (
+                        <div
+                          ref={provided.innerRef}
+                          {...provided.droppableProps}
+                        >
+                          {groups.map((group, index) => {
+                            return (
+                              <ListGroup
+                                canDrag={groups.length > 1}
+                                index={index}
+                                key={group._id}
+                                group={group}
+                              />
+                            );
+                          })}
+                          {provided.placeholder}
+                        </div>
+                      )}
+                    </Droppable>
+                  </DragDropContext>
+                  <div className="text-center mt-8">
+                    <Button
+                      theme="secondary"
+                      onClick={() => setIsAddingGroup(true)}
+                      fluid
+                    >
+                      <Icon variant="fa-plus" />
+                      <span>Add group</span>
+                    </Button>
+                  </div>
+                </div>
+              );
+            }
+          })()}
         </div>
 
         {/* Modal Actions */}
