@@ -1,6 +1,7 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import AuthLoader from "components/auth/AuthLoader";
 import ProtectedRoute from "components/auth/ProtectedRoute";
+import Account from "components/modules/account/Account";
 import JournalDetails from "components/modules/journals/JournalDetails";
 import JournalList from "components/modules/journals/JournalList";
 import List from "components/modules/lists/List";
@@ -65,6 +66,11 @@ const App = () => {
             exact
             path={Urls.routes["list:details"]}
             component={List}
+          />
+          <ProtectedRoute
+            exact
+            path={Urls.routes.account}
+            component={Account}
           />
         </Switch>
       </Router>

@@ -35,7 +35,9 @@ export default function Navigation() {
         <NavLink to={Urls.routes["notes:list"]}>Notes</NavLink>
         <NavLink to={Urls.routes["lists:list"]}>Lists</NavLink>
       </div>
-      <div className="hidden md:block">Account</div>
+      <div className={!navIsExpanded ? "hidden md:block" : undefined}>
+        <NavLink to={Urls.routes.account}>Account</NavLink>
+      </div>
     </div>
   );
 }
