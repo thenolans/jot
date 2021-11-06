@@ -39,6 +39,28 @@ export default function Item({ canDrag, index, item }: Props) {
     });
   }
 
+  async function toggleCompleted(newCompletedState: boolean) {
+    updateGroups((currentGroups) => {
+      const currentGroupIndex = currentGroups.findIndex(
+        (g) => g._id === item.groupId
+      );
+      const currentGroupItems = currentGroups[currentGroupIndex].items;
+      currentGroups[currentGroupIndex].items = currentGroupItems.map((i) => {
+        if (i._id === item._id) {
+          return {
+            ...item,
+            isCompleted: newCompletedState,
+          };
+        }
+        return i;
+      });
+    });
+
+    http.patch(reverse(Urls.api["listItem:details"], { id: item._id }), {
+      isCompleted: newCompletedState,
+    });
+  }
+
   return (
     <>
       <Draggable
@@ -55,7 +77,10 @@ export default function Item({ canDrag, index, item }: Props) {
           >
             <Checkbox
               className="flex-grow"
-              onChange={(e) => setIsCompleted(e.target.checked)}
+              onChange={(e) => {
+                setIsCompleted(e.target.checked);
+                toggleCompleted(e.target.checked);
+              }}
               checked={isCompleted}
               label={item.title}
               strikeThrough
