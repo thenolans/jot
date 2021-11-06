@@ -9,6 +9,7 @@ import { useQueryClient } from "react-query";
 import { useHistory } from "react-router-dom";
 import { List, ListFormData, QueryKeys } from "types";
 import http from "utils/http";
+import updateQueryCacheIfExists from "utils/updateQueryCacheIfExists";
 
 import ListForm from "../ListForm";
 
@@ -33,6 +34,23 @@ export default function EditItemModal({ list, ...props }: Props) {
 
     const updatedList = await saveListRequest(values, list._id);
 
+    updateQueryCacheIfExists(
+      queryClient,
+      QueryKeys.LISTS_LIST,
+      (lists: List[]) =>
+        lists.map((l) => {
+          if (l._id === list._id) {
+            return updatedList;
+          }
+          return l;
+        })
+    );
+
+    updateQueryCacheIfExists(queryClient, ["list", list._id], (list: List) => ({
+      ...list,
+      ...updatedList,
+    }));
+
     setIsSaving(false);
     props.onUpdate(updatedList);
     props.onClose();
@@ -46,9 +64,10 @@ export default function EditItemModal({ list, ...props }: Props) {
         })
       );
 
-      queryClient.setQueryData(QueryKeys.LISTS_LIST, (lists) =>
-        // @ts-expect-error
-        lists.filter((l) => l._id !== list._id)
+      updateQueryCacheIfExists(
+        queryClient,
+        QueryKeys.LISTS_LIST,
+        (lists: List[]) => lists.filter((l) => l._id !== list._id)
       );
       history.push(Urls.routes["lists:list"]);
     }

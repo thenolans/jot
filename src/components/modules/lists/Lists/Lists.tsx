@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "react-query";
 import { List, QueryKeys } from "types";
 import http from "utils/http";
+import updateQueryCacheIfExists from "utils/updateQueryCacheIfExists";
 
 import AddListModal from "../AddListModal";
 import ListCard from "../ListCard";
@@ -31,7 +32,7 @@ export default function Lists() {
   }, [data]);
 
   useEffect(() => {
-    queryClient.setQueryData(QueryKeys.LISTS_LIST, lists);
+    updateQueryCacheIfExists(queryClient, QueryKeys.LISTS_LIST, lists);
   }, [lists, queryClient]);
 
   return (

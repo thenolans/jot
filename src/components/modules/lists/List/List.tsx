@@ -22,6 +22,7 @@ import { useImmer } from "use-immer";
 import http from "utils/http";
 import moveItemBetweenArrays from "utils/moveItemBetweenArrays";
 import reorder from "utils/reorder";
+import updateQueryCacheIfExists from "utils/updateQueryCacheIfExists";
 
 import AddListGroupModal from "../AddListGroupModal";
 import EditListModal from "../EditListModal";
@@ -88,13 +89,14 @@ export default function List() {
   }, [data, updateGroups]);
 
   useEffect(() => {
-    queryClient.setQueryData(["list", listId], (list) => {
-      return {
-        // @ts-expect-error
+    updateQueryCacheIfExists(
+      queryClient,
+      ["list", listId],
+      (list: ListType) => ({
         ...list,
         groups,
-      };
-    });
+      })
+    );
   }, [queryClient, listId, groups]);
 
   async function handleDragEnd(result: DropResult) {

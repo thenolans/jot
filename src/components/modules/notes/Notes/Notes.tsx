@@ -9,6 +9,7 @@ import { useQuery, useQueryClient } from "react-query";
 import { Note as NoteType, QueryKeys } from "types";
 import { useImmer } from "use-immer";
 import http from "utils/http";
+import updateQueryCacheIfExists from "utils/updateQueryCacheIfExists";
 
 import EditNoteModal from "../EditNoteModal";
 import MasonryGrid from "../MasonryGrid";
@@ -37,7 +38,7 @@ export default function Notes() {
   }, [data, updateNotes]);
 
   useEffect(() => {
-    queryClient.setQueryData(QueryKeys.NOTES_LIST, notes);
+    updateQueryCacheIfExists(queryClient, QueryKeys.NOTES_LIST, notes);
   }, [queryClient, notes]);
 
   async function addNote() {
