@@ -14,6 +14,8 @@ type Props = {
   initialData?: Partial<ListFormData>;
   onSubmit: (formData: ListFormData) => void;
   isSubmitting?: boolean;
+  buttonLabel?: string;
+  formId: string;
 };
 
 const ValidationSchema = Yup.object().shape({
@@ -24,6 +26,8 @@ export default function ListForm({
   initialData,
   onSubmit,
   isSubmitting,
+  buttonLabel = "Add list",
+  formId,
 }: Props) {
   const nameInputRef = useRef<HTMLInputElement>(null);
   const { handleChange, handleSubmit, values, setFieldValue, errors } =
@@ -47,7 +51,7 @@ export default function ListForm({
   }, [nameInputRef]);
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-16">
+    <form id={formId} onSubmit={handleSubmit} className="space-y-16">
       <div className="space-y-8">
         <div>
           <Label htmlFor="add-list--name">Name</Label>
@@ -91,16 +95,6 @@ export default function ListForm({
           />
         </div>
       </div>
-      <Button type="submit" fluid>
-        {isSubmitting ? (
-          <>
-            <Icon variant="fa-circle-o-notch" spin />
-            <SROnly>Submitting...</SROnly>
-          </>
-        ) : (
-          "Add list"
-        )}
-      </Button>
     </form>
   );
 }

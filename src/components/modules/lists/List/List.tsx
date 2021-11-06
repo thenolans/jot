@@ -2,6 +2,7 @@ import Button from "components/core/Button";
 import Icon from "components/core/Icon";
 import Layout from "components/core/Layout";
 import PageTitle from "components/core/PageTitle";
+import SROnly from "components/core/SROnly";
 import Tip from "components/core/Tip";
 import Urls from "constants/urls";
 import ListContext from "contexts/list";
@@ -15,7 +16,7 @@ import {
   DropResult,
 } from "react-beautiful-dnd";
 import { useQuery, useQueryClient } from "react-query";
-import { useLocation, useRouteMatch } from "react-router-dom";
+import { useHistory, useLocation, useRouteMatch } from "react-router-dom";
 import { List as ListType, ListGroup as ListGroupType, ListItem } from "types";
 import { useImmer } from "use-immer";
 import http from "utils/http";
@@ -23,6 +24,7 @@ import moveItemBetweenArrays from "utils/moveItemBetweenArrays";
 import reorder from "utils/reorder";
 
 import AddListGroupModal from "../AddListGroupModal";
+import EditListModal from "../EditListModal";
 import ListGroup from "../ListGroup";
 
 type Params = {
@@ -60,18 +62,22 @@ function saveItemOrder(items: ListItem[]) {
 }
 
 export default function List() {
+  const history = useHistory();
   const queryClient = useQueryClient();
   const location = useLocation();
   const match = useRouteMatch<Params>();
   const listId = match.params.id;
   const [isProcessing, setIsProcessing] = useState(false);
+  const [isEditingList, setIsEditingList] = useState(false);
   const [isAddingGroup, setIsAddingGroup] = useState(false);
-  const { data = null, isLoading } = useQuery(["list", listId], () =>
+  const { data, isLoading } = useQuery(["list", listId], () =>
     fetchList(listId)
   );
   const [groups, updateGroups] = useImmer<ListGroupType[]>(data?.groups || []);
   const passedName = (location as Location).state?.name;
-  const displayName = passedName || data?.name || "";
+  const [displayName, setDisplayName] = useState(
+    passedName || data?.name || ""
+  );
 
   useNProgress(isProcessing);
 
@@ -180,6 +186,14 @@ export default function List() {
       <div className="space-y-8 lg:space-y-16">
         <div className="flex justify-between items-center">
           <PageTitle>{displayName}</PageTitle>
+          <Button
+            onClick={() => setIsEditingList(true)}
+            className="ml-4"
+            theme="link--primary"
+          >
+            <Icon size="fa-2x" variant="fa-gear" />
+            <SROnly>Edit list</SROnly>
+          </Button>
         </div>
       </div>
       <ListContext.Provider
@@ -259,6 +273,17 @@ export default function List() {
           isOpen={isAddingGroup}
           onClose={() => setIsAddingGroup(false)}
         />
+        {data && (
+          <EditListModal
+            list={data}
+            isOpen={isEditingList}
+            onClose={() => setIsEditingList(false)}
+            onUpdate={(updatedList) => {
+              setDisplayName(updatedList.name);
+              history.replace({ state: { name: updatedList.name } });
+            }}
+          />
+        )}
       </ListContext.Provider>
     </Layout>
   );
