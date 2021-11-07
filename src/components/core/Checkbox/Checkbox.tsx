@@ -19,7 +19,7 @@ export default function Checkbox({
       className={classNames(
         "block hover:text-primary-600 cursor-pointer",
         {
-          "text-gray-300": checked,
+          "text-gray-300": checked && strikeThrough,
           "text-gray-600": !checked,
         },
         className
