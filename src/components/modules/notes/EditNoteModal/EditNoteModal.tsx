@@ -21,9 +21,7 @@ export default function EditNoteModal({
   ...props
 }: Props) {
   const [content, setContent] = useState(note.content);
-  const [shouldScrambleContent, setShouldScrambleContent] = useState(
-    note.scrambleContent
-  );
+  const [isPrivate, setIsPrivate] = useState(note.isPrivate);
 
   const throttleSave = useMemo(() => throttle(saveContentUpdate, 1000), []); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -32,9 +30,9 @@ export default function EditNoteModal({
     onUpdate(updatedNote);
   }
 
-  async function toggleScrambleContent(checked: boolean) {
+  async function togglePrivate(checked: boolean) {
     const updatedNote = await updateNote(note._id, {
-      scrambleContent: checked,
+      isPrivate: checked,
     });
 
     onUpdate(updatedNote);
@@ -71,11 +69,11 @@ export default function EditNoteModal({
         <div className="space-y-4">
           <Checkbox
             onChange={(e) => {
-              toggleScrambleContent(e.target.checked);
-              setShouldScrambleContent(e.target.checked);
+              togglePrivate(e.target.checked);
+              setIsPrivate(e.target.checked);
             }}
-            checked={shouldScrambleContent}
-            label="Scramble content in list view"
+            checked={isPrivate}
+            label="Private?"
           />
           <Textarea autoFocus value={content} onChange={handleChange} />
         </div>

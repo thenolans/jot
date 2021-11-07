@@ -6,10 +6,6 @@
   --reach-dialog: 1;
 }
 
-html {
-  overflow: hidden;
-}
-
 body * {
   @apply font-body;
 }
