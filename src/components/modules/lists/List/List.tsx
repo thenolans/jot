@@ -7,20 +7,18 @@ import SROnly from "components/core/SROnly";
 import Tip from "components/core/Tip";
 import ListContext from "contexts/list";
 import useNProgress from "hooks/useNProgress";
-import { useEffect, useState } from "react";
+import useQueryWithUpdater from "hooks/useQueryWithUpdater";
+import { useState } from "react";
 import {
   DragDropContext,
   Droppable,
   DroppableProvided,
   DropResult,
 } from "react-beautiful-dnd";
-import { useQuery, useQueryClient } from "react-query";
 import { useLocation, useRouteMatch } from "react-router-dom";
 import { List as ListType, ListItem } from "types";
-import { useImmer } from "use-immer";
 import moveItemBetweenArrays from "utils/moveItemBetweenArrays";
 import reorder from "utils/reorder";
-import updateQueryCacheIfExists from "utils/updateQueryCacheIfExists";
 
 import AddGroupModal from "../AddGroupModal.tsx";
 import EditListModal from "../EditListModal";
@@ -37,31 +35,23 @@ type Location = {
 };
 
 export default function List() {
-  const queryClient = useQueryClient();
   const location = useLocation();
   const match = useRouteMatch<Params>();
   const listId = match.params.id;
   const [isProcessing, setIsProcessing] = useState(false);
   const [isEditingList, setIsEditingList] = useState(false);
   const [isAddingGroup, setIsAddingGroup] = useState(false);
-  const { data, isLoading, refetch } = useQuery(["list", listId], () =>
-    getList(listId)
-  );
-  const [list, updateList] = useImmer<ListType>(data!);
+  const {
+    data: list,
+    setData: updateList,
+    isLoading,
+    hasLoadedData,
+    refetch,
+  } = useQueryWithUpdater<ListType>(["list", listId], () => getList(listId));
   const passedName = (location as Location).state?.name;
   const displayName = passedName || list?.name || "";
 
   useNProgress(isProcessing);
-
-  useEffect(() => {
-    if (data) {
-      updateList(data);
-    }
-  }, [data, updateList]);
-
-  useEffect(() => {
-    updateQueryCacheIfExists(queryClient, ["list", listId], list);
-  }, [queryClient, listId, list]);
 
   async function handleDragEnd(result: DropResult) {
     if (!result.destination || !list) {
@@ -86,7 +76,7 @@ export default function List() {
           sortOrder: index,
         }));
 
-        updateList((list) => {
+        updateList(() => {
           list.groups[groupIndex].items = newItemOrder;
         });
 
@@ -120,7 +110,7 @@ export default function List() {
           })
         );
 
-        updateList((list) => {
+        updateList(() => {
           list.groups[sourceGroupIndex].items = newSourceItems;
           list.groups[destinationGroupIndex].items = newDestinationItems;
         });
@@ -162,100 +152,107 @@ export default function List() {
           </Button>
         </div>
       </div>
-      <ListContext.Provider
-        value={{
-          list,
-          updateList,
-        }}
-      >
-        <div className="space-y-8 py-8 md:py-16">
-          {(() => {
-            if (isLoading) {
-              return (
-                <div className="text-center space-y-4 text-primary-600">
-                  <Icon size="fa-3x" variant="fa-circle-o-notch" spin />
-                  <div>Fetching list details...</div>
-                </div>
-              );
-            } else if (!list) {
-              return (
-                <Tip
-                  title="There was a problem fetching this list"
-                  description="Please refresh the page and try again"
-                />
-              );
-            } else if (!list.groups.length) {
-              return (
-                <Tip
-                  title="You have not added any groups to this list, yet!"
-                  description="Groups allow you to organize list items into sections"
-                  action={
-                    <Button
-                      theme="primary"
-                      onClick={() => setIsAddingGroup(true)}
-                    >
-                      Add group
-                    </Button>
-                  }
-                />
-              );
-            } else {
-              return (
-                <div>
-                  <DragDropContext onDragEnd={handleDragEnd}>
-                    <Droppable droppableId="groups" type="GROUP">
-                      {(provided: DroppableProvided) => (
-                        <div
-                          ref={provided.innerRef}
-                          {...provided.droppableProps}
-                        >
-                          {list.groups.map((group, index) => {
-                            return (
-                              <ListGroup
-                                canDrag={list.groups.length > 1}
-                                index={index}
-                                key={group._id}
-                                group={group}
-                              />
-                            );
-                          })}
-                          {provided.placeholder}
-                        </div>
-                      )}
-                    </Droppable>
-                  </DragDropContext>
-                  <div className="text-center mt-8">
-                    <Button
-                      theme="secondary"
-                      onClick={() => setIsAddingGroup(true)}
-                      fluid
-                    >
-                      <Icon variant="fa-plus" />
-                      <span>Add group</span>
-                    </Button>
-                  </div>
-                </div>
-              );
-            }
-          })()}
-        </div>
+      <div className="space-y-8 py-8 md:py-16">
+        {(() => {
+          if (isLoading) {
+            return (
+              <div className="text-center space-y-4 text-primary-600">
+                <Icon size="fa-3x" variant="fa-circle-o-notch" spin />
+                <div>Fetching list details...</div>
+              </div>
+            );
+          }
 
-        {/* Modal Actions */}
-        <AddGroupModal
-          isOpen={isAddingGroup}
-          onClose={() => setIsAddingGroup(false)}
-        />
-        {data && (
-          <EditListModal
-            list={data}
-            isOpen={isEditingList}
-            onClose={() => setIsEditingList(false)}
-            onUpdate={() => {
-              refetch();
-            }}
-          />
-        )}
-      </ListContext.Provider>
+          if (!list) {
+            return (
+              <Tip
+                title="There was a problem fetching this list"
+                description="Please refresh the page and try again"
+              />
+            );
+          }
+
+          return (
+            <ListContext.Provider
+              value={{
+                list,
+                updateList,
+              }}
+            >
+              {(() => {
+                if (!list.groups.length && hasLoadedData) {
+                  return (
+                    <Tip
+                      title="You have not added any groups to this list, yet!"
+                      description="Groups allow you to organize list items into sections"
+                      action={
+                        <Button
+                          theme="primary"
+                          onClick={() => setIsAddingGroup(true)}
+                        >
+                          Add group
+                        </Button>
+                      }
+                    />
+                  );
+                }
+                return (
+                  <div>
+                    <DragDropContext onDragEnd={handleDragEnd}>
+                      <Droppable droppableId="groups" type="GROUP">
+                        {(provided: DroppableProvided) => (
+                          <div
+                            ref={provided.innerRef}
+                            {...provided.droppableProps}
+                          >
+                            {list.groups.map((group, index) => {
+                              return (
+                                <ListGroup
+                                  canDrag={list.groups.length > 1}
+                                  index={index}
+                                  key={group._id}
+                                  group={group}
+                                />
+                              );
+                            })}
+                            {provided.placeholder}
+                          </div>
+                        )}
+                      </Droppable>
+                    </DragDropContext>
+                    <div className="text-center mt-8">
+                      <Button
+                        theme="secondary"
+                        onClick={() => setIsAddingGroup(true)}
+                        fluid
+                      >
+                        <Icon variant="fa-plus" />
+                        <span>Add group</span>
+                      </Button>
+                    </div>
+                  </div>
+                );
+              })()}
+
+              {/* Modal Actions */}
+              <AddGroupModal
+                isOpen={isAddingGroup}
+                onClose={() => setIsAddingGroup(false)}
+              />
+              {list && (
+                <EditListModal
+                  list={list}
+                  isOpen={isEditingList}
+                  onClose={() => setIsEditingList(false)}
+                  onUpdate={() => {
+                    refetch();
+                  }}
+                />
+              )}
+            </ListContext.Provider>
+          );
+        })()}
+      </div>
     </Layout>
   );
 }

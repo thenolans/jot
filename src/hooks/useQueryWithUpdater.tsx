@@ -1,11 +1,4 @@
-import {
-  Dispatch,
-  SetStateAction,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-} from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import {
   QueryFunction,
   QueryKey,
@@ -14,11 +7,12 @@ import {
   UseQueryOptions,
   UseQueryResult,
 } from "react-query";
+import { Updater, useImmer } from "use-immer";
 import updateQueryCacheIfExists from "utils/updateQueryCacheIfExists";
 
 type Result<T> = Omit<UseQueryResult, "data"> & {
   data: T | undefined;
-  setData: Dispatch<SetStateAction<T | undefined>>;
+  setData: Updater<T | undefined>;
   hasLoadedData: boolean;
 };
 
@@ -31,7 +25,7 @@ export default function useQueryWithUpdater<T>(
   const updateCacheOnUnmount = useRef(() => {});
   const query = useQuery<T>(queryKey, queryFn, options);
   const [hasLoadedData, setHasLoadedData] = useState(false);
-  const [data, setData] = useState<T | undefined>();
+  const [data, setData] = useImmer<T | undefined>(undefined);
 
   updateCacheOnUnmount.current = () => {
     updateQueryCacheIfExists(queryClient, queryKey, data);
@@ -42,7 +36,7 @@ export default function useQueryWithUpdater<T>(
       setData(query.data);
       setHasLoadedData(true);
     }
-  }, [query.data]);
+  }, [query.data, setData]);
 
   useEffect(() => {
     return () => updateCacheOnUnmount.current();

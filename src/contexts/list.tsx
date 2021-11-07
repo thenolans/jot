@@ -4,7 +4,7 @@ import { Updater } from "use-immer";
 
 type ListContextType = {
   list: List;
-  updateList: Updater<List>;
+  updateList: Updater<List | undefined>;
 };
 
 const ListContext = createContext<ListContextType>({
