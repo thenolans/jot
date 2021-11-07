@@ -35,6 +35,7 @@ module.exports = {
       },
       minHeight: {
         24: "6rem",
+        48: "12rem",
       },
       maxWidth: {
         container: "480px",

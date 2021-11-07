@@ -66,7 +66,15 @@ export default function EditNoteModal({
       {...props}
     >
       <Modal.Body>
-        <div className="space-y-4">
+        <Textarea
+          className="min-h-48"
+          autoFocus
+          value={content}
+          onChange={handleChange}
+        />
+      </Modal.Body>
+      <Modal.Footer className="text-center">
+        <div className="grid grid-cols-2 gap-2">
           <Checkbox
             onChange={(e) => {
               togglePrivate(e.target.checked);
@@ -75,11 +83,8 @@ export default function EditNoteModal({
             checked={isPrivate}
             label="Private?"
           />
-          <Textarea autoFocus value={content} onChange={handleChange} />
+          <DeleteButton onClick={() => deleteNote()}>Delete note</DeleteButton>
         </div>
-      </Modal.Body>
-      <Modal.Footer className="text-center">
-        <DeleteButton onClick={() => deleteNote()}>Delete note</DeleteButton>
       </Modal.Footer>
     </Modal>
   );
