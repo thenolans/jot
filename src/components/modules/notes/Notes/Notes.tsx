@@ -1,48 +1,28 @@
+import { createNote, getNotes } from "api/notes";
 import Button from "components/core/Button";
 import Icon from "components/core/Icon";
 import Layout from "components/core/Layout";
 import PageTitle from "components/core/PageTitle";
 import Tip from "components/core/Tip";
-import Urls from "constants/urls";
-import { useEffect, useState } from "react";
-import { useQuery, useQueryClient } from "react-query";
+import useQueryWithUpdater from "hooks/useQueryWithUpdater";
+import { useState } from "react";
 import { Note as NoteType, QueryKeys } from "types";
-import { useImmer } from "use-immer";
-import http from "utils/http";
-import updateQueryCacheIfExists from "utils/updateQueryCacheIfExists";
 
 import EditNoteModal from "../EditNoteModal";
 import MasonryGrid from "../MasonryGrid";
 import Note from "../Note";
 
-function fetchNotes(): Promise<NoteType[]> {
-  return http.get(Urls.api["notes:list"]).then((res) => res.data.data);
-}
-
-function createEmptyNote(): Promise<NoteType> {
-  return http.post(Urls.api["notes:list"]).then((res) => res.data.data);
-}
-
 export default function Notes() {
-  const queryClient = useQueryClient();
-  const [hasFetched, setHasFetched] = useState(false);
-  const { data = [], isLoading } = useQuery(QueryKeys.NOTES_LIST, fetchNotes);
-  const [notes, updateNotes] = useImmer<NoteType[]>(data);
+  const {
+    data: notes = [],
+    setData: updateNotes,
+    isLoading,
+    hasLoadedData,
+  } = useQueryWithUpdater<NoteType[]>(QueryKeys.NOTES_LIST, () => getNotes());
   const [noteToEdit, setNoteToEdit] = useState<NoteType | null>(null);
 
-  useEffect(() => {
-    if (!!data.length) {
-      updateNotes(data);
-    }
-    setHasFetched(true);
-  }, [data, updateNotes]);
-
-  useEffect(() => {
-    updateQueryCacheIfExists(queryClient, QueryKeys.NOTES_LIST, notes);
-  }, [queryClient, notes]);
-
   async function addNote() {
-    const newNote = await createEmptyNote();
+    const newNote = await createNote();
     updateNotes([newNote, ...notes]);
     setNoteToEdit(newNote);
   }
@@ -62,7 +42,7 @@ export default function Notes() {
                 <div>Fetching notes...</div>
               </div>
             );
-          } else if (!notes.length && hasFetched) {
+          } else if (!notes.length && hasLoadedData) {
             return (
               <Tip
                 title="You have not created any notes, yet!"
@@ -90,19 +70,21 @@ export default function Notes() {
       {noteToEdit && (
         <EditNoteModal
           onUpdate={(note) => {
-            updateNotes((existingNotes) => {
-              const updatedIndex = existingNotes.findIndex(
-                (n) => n._id === note._id
-              );
-              existingNotes[updatedIndex] = note;
+            updateNotes((draft) => {
+              if (!draft) return;
+
+              const updatedIndex = draft.findIndex((n) => n._id === note._id);
+              draft[updatedIndex] = note;
             });
           }}
           onDelete={(noteId) => {
-            updateNotes((prevNotes) => {
-              const deletedIndex = prevNotes.findIndex(
+            updateNotes((draft) => {
+              if (!draft) return;
+
+              const deletedIndex = draft.findIndex(
                 (note) => note._id === noteId
               );
-              prevNotes.splice(deletedIndex, 1);
+              draft.splice(deletedIndex, 1);
             });
           }}
           note={noteToEdit}

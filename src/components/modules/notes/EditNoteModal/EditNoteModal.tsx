@@ -1,12 +1,10 @@
-import Button from "components/core/Button";
+import { deleteNote as deleteNoteApi, updateNote } from "api/notes";
+import DeleteButton from "components/core/DeleteButton";
 import Modal, { ModalProps } from "components/core/Modal";
 import Textarea from "components/core/Textarea";
-import Urls from "constants/urls";
 import throttle from "lodash/throttle";
-import { reverse } from "named-urls";
 import { ChangeEvent, useMemo, useState } from "react";
 import { Note } from "types";
-import http from "utils/http";
 
 type Props = Pick<ModalProps, "isOpen" | "onClose"> & {
   note: Note;
@@ -26,11 +24,7 @@ export default function EditNoteModal({
   const throttleSave = useMemo(() => throttle(saveContentUpdate, 1000), []); // eslint-disable-line react-hooks/exhaustive-deps
 
   async function saveContentUpdate(noteId: string, content: string) {
-    const updatedNote = await http
-      .patch(reverse(Urls.api["notes:details"], { id: noteId }), {
-        content,
-      })
-      .then((res) => res.data.data);
+    const updatedNote = await updateNote(noteId, { content });
     onUpdate(updatedNote);
   }
 
@@ -48,11 +42,7 @@ export default function EditNoteModal({
 
   async function deleteNote() {
     if (window.confirm("Are you sure you want to delete this note?")) {
-      await http.delete(
-        reverse(Urls.api["notes:details"], {
-          id: note._id,
-        })
-      );
+      await deleteNoteApi(note._id);
       onDelete(note._id);
       onClose();
     }
@@ -67,13 +57,10 @@ export default function EditNoteModal({
     >
       <Modal.Body>
         <Textarea autoFocus value={content} onChange={handleChange} />
-        <div className="mt-4 text-center">
-          <Button theme="link--danger" onClick={() => deleteNote()}>
-            <i className="fa fa-trash" />
-            <span>Delete note</span>
-          </Button>
-        </div>
       </Modal.Body>
+      <Modal.Footer className="text-center">
+        <DeleteButton onClick={() => deleteNote()}>Delete note</DeleteButton>
+      </Modal.Footer>
     </Modal>
   );
 }
