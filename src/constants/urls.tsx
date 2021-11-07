@@ -24,6 +24,7 @@ const Urls = {
     // List module
     "lists:lists": "/jot/lists",
     "lists:list": "/jot/lists/:id",
+    "lists:list:reset": "/jot/lists/:id/reset",
     "lists:groups": "/jot/list-groups",
     "lists:groups:reorder": "/jot/list-groups/reorder",
     "lists:group": "/jot/list-groups/:id",

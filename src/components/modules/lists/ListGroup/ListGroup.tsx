@@ -33,10 +33,14 @@ export default function Group({ canDrag, index, group }: Props) {
   async function deleteGroup() {
     await deleteGroupApi(group._id);
 
-    updateList((list) => ({
-      ...list,
-      groups: list.groups.filter((g) => g._id !== group._id),
-    }));
+    updateList((draft) => {
+      if (!draft) return;
+
+      return {
+        ...draft,
+        groups: draft.groups.filter((g) => g._id !== group._id),
+      };
+    });
   }
 
   return (

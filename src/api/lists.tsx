@@ -23,6 +23,10 @@ export async function updateList(listId: string, data: Partial<List>) {
     .then((res) => res.data.data);
 }
 
+export async function resetList(listId: string) {
+  return http.post(reverse(Urls.api["lists:list:reset"], { id: listId }));
+}
+
 export async function deleteList(listId: string) {
   return http.delete(
     reverse(Urls.api["lists:list"], {

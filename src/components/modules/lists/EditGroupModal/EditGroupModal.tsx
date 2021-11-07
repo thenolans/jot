@@ -20,9 +20,11 @@ export default function EditGroupModal({ isOpen, onClose, group }: Props) {
 
     const updatedGroup = await updateGroup(group._id, values);
 
-    updateList(({ groups: currentGroups }) => {
-      const updatedIndex = currentGroups.findIndex((g) => g._id === group._id);
-      currentGroups[updatedIndex] = updatedGroup;
+    updateList((draft) => {
+      if (!draft) return;
+
+      const updatedIndex = draft.groups.findIndex((g) => g._id === group._id);
+      draft.groups[updatedIndex] = updatedGroup;
     });
 
     setIsUpdating(false);

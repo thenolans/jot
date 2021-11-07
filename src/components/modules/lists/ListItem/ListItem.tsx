@@ -5,6 +5,7 @@ import ConfirmModal from "components/core/ConfirmModal";
 import ContextMenu from "components/core/ContextMenu";
 import Icon from "components/core/Icon";
 import useList from "hooks/useList";
+import { useEffect } from "react";
 import { useState } from "react";
 import { Draggable, DraggableProvided } from "react-beautiful-dnd";
 import { ListItem as ListItemType } from "types";
@@ -23,25 +24,33 @@ export default function Item({ canDrag, index, item }: Props) {
   const [isConfirmingDelete, setIsConfirmingDelete] = useState(false);
   const [isEditingItem, setIsEditingItem] = useState(false);
 
+  useEffect(() => {
+    setIsCompleted(item.isCompleted);
+  }, [item.isCompleted]);
+
   function removeItemFromList() {
-    updateList(({ groups: currentGroups }) => {
-      const currentGroupIndex = currentGroups.findIndex(
+    updateList((draft) => {
+      if (!draft) return;
+
+      const currentGroupIndex = draft.groups.findIndex(
         (g) => g._id === item.groupId
       );
-      const currentGroupItems = currentGroups[currentGroupIndex].items;
-      currentGroups[currentGroupIndex].items = currentGroupItems.filter(
+      const currentGroupItems = draft.groups[currentGroupIndex].items;
+      draft.groups[currentGroupIndex].items = currentGroupItems.filter(
         (i) => i._id !== item._id
       );
     });
   }
 
   function updateItemInList(data: Partial<ListItemType>) {
-    updateList(({ groups: currentGroups }) => {
-      const currentGroupIndex = currentGroups.findIndex(
+    updateList((draft) => {
+      if (!draft) return;
+
+      const currentGroupIndex = draft.groups.findIndex(
         (g) => g._id === item.groupId
       );
-      const currentGroupItems = currentGroups[currentGroupIndex].items;
-      currentGroups[currentGroupIndex].items = currentGroupItems.map((i) => {
+      const currentGroupItems = draft.groups[currentGroupIndex].items;
+      draft.groups[currentGroupIndex].items = currentGroupItems.map((i) => {
         if (i._id === item._id) {
           return {
             ...item,

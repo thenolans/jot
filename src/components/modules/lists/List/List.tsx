@@ -1,5 +1,6 @@
-import { getList, reorderGroups, reorderItems } from "api/lists";
+import { getList, reorderGroups, reorderItems, resetList } from "api/lists";
 import Button from "components/core/Button";
+import ConfirmModal from "components/core/ConfirmModal";
 import Icon from "components/core/Icon";
 import Layout from "components/core/Layout";
 import PageTitle from "components/core/PageTitle";
@@ -16,7 +17,7 @@ import {
   DropResult,
 } from "react-beautiful-dnd";
 import { useLocation, useRouteMatch } from "react-router-dom";
-import { List as ListType, ListItem } from "types";
+import { List as ListType, ListItem, ListType as ListTypes } from "types";
 import moveItemBetweenArrays from "utils/moveItemBetweenArrays";
 import reorder from "utils/reorder";
 
@@ -41,6 +42,7 @@ export default function List() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [isEditingList, setIsEditingList] = useState(false);
   const [isAddingGroup, setIsAddingGroup] = useState(false);
+  const [isConfirmingReset, setIsConfirmingReset] = useState(false);
   const {
     data: list,
     setData: updateList,
@@ -49,9 +51,36 @@ export default function List() {
     refetch,
   } = useQueryWithUpdater<ListType>(["list", listId], () => getList(listId));
   const passedName = (location as Location).state?.name;
-  const displayName = passedName || list?.name || "";
+  const displayName = list?.name || passedName || "";
+  const listIsReusable = list?.type === ListTypes.REUSABLE;
 
   useNProgress(isProcessing);
+
+  async function resetAllItems() {
+    updateList((draft) => {
+      if (!draft) return;
+
+      const newGroups = draft?.groups.map((group, index) => {
+        const newItems = group.items.map((item) => {
+          return {
+            ...item,
+            isCompleted: false,
+          };
+        });
+
+        return {
+          ...group,
+          items: newItems,
+        };
+      });
+
+      resetList(listId);
+
+      draft.groups = newGroups;
+    });
+
+    setIsConfirmingReset(false);
+  }
 
   async function handleDragEnd(result: DropResult) {
     if (!result.destination || !list) {
@@ -76,8 +105,10 @@ export default function List() {
           sortOrder: index,
         }));
 
-        updateList(() => {
-          list.groups[groupIndex].items = newItemOrder;
+        updateList((draft) => {
+          if (!draft) return;
+
+          draft.groups[groupIndex].items = newItemOrder;
         });
 
         await reorderItems(newItemOrder);
@@ -110,9 +141,11 @@ export default function List() {
           })
         );
 
-        updateList(() => {
-          list.groups[sourceGroupIndex].items = newSourceItems;
-          list.groups[destinationGroupIndex].items = newDestinationItems;
+        updateList((draft) => {
+          if (!draft) return;
+
+          draft.groups[sourceGroupIndex].items = newSourceItems;
+          draft.groups[destinationGroupIndex].items = newDestinationItems;
         });
         await reorderItems([...newSourceItems, ...newDestinationItems]);
       }
@@ -130,7 +163,7 @@ export default function List() {
         sortOrder: index,
       }));
 
-      updateList((list) => ({ ...list, groups: reorderedGroups }));
+      updateList((draft) => ({ ...draft, groups: reorderedGroups }));
       await reorderGroups(reorderedGroups);
 
       return;
@@ -230,6 +263,16 @@ export default function List() {
                         <span>Add group</span>
                       </Button>
                     </div>
+                    {listIsReusable && (
+                      <div className="text-center mt-8">
+                        <Button
+                          theme="link--danger"
+                          onClick={() => setIsConfirmingReset(true)}
+                        >
+                          Reset all items
+                        </Button>
+                      </div>
+                    )}
                   </div>
                 );
               })()}
@@ -247,6 +290,15 @@ export default function List() {
                   onUpdate={() => {
                     refetch();
                   }}
+                />
+              )}
+              {listIsReusable && (
+                <ConfirmModal
+                  ariaLabel="Confirm reset all items"
+                  isOpen={isConfirmingReset}
+                  onClose={() => setIsConfirmingReset(false)}
+                  onConfirm={() => resetAllItems()}
+                  title="Are you sure you want to reset all items to be unchecked?"
                 />
               )}
             </ListContext.Provider>

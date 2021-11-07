@@ -29,8 +29,10 @@ export default function AddItemModal({ groupId, ...props }: Props) {
       sortOrder: lastRelatedItem ? lastRelatedItem.sortOrder + 1 : 0,
     });
 
-    updateList(({ groups: currentGroups }) => {
-      currentGroups[relatedGroupIndex].items = [...relatedItems, newItem];
+    updateList((draft) => {
+      if (!draft) return;
+
+      draft.groups[relatedGroupIndex].items = [...relatedItems, newItem];
     });
 
     setIsAdding(false);

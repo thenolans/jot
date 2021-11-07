@@ -22,10 +22,14 @@ export default function AddGroupModal({ isOpen, onClose }: Props) {
       sortOrder: list.groups.length,
     });
 
-    updateList((list) => ({
-      ...list,
-      groups: [...list.groups, newGroup],
-    }));
+    updateList((draft) => {
+      if (!draft) return;
+
+      return {
+        ...draft,
+        groups: [...draft.groups, newGroup],
+      };
+    });
 
     setIsAdding(false);
     onClose();

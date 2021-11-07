@@ -24,8 +24,10 @@ export default function EditItemModal({ item, ...props }: Props) {
 
     const updatedItem = await updateItem(item._id, values);
 
-    updateList(({ groups: currentGroups }) => {
-      currentGroups[relatedGroupIndex].items[item.sortOrder] = updatedItem;
+    updateList((draft) => {
+      if (!draft) return;
+
+      draft.groups[relatedGroupIndex].items[item.sortOrder] = updatedItem;
     });
 
     setIsUpdating(false);
