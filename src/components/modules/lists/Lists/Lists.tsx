@@ -1,27 +1,22 @@
+import { getLists } from "api/lists";
 import Button from "components/core/Button";
 import Icon from "components/core/Icon";
 import Layout from "components/core/Layout";
 import PageTitle from "components/core/PageTitle";
 import Tip from "components/core/Tip";
-import Urls from "constants/urls";
 import { useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "react-query";
 import { List, QueryKeys } from "types";
-import http from "utils/http";
 import updateQueryCacheIfExists from "utils/updateQueryCacheIfExists";
 
 import AddListModal from "../AddListModal";
 import ListCard from "../ListCard";
 
-function fetchLists(): Promise<List[]> {
-  return http.get(Urls.api["lists:list"]).then((res) => res.data.data);
-}
-
 export default function Lists() {
   const queryClient = useQueryClient();
   const [isCreatingList, setIsCreatingList] = useState(false);
   const { data = [], isLoading } = useQuery([QueryKeys.LISTS_LIST], () =>
-    fetchLists()
+    getLists()
   );
   const [lists, setLists] = useState<List[]>(data);
 
@@ -73,15 +68,12 @@ export default function Lists() {
 
       <AddListModal
         isOpen={isCreatingList}
-        onClose={(newList?: List) => {
-          if (newList) {
-            setLists(
-              [newList, ...lists].sort((a, b) => (a.name > b.name ? 1 : -1))
-            );
-          }
-
-          setIsCreatingList(false);
+        onAdd={(newList) => {
+          setLists(
+            [newList, ...lists].sort((a, b) => (a.name > b.name ? 1 : -1))
+          );
         }}
+        onClose={() => setIsCreatingList(false)}
       />
     </Layout>
   );

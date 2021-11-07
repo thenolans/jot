@@ -1,28 +1,22 @@
+import { createItem } from "api/lists";
 import Modal, { ModalProps } from "components/core/Modal";
-import Urls from "constants/urls";
+import SubmitButton from "components/core/SubmitButton";
 import useList from "hooks/useList";
 import { useState } from "react";
-import { ListItem, ListItemFormData } from "types";
-import http from "utils/http";
+import { FormIds, ListItemFormData } from "types";
 
-import ItemForm from "../ListItemForm";
+import ItemForm from "../ItemForm";
 
 type Props = Pick<ModalProps, "onClose" | "isOpen"> & {
   groupId: string;
 };
 
-async function createItem(data: Omit<ListItem, "_id" | "isCompleted">) {
-  return http
-    .post(Urls.api["listItems:list"], data)
-    .then((res) => res.data.data);
-}
-
 export default function AddItemModal({ groupId, ...props }: Props) {
   const { list, updateList } = useList();
-  const [isSaving, setIsSaving] = useState(false);
+  const [isAdding, setIsAdding] = useState(false);
 
-  async function saveItem(values: ListItemFormData) {
-    setIsSaving(true);
+  async function handleSubmit(values: ListItemFormData) {
+    setIsAdding(true);
 
     const relatedGroupIndex = list.groups.findIndex((g) => g._id === groupId)!;
     const relatedItems = list.groups[relatedGroupIndex].items;
@@ -31,6 +25,7 @@ export default function AddItemModal({ groupId, ...props }: Props) {
     const newItem = await createItem({
       ...values,
       groupId,
+      isCompleted: false,
       sortOrder: lastRelatedItem ? lastRelatedItem.sortOrder + 1 : 0,
     });
 
@@ -38,15 +33,20 @@ export default function AddItemModal({ groupId, ...props }: Props) {
       currentGroups[relatedGroupIndex].items = [...relatedItems, newItem];
     });
 
-    setIsSaving(false);
+    setIsAdding(false);
     props.onClose();
   }
 
   return (
     <Modal ariaLabel="Add a new item" title="Add item" {...props}>
       <Modal.Body>
-        <ItemForm isSubmitting={isSaving} onSubmit={saveItem} />
+        <ItemForm formId={FormIds.ADD_LIST_ITEM} onSubmit={handleSubmit} />
       </Modal.Body>
+      <Modal.Footer className="text-right">
+        <SubmitButton isSubmitting={isAdding} formId={FormIds.ADD_LIST_ITEM}>
+          Add item
+        </SubmitButton>
+      </Modal.Footer>
     </Modal>
   );
 }

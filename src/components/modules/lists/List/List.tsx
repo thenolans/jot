@@ -1,13 +1,12 @@
+import { getList, reorderGroups, reorderItems } from "api/lists";
 import Button from "components/core/Button";
 import Icon from "components/core/Icon";
 import Layout from "components/core/Layout";
 import PageTitle from "components/core/PageTitle";
 import SROnly from "components/core/SROnly";
 import Tip from "components/core/Tip";
-import Urls from "constants/urls";
 import ListContext from "contexts/list";
 import useNProgress from "hooks/useNProgress";
-import { reverse } from "named-urls";
 import { useEffect, useState } from "react";
 import {
   DragDropContext,
@@ -17,14 +16,13 @@ import {
 } from "react-beautiful-dnd";
 import { useQuery, useQueryClient } from "react-query";
 import { useLocation, useRouteMatch } from "react-router-dom";
-import { List as ListType, ListGroup as ListGroupType, ListItem } from "types";
+import { List as ListType, ListItem } from "types";
 import { useImmer } from "use-immer";
-import http from "utils/http";
 import moveItemBetweenArrays from "utils/moveItemBetweenArrays";
 import reorder from "utils/reorder";
 import updateQueryCacheIfExists from "utils/updateQueryCacheIfExists";
 
-import AddListGroupModal from "../AddListGroupModal";
+import AddGroupModal from "../AddGroupModal.tsx";
 import EditListModal from "../EditListModal";
 import ListGroup from "../ListGroup";
 
@@ -38,30 +36,6 @@ type Location = {
   };
 };
 
-function fetchList(listId: string): Promise<ListType> {
-  return http
-    .get(reverse(Urls.api["list:details"], { id: listId }))
-    .then((res) => res.data.data);
-}
-
-function saveGroupOrder(groups: ListGroupType[]) {
-  return http.post(
-    Urls.api["listGroups:reorder"],
-    groups.map((g) => ({ id: g._id, sortOrder: g.sortOrder }))
-  );
-}
-
-function saveItemOrder(items: ListItem[]) {
-  return http.post(
-    Urls.api["listItems:reorder"],
-    items.map((item) => ({
-      id: item._id,
-      sortOrder: item.sortOrder,
-      groupId: item.groupId,
-    }))
-  );
-}
-
 export default function List() {
   const queryClient = useQueryClient();
   const location = useLocation();
@@ -71,7 +45,7 @@ export default function List() {
   const [isEditingList, setIsEditingList] = useState(false);
   const [isAddingGroup, setIsAddingGroup] = useState(false);
   const { data, isLoading, refetch } = useQuery(["list", listId], () =>
-    fetchList(listId)
+    getList(listId)
   );
   const [list, updateList] = useImmer<ListType>(data!);
   const passedName = (location as Location).state?.name;
@@ -116,7 +90,7 @@ export default function List() {
           list.groups[groupIndex].items = newItemOrder;
         });
 
-        await saveItemOrder(newItemOrder);
+        await reorderItems(newItemOrder);
       } else {
         // Moved between lists
         const sourceGroupIndex = list.groups.findIndex(
@@ -150,7 +124,7 @@ export default function List() {
           list.groups[sourceGroupIndex].items = newSourceItems;
           list.groups[destinationGroupIndex].items = newDestinationItems;
         });
-        await saveItemOrder([...newSourceItems, ...newDestinationItems]);
+        await reorderItems([...newSourceItems, ...newDestinationItems]);
       }
 
       setIsProcessing(false);
@@ -167,7 +141,7 @@ export default function List() {
       }));
 
       updateList((list) => ({ ...list, groups: reorderedGroups }));
-      await saveGroupOrder(reorderedGroups);
+      await reorderGroups(reorderedGroups);
 
       return;
     }
@@ -267,7 +241,7 @@ export default function List() {
         </div>
 
         {/* Modal Actions */}
-        <AddListGroupModal
+        <AddGroupModal
           isOpen={isAddingGroup}
           onClose={() => setIsAddingGroup(false)}
         />

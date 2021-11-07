@@ -1,11 +1,12 @@
 import "./Modal.css";
 
 import { Dialog } from "@reach/dialog";
+import classNames from "classnames";
 import Button from "components/core/Button";
 import Container from "components/core/Container";
 import Icon from "components/core/Icon";
 import SROnly from "components/core/SROnly";
-import { ReactNode } from "react";
+import { ComponentPropsWithoutRef, ReactNode } from "react";
 
 export type ModalProps = {
   children: ReactNode;
@@ -53,17 +54,17 @@ const Modal = ({
   );
 };
 
-Modal.Body = ({ children }: { children: ReactNode }) => {
+Modal.Body = ({ children, className }: ComponentPropsWithoutRef<"div">) => {
   return (
-    <div className="c-modal__body">
+    <div className={classNames("c-modal__body", className)}>
       <Container>{children}</Container>
     </div>
   );
 };
 
-Modal.Footer = ({ children }: { children: ReactNode }) => {
+Modal.Footer = ({ children, className }: ComponentPropsWithoutRef<"div">) => {
   return (
-    <div className="c-modal__footer">
+    <div className={classNames("c-modal__footer", className)}>
       <Container>{children}</Container>
     </div>
   );

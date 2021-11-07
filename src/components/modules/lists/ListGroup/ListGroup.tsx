@@ -1,11 +1,10 @@
+import { deleteGroup as deleteGroupApi } from "api/lists";
 import classNames from "classnames";
 import Button from "components/core/Button";
 import ConfirmModal from "components/core/ConfirmModal";
 import ContextMenu from "components/core/ContextMenu";
 import Icon from "components/core/Icon";
-import Urls from "constants/urls";
 import useList from "hooks/useList";
-import { reverse } from "named-urls";
 import { useState } from "react";
 import {
   Draggable,
@@ -14,10 +13,9 @@ import {
   DroppableProvided,
 } from "react-beautiful-dnd";
 import { ListGroup as ListGroupType } from "types";
-import http from "utils/http";
 
-import AddItemModal from "../AddListItemModal";
-import EditGroupModal from "../EditListGroupModal";
+import AddItemModal from "../AddItemModal";
+import EditGroupModal from "../EditGroupModal";
 import ListItem from "../ListItem";
 
 type Props = {
@@ -33,9 +31,8 @@ export default function Group({ canDrag, index, group }: Props) {
   const { updateList } = useList();
 
   async function deleteGroup() {
-    await http.delete(
-      reverse(Urls.api["listGroup:details"], { id: group._id })
-    );
+    await deleteGroupApi(group._id);
+
     updateList((list) => ({
       ...list,
       groups: list.groups.filter((g) => g._id !== group._id),

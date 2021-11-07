@@ -1,15 +1,16 @@
-import Button from "components/core/Button";
-import Icon from "components/core/Icon";
+import {
+  deleteList as deleteListApi,
+  updateList as updateListApi,
+} from "api/lists";
+import DeleteButton from "components/core/DeleteButton";
 import Modal, { ModalProps } from "components/core/Modal";
-import SROnly from "components/core/SROnly";
+import SubmitButton from "components/core/SubmitButton";
 import Urls from "constants/urls";
 import useList from "hooks/useList";
-import { reverse } from "named-urls";
 import { useState } from "react";
 import { useQueryClient } from "react-query";
 import { useHistory } from "react-router-dom";
-import { List, ListFormData, QueryKeys } from "types";
-import http from "utils/http";
+import { FormIds, List, ListFormData, QueryKeys } from "types";
 import updateQueryCacheIfExists from "utils/updateQueryCacheIfExists";
 
 import ListForm from "../ListForm";
@@ -19,22 +20,16 @@ type Props = Pick<ModalProps, "onClose" | "isOpen"> & {
   onUpdate: (list: List) => void;
 };
 
-async function saveListRequest(data: ListFormData, listId: string) {
-  return http
-    .patch(reverse(Urls.api["list:details"], { id: listId }), data)
-    .then((res) => res.data.data);
-}
-
 export default function EditItemModal({ list, ...props }: Props) {
   const history = useHistory();
   const queryClient = useQueryClient();
-  const [isSaving, setIsSaving] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
   const { list: listData, updateList } = useList();
 
-  async function saveList(values: ListFormData) {
-    setIsSaving(true);
+  async function handleSubmit(values: ListFormData) {
+    setIsUpdating(true);
 
-    const updatedList = await saveListRequest(values, list._id);
+    const updatedList = await updateListApi(list._id, values);
 
     updateQueryCacheIfExists(
       queryClient,
@@ -53,25 +48,22 @@ export default function EditItemModal({ list, ...props }: Props) {
       ...updatedList,
     }));
 
-    setIsSaving(false);
     updateList({ ...listData, ...updatedList });
+    setIsUpdating(false);
     props.onUpdate(updatedList);
     props.onClose();
   }
 
   async function deleteList() {
     if (window.confirm("Are you sure you want to delete this list?")) {
-      await http.delete(
-        reverse(Urls.api["list:details"], {
-          id: list._id,
-        })
-      );
+      await deleteListApi(list._id);
 
       updateQueryCacheIfExists(
         queryClient,
         QueryKeys.LISTS_LIST,
         (lists: List[]) => lists.filter((l) => l._id !== list._id)
       );
+
       history.push(Urls.routes["lists:list"]);
     }
   }
@@ -80,34 +72,23 @@ export default function EditItemModal({ list, ...props }: Props) {
     <Modal ariaLabel="Edit list" title="Edit list" {...props}>
       <Modal.Body>
         <ListForm
-          formId={`edit-list-${list._id}`}
-          buttonLabel="Save list"
+          formId={FormIds.EDIT_LIST}
           initialData={list}
-          isSubmitting={isSaving}
-          onSubmit={saveList}
+          onSubmit={handleSubmit}
         />
       </Modal.Body>
       <Modal.Footer>
         <div className="grid grid-cols-2 gap-2">
-          <Button onClick={() => deleteList()} theme="link--danger" fluid>
-            <Icon variant="fa-trash" />
-            <span> Delete list</span>
-          </Button>
-          <Button
-            disabled={isSaving}
-            type="submit"
-            form={`edit-list-${list._id}`}
+          <DeleteButton onClick={() => deleteList()} fluid>
+            Delete list
+          </DeleteButton>
+          <SubmitButton
+            isSubmitting={isUpdating}
+            formId={FormIds.EDIT_LIST}
             fluid
           >
-            {isSaving ? (
-              <>
-                <Icon variant="fa-circle-o-notch" spin />
-                <SROnly>Saving...</SROnly>
-              </>
-            ) : (
-              "Save list"
-            )}
-          </Button>
+            Save list
+          </SubmitButton>
         </div>
       </Modal.Footer>
     </Modal>

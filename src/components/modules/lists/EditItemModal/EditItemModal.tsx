@@ -1,40 +1,34 @@
+import { updateItem } from "api/lists";
 import Modal, { ModalProps } from "components/core/Modal";
-import Urls from "constants/urls";
+import SubmitButton from "components/core/SubmitButton";
 import useList from "hooks/useList";
-import { reverse } from "named-urls";
 import { useState } from "react";
-import { ListItem, ListItemFormData } from "types";
-import http from "utils/http";
+import { FormIds, ListItem, ListItemFormData } from "types";
 
-import ListItemForm from "../ListItemForm";
+import ListItemForm from "../ItemForm";
 
 type Props = Pick<ModalProps, "onClose" | "isOpen"> & {
   item: ListItem;
 };
 
-async function saveItemRequest(data: ListItemFormData, itemId: string) {
-  return http
-    .patch(reverse(Urls.api["listItem:details"], { id: itemId }), data)
-    .then((res) => res.data.data);
-}
-
 export default function EditItemModal({ item, ...props }: Props) {
   const { list, updateList } = useList();
-  const [isSaving, setIsSaving] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
 
-  async function saveItem(values: ListItemFormData) {
-    setIsSaving(true);
+  async function handleSubmit(values: ListItemFormData) {
+    setIsUpdating(true);
 
     const relatedGroupIndex = list.groups.findIndex(
       (g) => g._id === item.groupId
     )!;
-    const updatedItem = await saveItemRequest(values, item._id);
+
+    const updatedItem = await updateItem(item._id, values);
 
     updateList(({ groups: currentGroups }) => {
       currentGroups[relatedGroupIndex].items[item.sortOrder] = updatedItem;
     });
 
-    setIsSaving(false);
+    setIsUpdating(false);
     props.onClose();
   }
 
@@ -42,13 +36,18 @@ export default function EditItemModal({ item, ...props }: Props) {
     <Modal ariaLabel="Edit item" title="Edit item" {...props}>
       <Modal.Body>
         <ListItemForm
+          formId={FormIds.EDIT_LIST_ITEM}
           initialData={{
             title: item.title,
           }}
-          isSubmitting={isSaving}
-          onSubmit={saveItem}
+          onSubmit={handleSubmit}
         />
       </Modal.Body>
+      <Modal.Footer className="text-right">
+        <SubmitButton isSubmitting={isUpdating} formId={FormIds.EDIT_LIST_ITEM}>
+          Save item
+        </SubmitButton>
+      </Modal.Footer>
     </Modal>
   );
 }

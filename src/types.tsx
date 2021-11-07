@@ -74,6 +74,7 @@ export type ListGroup = {
   name: string;
   items: ListItem[];
   sortOrder: number;
+  listId: string;
 };
 
 export enum ListType {
@@ -103,3 +104,12 @@ export type Note = {
   _id: string;
   content: string;
 };
+
+export enum FormIds {
+  ADD_LIST = "add-list-form",
+  ADD_LIST_GROUP = "add-list-group-form",
+  ADD_LIST_ITEM = "add-list-item-form",
+  EDIT_LIST = "edit-list-form",
+  EDIT_LIST_GROUP = "edit-list-group-form",
+  EDIT_LIST_ITEM = "edit-list-item-form",
+}

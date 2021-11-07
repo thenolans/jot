@@ -1,37 +1,31 @@
+import { updateGroup } from "api/lists";
 import Modal, { ModalProps } from "components/core/Modal";
-import Urls from "constants/urls";
+import SubmitButton from "components/core/SubmitButton";
 import useList from "hooks/useList";
-import { reverse } from "named-urls";
 import { useState } from "react";
-import { ListGroup, ListGroupFormData } from "types";
-import http from "utils/http";
+import { FormIds, ListGroup, ListGroupFormData } from "types";
 
-import ListGroupForm from "../ListGroupForm";
+import GroupForm from "../GroupForm";
 
 type Props = Pick<ModalProps, "onClose" | "isOpen"> & {
   group: ListGroup;
 };
 
-async function saveGroupRequest(data: ListGroupFormData, groupId: string) {
-  return http
-    .patch(reverse(Urls.api["listGroup:details"], { id: groupId }), data)
-    .then((res) => res.data.data);
-}
-
 export default function EditGroupModal({ isOpen, onClose, group }: Props) {
   const { updateList } = useList();
-  const [isProcessing, setIsProcessing] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
 
   async function handleSubmit(values: ListGroupFormData) {
-    setIsProcessing(true);
+    setIsUpdating(true);
 
-    const updatedGroup = await saveGroupRequest(values, group._id);
+    const updatedGroup = await updateGroup(group._id, values);
+
     updateList(({ groups: currentGroups }) => {
       const updatedIndex = currentGroups.findIndex((g) => g._id === group._id);
       currentGroups[updatedIndex] = updatedGroup;
     });
 
-    setIsProcessing(false);
+    setIsUpdating(false);
     onClose();
   }
 
@@ -43,14 +37,22 @@ export default function EditGroupModal({ isOpen, onClose, group }: Props) {
       onClose={onClose}
     >
       <Modal.Body>
-        <ListGroupForm
+        <GroupForm
+          formId={FormIds.EDIT_LIST_GROUP}
           initialData={{
             name: group.name,
           }}
-          isSubmitting={isProcessing}
           onSubmit={handleSubmit}
         />
       </Modal.Body>
+      <Modal.Footer className="text-right">
+        <SubmitButton
+          isSubmitting={isUpdating}
+          formId={FormIds.EDIT_LIST_GROUP}
+        >
+          Save group
+        </SubmitButton>
+      </Modal.Footer>
     </Modal>
   );
 }

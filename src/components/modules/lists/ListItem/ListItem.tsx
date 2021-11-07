@@ -1,17 +1,15 @@
+import { deleteItem as deleteItemApi, updateItem } from "api/lists";
 import classNames from "classnames";
 import Checkbox from "components/core/Checkbox";
 import ConfirmModal from "components/core/ConfirmModal";
 import ContextMenu from "components/core/ContextMenu";
 import Icon from "components/core/Icon";
-import Urls from "constants/urls";
 import useList from "hooks/useList";
-import { reverse } from "named-urls";
 import { useState } from "react";
 import { Draggable, DraggableProvided } from "react-beautiful-dnd";
 import { ListItem as ListItemType } from "types";
-import http from "utils/http";
 
-import EditListItemModal from "../EditListItemModal";
+import EditItemModal from "../EditItemModal";
 
 type Props = {
   canDrag?: boolean;
@@ -56,7 +54,7 @@ export default function Item({ canDrag, index, item }: Props) {
   }
 
   async function deleteItem() {
-    await http.delete(reverse(Urls.api["listItem:details"], { id: item._id }));
+    await deleteItemApi(item._id);
     removeItemFromList();
   }
 
@@ -67,7 +65,7 @@ export default function Item({ canDrag, index, item }: Props) {
       updateItemInList({ isCompleted: newCompletedState });
     }
 
-    http.patch(reverse(Urls.api["listItem:details"], { id: item._id }), {
+    updateItem(item._id, {
       isCompleted: newCompletedState,
     });
   }
@@ -123,7 +121,7 @@ export default function Item({ canDrag, index, item }: Props) {
       </Draggable>
 
       {/* Modal Actions */}
-      <EditListItemModal
+      <EditItemModal
         item={item}
         isOpen={isEditingItem}
         onClose={() => setIsEditingItem(false)}
