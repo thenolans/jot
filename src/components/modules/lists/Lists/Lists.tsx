@@ -4,31 +4,21 @@ import Icon from "components/core/Icon";
 import Layout from "components/core/Layout";
 import PageTitle from "components/core/PageTitle";
 import Tip from "components/core/Tip";
-import { useEffect, useState } from "react";
-import { useQuery, useQueryClient } from "react-query";
+import useQueryWithUpdater from "hooks/useQueryWithUpdater";
+import { useState } from "react";
 import { List, QueryKeys } from "types";
-import updateQueryCacheIfExists from "utils/updateQueryCacheIfExists";
 
 import AddListModal from "../AddListModal";
 import ListCard from "../ListCard";
 
 export default function Lists() {
-  const queryClient = useQueryClient();
   const [isCreatingList, setIsCreatingList] = useState(false);
-  const { data = [], isLoading } = useQuery([QueryKeys.LISTS_LIST], () =>
-    getLists()
-  );
-  const [lists, setLists] = useState<List[]>(data);
-
-  useEffect(() => {
-    if (data.length) {
-      setLists(data);
-    }
-  }, [data]);
-
-  useEffect(() => {
-    updateQueryCacheIfExists(queryClient, QueryKeys.LISTS_LIST, lists);
-  }, [lists, queryClient]);
+  const {
+    data: lists = [],
+    setData: setLists,
+    isLoading,
+    hasLoadedData,
+  } = useQueryWithUpdater<List[]>([QueryKeys.LISTS_LIST], () => getLists());
 
   return (
     <Layout>
@@ -46,7 +36,7 @@ export default function Lists() {
                   <div>Fetching your lists...</div>
                 </div>
               );
-            } else if (!lists.length) {
+            } else if (!lists.length && hasLoadedData) {
               return (
                 <Tip
                   title="You have not created any lists, yet."
