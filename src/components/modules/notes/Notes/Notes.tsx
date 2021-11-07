@@ -7,6 +7,7 @@ import Tip from "components/core/Tip";
 import useQueryWithUpdater from "hooks/useQueryWithUpdater";
 import { useState } from "react";
 import { Note as NoteType, QueryKeys } from "types";
+import scramble from "utils/scramble";
 
 import EditNoteModal from "../EditNoteModal";
 import MasonryGrid from "../MasonryGrid";
@@ -55,7 +56,11 @@ export default function Notes() {
                 {notes.map((note) => {
                   return (
                     <Note
-                      content={note.content}
+                      content={
+                        note.scrambleContent
+                          ? scramble(note.content)
+                          : note.content
+                      }
                       onClick={() => setNoteToEdit(note)}
                       key={note._id}
                     />

@@ -1,4 +1,5 @@
 import { deleteNote as deleteNoteApi, updateNote } from "api/notes";
+import Checkbox from "components/core/Checkbox";
 import DeleteButton from "components/core/DeleteButton";
 import Modal, { ModalProps } from "components/core/Modal";
 import Textarea from "components/core/Textarea";
@@ -20,11 +21,22 @@ export default function EditNoteModal({
   ...props
 }: Props) {
   const [content, setContent] = useState(note.content);
+  const [shouldScrambleContent, setShouldScrambleContent] = useState(
+    note.scrambleContent
+  );
 
   const throttleSave = useMemo(() => throttle(saveContentUpdate, 1000), []); // eslint-disable-line react-hooks/exhaustive-deps
 
   async function saveContentUpdate(noteId: string, content: string) {
     const updatedNote = await updateNote(noteId, { content });
+    onUpdate(updatedNote);
+  }
+
+  async function toggleScrambleContent(checked: boolean) {
+    const updatedNote = await updateNote(note._id, {
+      scrambleContent: checked,
+    });
+
     onUpdate(updatedNote);
   }
 
@@ -56,7 +68,17 @@ export default function EditNoteModal({
       {...props}
     >
       <Modal.Body>
-        <Textarea autoFocus value={content} onChange={handleChange} />
+        <div className="space-y-4">
+          <Checkbox
+            onChange={(e) => {
+              toggleScrambleContent(e.target.checked);
+              setShouldScrambleContent(e.target.checked);
+            }}
+            checked={shouldScrambleContent}
+            label="Scramble content in list view"
+          />
+          <Textarea autoFocus value={content} onChange={handleChange} />
+        </div>
       </Modal.Body>
       <Modal.Footer className="text-center">
         <DeleteButton onClick={() => deleteNote()}>Delete note</DeleteButton>

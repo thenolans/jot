@@ -103,6 +103,7 @@ export enum QueryKeys {
 export type Note = {
   _id: string;
   content: string;
+  scrambleContent: boolean;
 };
 
 export enum FormIds {
