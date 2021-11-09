@@ -3,7 +3,7 @@
 }
 
 .c-note h1 {
-  @apply text-lg font-bold;
+  @apply text-lg font-bold border-b pb-2 border-primary-200;
 }
 
 .c-note ul {
@@ -12,4 +12,8 @@
 
 .c-note ol {
   @apply list-decimal ml-6;
+}
+
+.c-note hr {
+  @apply border-primary-200;
 }

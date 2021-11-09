@@ -1,7 +1,7 @@
 import "./Note.css";
 
 import useNoteSettings from "hooks/useNoteSettings";
-import ReactMarkdown from "react-markdown";
+import marked from "marked";
 import { Note as NoteType } from "types";
 import scramble from "utils/scramble";
 
@@ -14,13 +14,20 @@ export default function Note({ note, onClick }: Props) {
   const { scramblePrivateNotes } = useNoteSettings();
   const { content, isPrivate } = note;
 
+  function createMarkup() {
+    return {
+      __html: marked.parse(
+        isPrivate && scramblePrivateNotes ? scramble(content) : content
+      ),
+    };
+  }
+
   return (
-    <div role="button" className="c-note" onClick={onClick}>
-      <ReactMarkdown
-        children={
-          isPrivate && scramblePrivateNotes ? scramble(content) : content
-        }
-      />
-    </div>
+    <div
+      role="button"
+      className="c-note"
+      onClick={onClick}
+      dangerouslySetInnerHTML={createMarkup()}
+    />
   );
 }
