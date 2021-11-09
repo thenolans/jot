@@ -1,10 +1,13 @@
 import Urls from "constants/urls";
 import { reverse } from "named-urls";
+import { stringifyUrl } from "query-string";
 import { Note } from "types";
 import http from "utils/http";
 
-export async function getNotes() {
-  return http.get(Urls.api["notes:notes"]).then((res) => res.data.data);
+export async function getNotes(q?: string) {
+  return http
+    .get(stringifyUrl({ url: Urls.api["notes:notes"], query: { q } }))
+    .then((res) => res.data.data);
 }
 
 export async function createNote() {

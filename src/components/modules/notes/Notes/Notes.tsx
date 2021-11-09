@@ -1,13 +1,16 @@
 import { createNote, getNotes } from "api/notes";
 import Button from "components/core/Button";
 import Icon from "components/core/Icon";
+import Input from "components/core/Input";
 import Layout from "components/core/Layout";
 import PageTitle from "components/core/PageTitle";
 import SROnly from "components/core/SROnly";
 import Tip from "components/core/Tip";
 import { NoteSettingsProvider } from "contexts/noteSettings";
+import useDebounce from "hooks/useDebounce";
 import useQueryWithUpdater from "hooks/useQueryWithUpdater";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useQueryClient } from "react-query";
 import { Note as NoteType, QueryKeys } from "types";
 
 import EditNoteModal from "../EditNoteModal";
@@ -16,14 +19,24 @@ import Note from "../Note";
 import NoteSettingsModal from "../NoteSettingsModal";
 
 export default function Notes() {
+  const queryClient = useQueryClient();
+  const [query, setQuery] = useState("");
+  const debouncedQuery = useDebounce(query, 500);
   const {
     data: notes = [],
     setData: updateNotes,
     isLoading,
     hasLoadedData,
-  } = useQueryWithUpdater<NoteType[]>(QueryKeys.NOTES_LIST, () => getNotes());
+  } = useQueryWithUpdater<NoteType[]>(
+    [QueryKeys.NOTES_LIST, debouncedQuery],
+    () => getNotes(query)
+  );
   const [isEditingSettings, setIsEditingSettings] = useState(false);
   const [noteToEdit, setNoteToEdit] = useState<NoteType | null>(null);
+
+  useEffect(() => {
+    queryClient.invalidateQueries([QueryKeys.NOTES_LIST]);
+  }, [debouncedQuery, queryClient]);
 
   async function addNote() {
     const newNote = await createNote();
@@ -49,6 +62,11 @@ export default function Notes() {
               </Button>
             </div>
           </div>
+          <Input
+            placeholder="Search notes..."
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+          />
           {(() => {
             if (isLoading) {
               return (
