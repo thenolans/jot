@@ -17,3 +17,18 @@
 .c-note hr {
   @apply border-primary-200;
 }
+
+.c-note table {
+  @apply border-collapse w-full;
+}
+
+.c-note th,
+.c-note td {
+  @apply p-2;
+}
+
+.c-note table,
+.c-note th,
+.c-note td {
+  @apply border border-primary-300;
+}
