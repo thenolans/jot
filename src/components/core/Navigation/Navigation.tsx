@@ -1,7 +1,13 @@
 import "./Navigation.css";
 
 import classNames from "classnames";
-import Icon, { Bars } from "components/core/Icon";
+import Icon, {
+  Bars,
+  Book,
+  CheckSquare,
+  Edit,
+  User,
+} from "components/core/Icon";
 import Logo from "components/core/Logo";
 import NavLink from "components/core/NavLink";
 import Urls from "constants/urls";
@@ -31,12 +37,20 @@ export default function Navigation() {
           "hidden md:block": !navIsExpanded,
         })}
       >
-        <NavLink to={Urls.routes["journal:list"]}>Journals</NavLink>
-        <NavLink to={Urls.routes["notes:list"]}>Notes</NavLink>
-        <NavLink to={Urls.routes["lists:list"]}>Lists</NavLink>
+        <NavLink icon={Book} to={Urls.routes["journal:list"]}>
+          Journals
+        </NavLink>
+        <NavLink icon={Edit} to={Urls.routes["notes:list"]}>
+          Notes
+        </NavLink>
+        <NavLink icon={CheckSquare} to={Urls.routes["lists:list"]}>
+          Lists
+        </NavLink>
       </div>
       <div className={!navIsExpanded ? "hidden md:block" : undefined}>
-        <NavLink to={Urls.routes.account}>Account</NavLink>
+        <NavLink icon={User} to={Urls.routes.account}>
+          Account
+        </NavLink>
       </div>
     </div>
   );
