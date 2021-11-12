@@ -51,15 +51,15 @@ export default function Notes() {
           <div className="flex justify-between items-center">
             <PageTitle>Notes</PageTitle>
             <div className="flex items-center">
-              <Button onClick={() => addNote()}>Create note</Button>
               <Button
                 onClick={() => setIsEditingSettings(true)}
-                className="ml-4"
+                className="mr-4"
                 theme="link--primary"
                 aria-label="Edit settings"
               >
                 <Icon size={32} icon={Gear} />
               </Button>
+              <Button onClick={() => addNote()}>Create note</Button>
             </div>
           </div>
           <Input
