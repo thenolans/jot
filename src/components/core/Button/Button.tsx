@@ -15,12 +15,13 @@ type Props = ButtonHTMLAttributes<HTMLButtonElement> & {
   className?: string;
   theme?: ButtonTheme;
   fluid?: boolean;
+  display?: "flex" | "inline-flex";
 };
 
 const themeMap = {
   // Common theme styles for both regular variants and link variants
   common:
-    "inline-flex items-center justify-center space-x-2 transition-colors whitespace-nowrap",
+    "items-center justify-center space-x-2 transition-colors whitespace-nowrap",
   // Common theme styles for non-link variants
   commonNonLink: "rounded-lg h-12 px-6",
   primary: "bg-primary-700 hover:bg-primary-800 text-primary-50 rounded-full",
@@ -34,6 +35,7 @@ const themeMap = {
 };
 
 export default function Button({
+  display = "inline-flex",
   className,
   fluid = false,
   theme = "primary",
@@ -49,6 +51,7 @@ export default function Button({
         themeMap.common,
         !isLinkVariant && themeMap.commonNonLink,
         fluid && "w-full",
+        display,
         className
       )}
       type={type}

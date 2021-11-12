@@ -1,10 +1,10 @@
 import { getList, reorderGroups, reorderItems, resetList } from "api/lists";
 import Button from "components/core/Button";
 import ConfirmModal from "components/core/ConfirmModal";
-import Icon from "components/core/Icon";
+import Icon, { Gear, Plus } from "components/core/Icon";
 import Layout from "components/core/Layout";
+import Loader from "components/core/Loader";
 import PageTitle from "components/core/PageTitle";
-import SROnly from "components/core/SROnly";
 import Tip from "components/core/Tip";
 import ListContext from "contexts/list";
 import useNProgress from "hooks/useNProgress";
@@ -179,9 +179,9 @@ export default function List() {
             onClick={() => setIsEditingList(true)}
             className="ml-4"
             theme="link--primary"
+            aria-label="Edit list"
           >
-            <Icon size="fa-2x" variant="fa-gear" />
-            <SROnly>Edit list</SROnly>
+            <Icon size={32} icon={Gear} />
           </Button>
         </div>
       </div>
@@ -190,7 +190,7 @@ export default function List() {
           if (isLoading) {
             return (
               <div className="text-center space-y-4 text-primary-600">
-                <Icon size="fa-3x" variant="fa-circle-o-notch" spin />
+                <Loader size={48} />
                 <div>Fetching list details...</div>
               </div>
             );
@@ -259,7 +259,7 @@ export default function List() {
                         onClick={() => setIsAddingGroup(true)}
                         fluid
                       >
-                        <Icon variant="fa-plus" />
+                        <Icon strokeWidth={3} size={16} icon={Plus} />
                         <span>Add group</span>
                       </Button>
                     </div>

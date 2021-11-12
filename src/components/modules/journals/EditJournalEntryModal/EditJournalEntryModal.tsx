@@ -1,7 +1,6 @@
-import Button from "components/core/Button";
-import Icon from "components/core/Icon";
+import DeleteButton from "components/core/DeleteButton";
 import Modal, { ModalProps } from "components/core/Modal";
-import SROnly from "components/core/SROnly";
+import SubmitButton from "components/core/SubmitButton";
 import Urls from "constants/urls";
 import { reverse } from "named-urls";
 import { useState } from "react";
@@ -69,25 +68,15 @@ export default function EditJournalEntryModal({ entry, ...props }: Props) {
       </Modal.Body>
       <Modal.Footer>
         <div className="grid grid-cols-2 gap-2">
-          <Button onClick={() => deleteEntry()} theme="link--danger" fluid>
-            <Icon variant="fa-trash" />
-            <span> Delete entry</span>
-          </Button>
-          <Button
-            disabled={isSaving}
-            type="submit"
-            form={`edit-entry-${entry._id}`}
-            fluid
+          <DeleteButton onClick={() => deleteEntry()} fluid>
+            Delete entry
+          </DeleteButton>
+          <SubmitButton
+            isSubmitting={isSaving}
+            formId={`edit-entry-${entry._id}`}
           >
-            {isSaving ? (
-              <>
-                <Icon variant="fa-circle-o-notch" spin />
-                <SROnly>Saving...</SROnly>
-              </>
-            ) : (
-              "Save entry"
-            )}
-          </Button>
+            Save entry
+          </SubmitButton>
         </div>
       </Modal.Footer>
     </Modal>

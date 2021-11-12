@@ -1,7 +1,5 @@
-import Button from "components/core/Button";
-import Icon from "components/core/Icon";
 import Modal, { ModalProps } from "components/core/Modal";
-import SROnly from "components/core/SROnly";
+import SubmitButton from "components/core/SubmitButton";
 import Urls from "constants/urls";
 import { reverse } from "named-urls";
 import { useState } from "react";
@@ -55,16 +53,9 @@ export default function CreateJournalModal(props: Props) {
       </Modal.Body>
       <Modal.Footer>
         <div className="text-right">
-          <Button disabled={isSaving} type="submit" form="create-journal-form">
-            {isSaving ? (
-              <>
-                <Icon variant="fa-circle-o-notch" spin />
-                <SROnly>Saving...</SROnly>
-              </>
-            ) : (
-              "Create journal"
-            )}
-          </Button>
+          <SubmitButton isSubmitting={isSaving} formId="create-journal-form">
+            Create journal
+          </SubmitButton>
         </div>
       </Modal.Footer>
     </Modal>

@@ -3,7 +3,7 @@ import classNames from "classnames";
 import Button from "components/core/Button";
 import ConfirmModal from "components/core/ConfirmModal";
 import ContextMenu from "components/core/ContextMenu";
-import Icon from "components/core/Icon";
+import Icon, { Bars, Plus } from "components/core/Icon";
 import useList from "hooks/useList";
 import { useState } from "react";
 import {
@@ -53,7 +53,7 @@ export default function Group({ canDrag, index, group }: Props) {
         >
           <div className="flex items-center justify-between bg-primary-100 rounded-full py-2 px-6">
             <div className="text-primary-800">{group.name}</div>
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2">
               <div
                 className={classNames(
                   "cursor-move text-primary-400 hover:text-primary-600",
@@ -64,7 +64,7 @@ export default function Group({ canDrag, index, group }: Props) {
                 {...provided.dragHandleProps}
                 aria-label="Move group"
               >
-                <Icon variant="fa-bars" />
+                <Icon size={16} strokeWidth={3} icon={Bars} />
               </div>
               <ContextMenu>
                 <ContextMenu.Action onClick={() => setIsEditingGroup(true)}>
@@ -103,7 +103,7 @@ export default function Group({ canDrag, index, group }: Props) {
               onClick={() => setIsAddingItem(true)}
               theme="link--muted"
             >
-              <Icon variant="fa-plus" />
+              <Icon size={16} strokeWidth={3} icon={Plus} />
               <span>Add item</span>
             </Button>
           </div>

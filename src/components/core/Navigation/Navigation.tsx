@@ -1,9 +1,9 @@
 import "./Navigation.css";
 
 import classNames from "classnames";
+import Icon, { Bars } from "components/core/Icon";
 import Logo from "components/core/Logo";
 import NavLink from "components/core/NavLink";
-import SROnly from "components/core/SROnly";
 import Urls from "constants/urls";
 import { useState } from "react";
 import { Link } from "react-router-dom";
@@ -21,9 +21,9 @@ export default function Navigation() {
           onClick={() => setNavIsExpanded(!navIsExpanded)}
           type="button"
           className="c-navigation__mobile"
+          aria-label="Toggle navigation"
         >
-          <i className="fa fa-bars" />
-          <SROnly>Toggle navigation</SROnly>
+          <Icon icon={Bars} />
         </button>
       </div>
       <div

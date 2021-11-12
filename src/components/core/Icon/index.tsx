@@ -1,1 +1,13 @@
 export { default } from "./Icon";
+export { default as Bars } from "./icons/Bars";
+export { default as Checkmark } from "./icons/Checkmark";
+export { default as CircleNotch } from "./icons/CircleNotch";
+export { default as Close } from "./icons/Close";
+export { default as Edit } from "./icons/Edit";
+export { default as Filter } from "./icons/Filter";
+export { default as Gear } from "./icons/Gear";
+export { default as Lock } from "./icons/Lock";
+export { default as Logout } from "./icons/Logout";
+export { default as Plus } from "./icons/Plus";
+export { default as Trash } from "./icons/Trash";
+export { default as VerticalEllipses } from "./icons/VerticalEllipses";

@@ -1,22 +1,37 @@
+import "./Icon.css";
+
 import classNames from "classnames";
+import { ReactElement, SVGAttributes } from "react";
 
 type Props = {
-  variant: string;
+  icon: ReactElement;
   className?: string;
   spin?: boolean;
-  size?: string;
-};
+  size?: number;
+} & SVGAttributes<SVGElement>;
 
 export default function Icon({
-  variant,
+  icon,
   className,
-  spin = false,
-  size,
+  spin,
+  size = 24,
+  ...props
 }: Props) {
   return (
-    <i
+    <svg
       aria-hidden="true"
-      className={classNames("fa", variant, size, spin && "fa-spin", className)}
-    />
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      stroke="currentColor"
+      className={classNames("inline-block", { "icon--spin": spin }, className)}
+      {...props}
+    >
+      {icon}
+    </svg>
   );
 }

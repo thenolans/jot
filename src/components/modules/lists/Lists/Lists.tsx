@@ -1,7 +1,7 @@
 import { getLists } from "api/lists";
 import Button from "components/core/Button";
-import Icon from "components/core/Icon";
 import Layout from "components/core/Layout";
+import Loader from "components/core/Loader";
 import PageTitle from "components/core/PageTitle";
 import Tip from "components/core/Tip";
 import useQueryWithUpdater from "hooks/useQueryWithUpdater";
@@ -32,7 +32,7 @@ export default function Lists() {
             if (isLoading) {
               return (
                 <div className="text-center space-y-4 text-primary-600">
-                  <Icon size="fa-3x" variant="fa-circle-o-notch" spin />
+                  <Loader size={48} />
                   <div>Fetching your lists...</div>
                 </div>
               );

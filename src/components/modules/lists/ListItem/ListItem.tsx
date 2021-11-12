@@ -3,7 +3,7 @@ import classNames from "classnames";
 import Checkbox from "components/core/Checkbox";
 import ConfirmModal from "components/core/ConfirmModal";
 import ContextMenu from "components/core/ContextMenu";
-import Icon from "components/core/Icon";
+import Icon, { Bars } from "components/core/Icon";
 import useList from "hooks/useList";
 import { useEffect } from "react";
 import { useState } from "react";
@@ -103,7 +103,7 @@ export default function Item({ canDrag, index, item }: Props) {
               label={item.title}
               strikeThrough
             />
-            <div className="flex items-center space-x-4 pl-4">
+            <div className="flex items-center space-x-2 pl-4">
               <div
                 className={classNames(
                   "cursor-move text-gray-300 hover:text-primary-600",
@@ -114,7 +114,7 @@ export default function Item({ canDrag, index, item }: Props) {
                 {...dragProvided.dragHandleProps}
                 aria-label="Move item"
               >
-                <Icon variant="fa-bars" />
+                <Icon size={16} strokeWidth={3} icon={Bars} />
               </div>
               <ContextMenu>
                 <ContextMenu.Action onClick={() => setIsEditingItem(true)}>

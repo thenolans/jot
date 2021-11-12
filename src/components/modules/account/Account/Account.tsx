@@ -1,6 +1,7 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import Button from "components/core/Button";
-import Icon from "components/core/Icon";
+import DeleteButton from "components/core/DeleteButton";
+import Icon, { Logout } from "components/core/Icon";
 import Layout from "components/core/Layout";
 import PageTitle from "components/core/PageTitle";
 import Urls from "constants/urls";
@@ -25,13 +26,12 @@ export default function Account() {
               }
               theme="link--muted"
             >
-              <Icon variant="fa-power-off" />
+              <Icon icon={Logout} />
               <span>Logout</span>
             </Button>
           </div>
           <div className="py-4">
-            <Button
-              theme="link--danger"
+            <DeleteButton
               onClick={async () => {
                 if (
                   window.confirm(
@@ -45,9 +45,8 @@ export default function Account() {
                 }
               }}
             >
-              <Icon variant="fa-trash" />
-              <span>Delete my data</span>
-            </Button>
+              Delete my data
+            </DeleteButton>
           </div>
         </div>
       </div>

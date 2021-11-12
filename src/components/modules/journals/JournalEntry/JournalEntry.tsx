@@ -2,7 +2,7 @@ import "./JournalEntry.css";
 
 import Button from "components/core/Button";
 import Highlighter from "components/core/Highlighter";
-import Icon from "components/core/Icon";
+import Icon, { Edit } from "components/core/Icon";
 import Tag from "components/core/Tag";
 import dayjs from "dayjs";
 import useSearchParams, { asStringParam } from "hooks/useSearchParams";
@@ -41,8 +41,9 @@ export default function JournalEntry({ entry, refetch }: Props) {
               onClick={() => setIsEditing(true)}
               className="ml-auto pl-4"
               theme="link--muted"
+              aria-label="Edit entry"
             >
-              <Icon variant="fa-pencil" />
+              <Icon size={20} icon={Edit} />
             </Button>
           </div>
         </div>

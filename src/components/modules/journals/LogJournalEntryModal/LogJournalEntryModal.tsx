@@ -1,7 +1,5 @@
-import Button from "components/core/Button";
-import Icon from "components/core/Icon";
 import Modal, { ModalProps } from "components/core/Modal";
-import SROnly from "components/core/SROnly";
+import SubmitButton from "components/core/SubmitButton";
 import Urls from "constants/urls";
 import { reverse } from "named-urls";
 import { useState } from "react";
@@ -43,16 +41,9 @@ export default function LogEntryModal({ journalId, ...props }: Props) {
         <EntryForm formId="log-entry-form" onSubmit={saveItem} />
       </Modal.Body>
       <Modal.Footer>
-        <Button disabled={isSaving} type="submit" form="log-entry-form" fluid>
-          {isSaving ? (
-            <>
-              <Icon variant="fa-circle-o-notch" spin />
-              <SROnly>Saving...</SROnly>
-            </>
-          ) : (
-            "Save entry"
-          )}
-        </Button>
+        <SubmitButton isSubmitting={isSaving} formId="log-entry-form" fluid>
+          Save entry
+        </SubmitButton>
       </Modal.Footer>
     </Modal>
   );

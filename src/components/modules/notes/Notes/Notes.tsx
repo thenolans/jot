@@ -1,10 +1,10 @@
 import { createNote, getNotes } from "api/notes";
 import Button from "components/core/Button";
-import Icon from "components/core/Icon";
+import Icon, { Gear } from "components/core/Icon";
 import Input from "components/core/Input";
 import Layout from "components/core/Layout";
+import Loader from "components/core/Loader";
 import PageTitle from "components/core/PageTitle";
-import SROnly from "components/core/SROnly";
 import Tip from "components/core/Tip";
 import { NoteSettingsProvider } from "contexts/noteSettings";
 import useDebounce from "hooks/useDebounce";
@@ -56,9 +56,9 @@ export default function Notes() {
                 onClick={() => setIsEditingSettings(true)}
                 className="ml-4"
                 theme="link--primary"
+                aria-label="Edit settings"
               >
-                <Icon size="fa-2x" variant="fa-gear" />
-                <SROnly>Edit journal</SROnly>
+                <Icon size={32} icon={Gear} />
               </Button>
             </div>
           </div>
@@ -71,7 +71,7 @@ export default function Notes() {
             if (isLoading) {
               return (
                 <div className="text-center space-y-4 text-primary-600">
-                  <Icon size="fa-3x" variant="fa-circle-o-notch" spin />
+                  <Loader size={48} />
                   <div>Fetching notes...</div>
                 </div>
               );

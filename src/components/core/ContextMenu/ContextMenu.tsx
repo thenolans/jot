@@ -1,6 +1,5 @@
 import Button from "components/core/Button";
-import Icon from "components/core/Icon";
-import SROnly from "components/core/SROnly";
+import Icon, { VerticalEllipses } from "components/core/Icon";
 import useOnOutsideClick from "hooks/useOnOutsideClick";
 import {
   Children,
@@ -47,9 +46,13 @@ const ContextMenu = ({ children }: Props) => {
       theme="light"
       open={isOpen}
     >
-      <Button theme="link--muted" onClick={() => setIsOpen(!isOpen)}>
-        <Icon variant="fa-ellipsis-v" />
-        <SROnly>Group actions</SROnly>
+      <Button
+        display="flex"
+        aria-label="Group actions"
+        theme="link--muted"
+        onClick={() => setIsOpen(!isOpen)}
+      >
+        <Icon strokeWidth={3} size={16} icon={VerticalEllipses} />
       </Button>
     </Tooltip>
   );

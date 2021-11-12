@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import Icon from "components/core/Icon";
+import Icon, { Checkmark } from "components/core/Icon";
 import { InputHTMLAttributes } from "react";
 
 type Props = InputHTMLAttributes<HTMLInputElement> & {
@@ -33,7 +33,9 @@ export default function Checkbox({
                 "u-absolute-center",
                 !strikeThrough && "text-primary-600"
               )}
-              variant="fa-check"
+              size={16}
+              strokeWidth={4}
+              icon={Checkmark}
             />
           )}
         </div>

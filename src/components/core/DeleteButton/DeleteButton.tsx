@@ -1,5 +1,5 @@
 import Button from "components/core/Button";
-import Icon from "components/core/Icon";
+import Icon, { Trash } from "components/core/Icon";
 import { ComponentProps } from "react";
 
 type Props = {
@@ -9,7 +9,7 @@ type Props = {
 export default function DeleteButton({ children, ...props }: Props) {
   return (
     <Button theme="link--danger" {...props}>
-      <Icon variant="fa-trash" />
+      <Icon icon={Trash} />
       <span>{children}</span>
     </Button>
   );

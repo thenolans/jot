@@ -1,9 +1,9 @@
 import Button from "components/core/Button";
-import Icon from "components/core/Icon";
+import Icon, { Filter, Gear, Plus } from "components/core/Icon";
 import Input from "components/core/Input";
 import Layout from "components/core/Layout";
+import Loader from "components/core/Loader";
 import PageTitle from "components/core/PageTitle";
-import SROnly from "components/core/SROnly";
 import TagSelect from "components/core/TagSelect";
 import Tip from "components/core/Tip";
 import Urls from "constants/urls";
@@ -76,13 +76,13 @@ export default function JournalList() {
             <PageTitle>{displayName}</PageTitle>
             <div className="fixed bottom-0 left-0 right-0 p-4 md:p-0 md:static flex-shrink-0 flex justify-between ml-auto">
               <Button className="md:hidden" aria-label="Filter entries">
-                <Icon variant="fa-filter" />
+                <Icon icon={Filter} />
               </Button>
               <Button
                 onClick={() => setIsLoggingEntry(true)}
                 aria-label="Log entry"
               >
-                <Icon className="block md:hidden" variant="fa-plus" />
+                <Icon strokeWidth={3} className="block md:hidden" icon={Plus} />
                 <span className="hidden md:block">Log entry</span>
               </Button>
             </div>
@@ -90,9 +90,9 @@ export default function JournalList() {
               onClick={() => setIsEditingJournal(true)}
               className="ml-4"
               theme="link--primary"
+              aria-label="Edit journal"
             >
-              <Icon size="fa-2x" variant="fa-gear" />
-              <SROnly>Edit journal</SROnly>
+              <Icon size={32} icon={Gear} />
             </Button>
           </div>
           {displayName && (
@@ -119,7 +119,7 @@ export default function JournalList() {
             if (isLoading) {
               return (
                 <div className="text-center space-y-4 text-primary-600">
-                  <Icon size="fa-3x" variant="fa-circle-o-notch" spin />
+                  <Loader size={48} />
                   <div>Fetching journal details...</div>
                 </div>
               );

@@ -4,8 +4,7 @@ import { Dialog } from "@reach/dialog";
 import classNames from "classnames";
 import Button from "components/core/Button";
 import Container from "components/core/Container";
-import Icon from "components/core/Icon";
-import SROnly from "components/core/SROnly";
+import Icon, { Close } from "components/core/Icon";
 import { ComponentPropsWithoutRef, ReactNode } from "react";
 
 export type ModalProps = {
@@ -41,9 +40,12 @@ const Modal = ({
               {title}
             </div>
             {!hideClose && (
-              <Button onClick={() => onClose()} theme="link--muted">
-                <Icon variant="fa-close" />
-                <SROnly>Close</SROnly>
+              <Button
+                aria-label="Close"
+                onClick={() => onClose()}
+                theme="link--muted"
+              >
+                <Icon icon={Close} />
               </Button>
             )}
           </div>
