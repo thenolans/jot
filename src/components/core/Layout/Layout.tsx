@@ -11,7 +11,7 @@ export default function Layout({ children }: Props) {
     <div className="h-screen flex flex-col md:flex-row">
       <Navigation />
       <div className="flex-grow md:max-h-screen md:overflow-auto">
-        <div className="py-8 md:py-16 px-2 md:px-8 xl:px-16">
+        <div className="py-24 md:py-16 px-2 md:px-8 xl:px-16">
           <Container>{children}</Container>
         </div>
       </div>

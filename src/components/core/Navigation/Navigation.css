@@ -1,7 +1,7 @@
 .c-navigation {
-  @apply flex w-full md:w-48 lg:w-64 xl:w-80 flex-col bg-primary-100 items-center justify-between px-8 py-2 md:py-16 flex-shrink-0;
+  @apply z-40 flex fixed top-0 left-0 w-full bg-primary-100 border-b border-primary-700 items-center justify-between pl-8 pr-4 py-2 flex-shrink-0 md:pr-8 md:static md:border-b-0 md:py-16 md:flex-col md:w-48 lg:w-64 xl:w-80;
 }
 
-.c-navigation__mobile {
-  @apply block md:hidden text-primary-800 hover:text-primary-900;
+.c-navigation__list {
+  @apply z-40 fixed bottom-0 left-0 right-0 border-t border-primary-700 bg-primary-100 flex divide-x divide-primary-700 md:border-t-0 md:space-y-4 md:divide-none md:static md:block md:bg-transparent;
 }

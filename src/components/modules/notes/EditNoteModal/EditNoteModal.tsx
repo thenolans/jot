@@ -67,7 +67,7 @@ export default function EditNoteModal({
     >
       <Modal.Body>
         <Textarea
-          className="min-h-48"
+          className="min-h-40"
           autoFocus
           value={content}
           onChange={handleChange}

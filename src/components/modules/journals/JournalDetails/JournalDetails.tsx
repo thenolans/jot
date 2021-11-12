@@ -74,7 +74,7 @@ export default function JournalList() {
         <div className="space-y-8 lg:space-y-16 pb-6 lg:pb-0">
           <div className="flex items-center justify-between">
             <PageTitle>{displayName}</PageTitle>
-            <div className="fixed bottom-0 left-0 right-0 p-4 md:p-0 md:static flex-shrink-0 flex justify-between ml-auto">
+            <div className="fixed bottom-16 left-0 right-0 p-4 md:p-0 md:static flex-shrink-0 flex justify-between ml-auto">
               <Button className="md:hidden" aria-label="Filter entries">
                 <Icon icon={Filter} />
               </Button>
