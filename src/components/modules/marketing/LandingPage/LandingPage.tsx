@@ -3,11 +3,14 @@ import Button from "components/core/Button";
 import Container from "components/core/Container";
 import Logo from "components/core/Logo";
 import Urls from "constants/urls";
-import { useHistory } from "react-router-dom";
+import { Redirect } from "react-router-dom";
 
 export default function LandingPage() {
   const { isAuthenticated, loginWithRedirect } = useAuth0();
-  const history = useHistory();
+
+  if (isAuthenticated) {
+    return <Redirect to={Urls.routes.app} />;
+  }
 
   return (
     <Container>
@@ -17,25 +20,19 @@ export default function LandingPage() {
           Keep track of anything you can imagine by jotting down notes that can
           be easily found by searching and filtering
         </p>
-        {isAuthenticated ? (
-          <Button onClick={() => history.push(Urls.routes.app)}>
-            Go to app
+        <div className="space-x-4">
+          <Button onClick={() => loginWithRedirect()}>Login</Button>
+          <Button
+            onClick={() =>
+              loginWithRedirect({
+                screen_hint: "signup",
+              })
+            }
+            theme="secondary"
+          >
+            Sign up
           </Button>
-        ) : (
-          <div className="space-x-4">
-            <Button onClick={() => loginWithRedirect()}>Login</Button>
-            <Button
-              onClick={() =>
-                loginWithRedirect({
-                  screen_hint: "signup",
-                })
-              }
-              theme="secondary"
-            >
-              Sign up
-            </Button>
-          </div>
-        )}
+        </div>
       </div>
     </Container>
   );

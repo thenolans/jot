@@ -1,5 +1,5 @@
 .c-navigation {
-  @apply shadow z-40 flex fixed top-0 left-0 w-full bg-primary-100 items-center justify-between pl-8 pr-4 py-2 flex-shrink-0 md:shadow-none md:pr-8 md:static md:py-16 md:flex-col md:w-48 lg:w-64 xl:w-80;
+  @apply shadow z-40 flex fixed top-0 left-0 w-full bg-primary-100 items-center justify-between pl-8 pr-4 py-3 flex-shrink-0 md:shadow-none md:pr-8 md:static md:py-16 md:flex-col md:w-48 lg:w-64 xl:w-80;
 }
 
 .c-navigation__list {

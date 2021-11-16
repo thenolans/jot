@@ -15,11 +15,11 @@ export default function Navigation() {
         </Link>
       </div>
       <div className="c-navigation__list">
-        <NavLink icon={Book} to={Urls.routes["journal:list"]}>
-          Journals
-        </NavLink>
         <NavLink icon={Edit} to={Urls.routes["notes:list"]}>
           Notes
+        </NavLink>
+        <NavLink icon={Book} to={Urls.routes["journal:list"]}>
+          Journals
         </NavLink>
         <NavLink icon={CheckSquare} to={Urls.routes["lists:list"]}>
           Lists

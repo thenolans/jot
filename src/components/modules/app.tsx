@@ -42,7 +42,7 @@ const App = () => {
       <Router>
         <Switch>
           <Route exact path={Urls.routes.root} component={LandingPage} />
-          <Redirect path={Urls.routes.app} to={Urls.routes["journal:list"]} />
+          <Redirect path={Urls.routes.app} to={Urls.routes["notes:list"]} />
           <ProtectedRoute
             exact
             path={Urls.routes["journal:list"]}
