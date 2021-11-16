@@ -25,7 +25,14 @@ export default function Note({ note, onClick }: Props) {
   return (
     <div
       role="button"
+      tabIndex={0}
       className="c-note"
+      onKeyDown={(e) => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          onClick();
+        }
+      }}
       onClick={onClick}
       dangerouslySetInnerHTML={createMarkup()}
     />

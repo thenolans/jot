@@ -22,7 +22,7 @@ export default function Layout({ children }: Props) {
         ref={scrollContainerRef}
         className="flex-grow md:max-h-screen md:overflow-auto"
       >
-        <div className="py-24 md:py-16 px-2 md:px-8 xl:px-16">
+        <div className="py-20 md:py-16 px-2 md:px-8 xl:px-16">
           <Container>{children}</Container>
         </div>
       </div>

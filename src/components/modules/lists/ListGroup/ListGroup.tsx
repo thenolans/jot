@@ -51,7 +51,7 @@ export default function Group({ canDrag, index, group }: Props) {
           {...provided.draggableProps}
           className="space-y-4 py-4"
         >
-          <div className="flex items-center justify-between bg-primary-100 rounded-full py-2 px-6">
+          <div className="flex items-center justify-between bg-primary-100 rounded-xl py-2 px-6">
             <div className="text-primary-800">{group.name}</div>
             <div className="flex items-center space-x-2">
               <div

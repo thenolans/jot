@@ -4,7 +4,7 @@ import { components } from "react-select";
 
 const Control = (props) => (
   <components.Control
-    className="bg-primary-100 border-transparent border-2 focus-within:border-primary-700 shadow-none rounded-3xl px-3 py-1"
+    className="bg-primary-100 border-transparent border-2 focus-within:border-primary-700 shadow-none rounded-xl px-3 py-1"
     {...props}
   />
 );
@@ -13,7 +13,7 @@ const IndicatorSeparator = () => null;
 
 const MultiValue = (props) => (
   <components.MultiValue
-    className="rounded-full text-primary-800 bg-primary-300 px-1"
+    className="rounded-xl text-primary-800 bg-primary-300 px-1"
     {...props}
   />
 );
@@ -32,7 +32,7 @@ const ClearIndicator = (props) => (
 
 const Menu = (props) => (
   <components.Menu
-    className="bg-primary-50 rounded-3xl overflow-hidden shadow"
+    className="bg-primary-50 rounded-xl overflow-hidden shadow"
     {...props}
   />
 );

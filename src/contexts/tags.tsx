@@ -53,6 +53,8 @@ export const TagProvider = ({ children, type, typeId }: Props) => {
   async function addTag(tag: string): Promise<Tag> {
     const addedTag = await http.post<Response<Tag>>(Urls.api.tags, {
       name: tag,
+      type,
+      typeId,
     });
     setTags((prevTags) => [...prevTags, addedTag.data.data]);
     return addedTag.data.data;

@@ -14,7 +14,7 @@ export default function ListTile({ list }: Props) {
         pathname: reverse(Urls.routes["list:details"], { id: list._id }),
         state: { name: list.name },
       }}
-      className="bg-primary-300 text-primary-700 p-8 rounded-2xl flex items-center justify-center"
+      className="bg-primary-300 text-primary-700 p-8 rounded-xl flex items-center justify-center"
     >
       <h3 className="text-xl text-center">{list.name}</h3>
     </Link>

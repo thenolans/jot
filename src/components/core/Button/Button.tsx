@@ -23,11 +23,11 @@ const themeMap = {
   common:
     "items-center justify-center space-x-2 transition-colors whitespace-nowrap",
   // Common theme styles for non-link variants
-  commonNonLink: "rounded-lg h-12 px-6",
-  primary: "bg-primary-700 hover:bg-primary-800 text-primary-50 rounded-full",
-  danger: "bg-danger-700 hover:bg-danger-800 text-danger-50 rounded-full",
+  commonNonLink: "h-12 px-6 rounded-xl",
+  primary: "bg-primary-700 hover:bg-primary-800 text-primary-50",
+  danger: "bg-danger-700 hover:bg-danger-800 text-danger-50",
   secondary:
-    "bg-transparent border-2 border-primary-600 text-primary-600 hover:border-primary-800 hover:text-primary-50 hover:bg-primary-800 rounded-full",
+    "bg-transparent border-2 border-primary-600 text-primary-600 hover:border-primary-800 hover:text-primary-50 hover:bg-primary-800",
   "link--danger": "text-danger-600 hover:text-danger-700",
   "link--muted": "text-primary-500 hover:text-primary-600",
   "link--primary": "text-primary-700 hover:text-primary-800",

@@ -3,7 +3,7 @@
 }
 
 .c-modal {
-  @apply w-full bg-primary-50 shadow-md max-h-full md:max-w-md rounded-t-3xl md:rounded-3xl flex flex-col overflow-hidden;
+  @apply w-full bg-white shadow max-h-full md:max-w-md rounded-t-3xl md:rounded-xl flex flex-col overflow-hidden;
 }
 
 .c-modal__header {

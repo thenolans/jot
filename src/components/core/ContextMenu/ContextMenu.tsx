@@ -27,7 +27,7 @@ const ContextMenu = ({ children }: Props) => {
       html={
         <div
           ref={menuRef}
-          className="flex flex-col space-y-2 bg-primary-50 rounded-lg py-4 px-8 shadow"
+          className="flex flex-col space-y-2 bg-white rounded-xl py-4 px-8 shadow"
         >
           {Children.map(children, (child) =>
             // @ts-expect-error

@@ -10,7 +10,7 @@ export default function Label({ className, ...props }: Props) {
   return (
     <div
       className={classNames(
-        "text-sm text-danger-700 block mt-1 ml-6",
+        "text-sm text-danger-700 block mt-1 ml-2",
         className
       )}
       {...props}
