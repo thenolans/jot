@@ -1,6 +1,6 @@
 {
   "name": "react-app-template",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "private": true,
   "dependencies": {
     "@auth0/auth0-react": "^1.6.0",
