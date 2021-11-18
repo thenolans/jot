@@ -59,7 +59,7 @@
     "deploy:staging": "netlify deploy --dir build",
     "deploy:prod": "netlify deploy --prod --dir build",
     "version": "yarn build",
-    "postversion": "yarn deploy prod"
+    "postversion": "yarn deploy:prod"
   },
   "eslintConfig": {
     "extends": [
