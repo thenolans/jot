@@ -1,5 +1,5 @@
 import Button from "components/core/Button";
-import Icon, { Gear } from "components/core/Icon";
+import Icon, { Gear, Plus } from "components/core/Icon";
 import Input from "components/core/Input";
 import Layout from "components/core/Layout";
 import Loader from "components/core/Loader";
@@ -72,18 +72,27 @@ export default function JournalList() {
     <TagProvider type={TagTypes.JOURNAL} typeId={journalId}>
       <Layout>
         {(scrollContainerRef) => (
-          <div className="space-y-8 lg:space-y-16 pb-6 lg:pb-0">
+          <div className="space-y-8 lg:space-y-16 pb-24 lg:pb-0">
             <div className="flex items-center justify-between">
               <PageTitle>{displayName}</PageTitle>
               <Button
                 onClick={() => setIsEditingJournal(true)}
-                className="ml-auto mr-4"
+                className="ml-auto md:mr-4"
                 theme="link--primary"
                 aria-label="Edit journal"
               >
                 <Icon size={32} icon={Gear} />
               </Button>
-              <Button onClick={() => setIsLoggingEntry(true)}>Log entry</Button>
+              <div className="right-3 bottom-24 fixed md:static">
+                <Button
+                  className="shadow md:shadow-none"
+                  onClick={() => setIsLoggingEntry(true)}
+                  aria-label="Log entry"
+                >
+                  <Icon className="md:hidden" icon={Plus} />
+                  <span className="hidden md:block">Log entry</span>
+                </Button>
+              </div>
             </div>
             {displayName && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -147,7 +156,7 @@ export default function JournalList() {
                     next={fetchNextPage}
                     hasMore={Boolean(hasNextPage)}
                     loader={
-                      <div className="text-center space-y-4 text-primary-600">
+                      <div className="text-center p-4 text-primary-600">
                         <Loader />
                       </div>
                     }
