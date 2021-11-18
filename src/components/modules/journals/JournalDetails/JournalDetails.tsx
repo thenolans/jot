@@ -134,7 +134,14 @@ export default function JournalList() {
               } else if (scrollContainerRef) {
                 return (
                   <InfiniteScroll
-                    scrollableTarget={scrollContainerRef.current}
+                    scrollableTarget={
+                      // TODO: Make this dynamic so it doesn't require a page reload,
+                      // but I don't think react-infinite-scroll-component supports
+                      // changing this prop after mount
+                      window.innerWidth >= 768
+                        ? scrollContainerRef.current
+                        : undefined
+                    }
                     className="bg-primary-100 rounded-r-3xl overflow-hidden"
                     dataLength={entries.length}
                     next={fetchNextPage}
