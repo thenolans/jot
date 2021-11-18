@@ -13,7 +13,7 @@ const IndicatorSeparator = () => null;
 
 const MultiValue = (props) => (
   <components.MultiValue
-    className="rounded-xl text-primary-800 bg-primary-300 px-1"
+    className="rounded-lg text-primary-800 bg-primary-300 px-1"
     {...props}
   />
 );

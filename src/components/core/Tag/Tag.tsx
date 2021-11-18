@@ -6,7 +6,7 @@ type Props = {
 
 export default function Tag({ children }: Props) {
   return (
-    <div className="inline-block text-primary-800 bg-primary-300 rounded-full px-4 py-2 text-sm">
+    <div className="inline-block text-primary-800 bg-primary-300 rounded-lg px-3 py-1 text-xs">
       {children}
     </div>
   );
