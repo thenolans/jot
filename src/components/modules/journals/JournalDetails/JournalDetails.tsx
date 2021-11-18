@@ -1,5 +1,5 @@
 import Button from "components/core/Button";
-import Icon, { Filter, Gear, Plus } from "components/core/Icon";
+import Icon, { Gear } from "components/core/Icon";
 import Input from "components/core/Input";
 import Layout from "components/core/Layout";
 import Loader from "components/core/Loader";
@@ -18,7 +18,7 @@ import useSearchParams, {
 import { reverse } from "named-urls";
 import { useEffect, useState } from "react";
 import { useHistory, useLocation, useRouteMatch } from "react-router-dom";
-import { PaginatedEntries, TagTypes } from "types";
+import { Entry, PaginatedEntries, TagTypes } from "types";
 
 import EditJournalModal from "../EditJournalModal";
 import JournalEntry from "../JournalEntry";
@@ -43,7 +43,7 @@ export default function JournalList() {
   );
   const selectedTags = asStringArrayParam(searchParams.tag);
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
-  const { data, isLoading, isFetching, refetch } =
+  const { data, isLoading, isFetching, refetch, hasNextPage, fetchNextPage } =
     useInfiniteGetQuery<PaginatedEntries>(
       reverse(Urls.api["journal:entries"], { id: journalId }),
       { q: debouncedSearchTerm, tag: selectedTags }
@@ -53,8 +53,8 @@ export default function JournalList() {
   const [displayName, setDisplayName] = useState(
     passedName || data?.pages[0].meta.journal.name || ""
   );
-  const entries = // @ts-expect-error
-    data?.pages.reduce((entries, page) => {
+  const entries =
+    data?.pages.reduce<Entry[]>((entries, page) => {
       return [...entries, ...page.data];
     }, []) || [];
 
@@ -113,7 +113,6 @@ export default function JournalList() {
                 </div>
               );
             } else if (
-              // @ts-expect-error
               !entries.length &&
               !searchParams.q &&
               !searchParams.tag
@@ -124,7 +123,6 @@ export default function JournalList() {
                   description="Entries are the individual pieces that make up a journal. You can search them by keyword or by tag after you create some!"
                 />
               );
-              // @ts-expect-error
             } else if (!entries.length) {
               return (
                 <Tip
@@ -135,21 +133,30 @@ export default function JournalList() {
             } else {
               return (
                 <div className="bg-primary-100 rounded-r-3xl overflow-hidden">
-                  {
-                    // @ts-expect-error
-                    entries?.map((entry) => (
-                      <JournalEntry
-                        refetch={refetch}
-                        key={entry._id}
-                        entry={entry}
-                      />
-                    ))
-                  }
+                  {entries?.map((entry) => (
+                    <JournalEntry
+                      refetch={refetch}
+                      key={entry._id}
+                      entry={entry}
+                    />
+                  ))}
                 </div>
               );
             }
           })()}
         </div>
+        {!!entries.length && isFetching && (
+          <div className="text-center space-y-4 text-primary-600">
+            <Loader />
+          </div>
+        )}
+        {hasNextPage && !isFetching && (
+          <div className="text-center my-8">
+            <Button onClick={() => fetchNextPage()} theme="link--muted">
+              Load more entries
+            </Button>
+          </div>
+        )}
       </Layout>
 
       <EditJournalModal
