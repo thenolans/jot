@@ -1,7 +1,7 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import Button from "components/core/Button";
 import DeleteButton from "components/core/DeleteButton";
-import Icon, { Logout } from "components/core/Icon";
+import Icon, { ClosingTag, Logout, OpeningTag } from "components/core/Icon";
 import Layout from "components/core/Layout";
 import PageTitle from "components/core/PageTitle";
 import Urls from "constants/urls";
@@ -47,6 +47,24 @@ export default function Account() {
             >
               Delete my data
             </DeleteButton>
+          </div>
+        </div>
+        <div className="text-gray-400 text-xs mt-8 space-y-1">
+          <div className="flex items-center">
+            <Icon size={16} icon={OpeningTag} />
+            <span className="mr-1">
+              Developed by{" "}
+              <a
+                rel="noreferrer"
+                target="_blank"
+                href="https://www.thenolans.io"
+                className="text-primary-700 hover:underline"
+              >
+                The Nolans
+              </a>{" "}
+              &mdash; v{process.env.REACT_APP_VERSION}
+            </span>
+            <Icon size={16} icon={ClosingTag} />
           </div>
         </div>
       </div>
