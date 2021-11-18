@@ -17,6 +17,7 @@ import useSearchParams, {
 } from "hooks/useSearchParams";
 import { reverse } from "named-urls";
 import { useEffect, useState } from "react";
+import InfiniteScroll from "react-infinite-scroll-component";
 import { useHistory, useLocation, useRouteMatch } from "react-router-dom";
 import { Entry, PaginatedEntries, TagTypes } from "types";
 
@@ -48,7 +49,6 @@ export default function JournalList() {
       reverse(Urls.api["journal:entries"], { id: journalId }),
       { q: debouncedSearchTerm, tag: selectedTags }
     );
-
   const passedName = (location as Location).state?.name;
   const [displayName, setDisplayName] = useState(
     passedName || data?.pages[0].meta.journal.name || ""
@@ -71,90 +71,91 @@ export default function JournalList() {
   return (
     <TagProvider type={TagTypes.JOURNAL} typeId={journalId}>
       <Layout>
-        <div className="space-y-8 lg:space-y-16 pb-6 lg:pb-0">
-          <div className="flex items-center justify-between">
-            <PageTitle>{displayName}</PageTitle>
-            <Button
-              onClick={() => setIsEditingJournal(true)}
-              className="ml-auto mr-4"
-              theme="link--primary"
-              aria-label="Edit journal"
-            >
-              <Icon size={32} icon={Gear} />
-            </Button>
-            <Button onClick={() => setIsLoggingEntry(true)}>Log entry</Button>
-          </div>
-          {displayName && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <Input
-                placeholder="Search journal..."
-                className="flex-grow"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-              <TagSelect
-                placeholder="Tags..."
-                inputId=""
-                onChange={(selectedTags) =>
-                  setSearchParams({
-                    tag: selectedTags,
-                  })
-                }
-                value={selectedTags}
-              />
+        {(scrollContainerRef) => (
+          <div className="space-y-8 lg:space-y-16 pb-6 lg:pb-0">
+            <div className="flex items-center justify-between">
+              <PageTitle>{displayName}</PageTitle>
+              <Button
+                onClick={() => setIsEditingJournal(true)}
+                className="ml-auto mr-4"
+                theme="link--primary"
+                aria-label="Edit journal"
+              >
+                <Icon size={32} icon={Gear} />
+              </Button>
+              <Button onClick={() => setIsLoggingEntry(true)}>Log entry</Button>
             </div>
-          )}
-          {(() => {
-            if (isLoading) {
-              return (
-                <div className="text-center space-y-4 text-primary-600">
-                  <Loader size={48} />
-                  <div>Fetching journal details...</div>
-                </div>
-              );
-            } else if (
-              !entries.length &&
-              !searchParams.q &&
-              !searchParams.tag
-            ) {
-              return (
-                <Tip
-                  title="You have not logged any entries, yet."
-                  description="Entries are the individual pieces that make up a journal. You can search them by keyword or by tag after you create some!"
+            {displayName && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <Input
+                  placeholder="Search journal..."
+                  className="flex-grow"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
                 />
-              );
-            } else if (!entries.length) {
-              return (
-                <Tip
-                  title="No entries match your filters!"
-                  description="We could not find any entries that match your search term or tags. Try searching by a new keyword or adjusting the tags to refine results."
+                <TagSelect
+                  placeholder="Tags..."
+                  inputId=""
+                  onChange={(selectedTags) =>
+                    setSearchParams({
+                      tag: selectedTags,
+                    })
+                  }
+                  value={selectedTags}
                 />
-              );
-            } else {
-              return (
-                <div className="bg-primary-100 rounded-r-3xl overflow-hidden">
-                  {entries?.map((entry) => (
-                    <JournalEntry
-                      refetch={refetch}
-                      key={entry._id}
-                      entry={entry}
-                    />
-                  ))}
-                </div>
-              );
-            }
-          })()}
-        </div>
-        {!!entries.length && isFetching && (
-          <div className="text-center space-y-4 text-primary-600">
-            <Loader />
-          </div>
-        )}
-        {hasNextPage && !isFetching && (
-          <div className="text-center my-8">
-            <Button onClick={() => fetchNextPage()} theme="link--muted">
-              Load more entries
-            </Button>
+              </div>
+            )}
+            {(() => {
+              if (isLoading) {
+                return (
+                  <div className="text-center space-y-4 text-primary-600">
+                    <Loader size={48} />
+                    <div>Fetching journal details...</div>
+                  </div>
+                );
+              } else if (
+                !entries.length &&
+                !searchParams.q &&
+                !searchParams.tag
+              ) {
+                return (
+                  <Tip
+                    title="You have not logged any entries, yet."
+                    description="Entries are the individual pieces that make up a journal. You can search them by keyword or by tag after you create some!"
+                  />
+                );
+              } else if (!entries.length) {
+                return (
+                  <Tip
+                    title="No entries match your filters!"
+                    description="We could not find any entries that match your search term or tags. Try searching by a new keyword or adjusting the tags to refine results."
+                  />
+                );
+              } else if (scrollContainerRef) {
+                return (
+                  <InfiniteScroll
+                    scrollableTarget={scrollContainerRef.current}
+                    className="bg-primary-100 rounded-r-3xl overflow-hidden"
+                    dataLength={entries.length}
+                    next={fetchNextPage}
+                    hasMore={Boolean(hasNextPage)}
+                    loader={
+                      <div className="text-center space-y-4 text-primary-600">
+                        <Loader />
+                      </div>
+                    }
+                  >
+                    {entries.map((entry) => (
+                      <JournalEntry
+                        refetch={refetch}
+                        key={entry._id}
+                        entry={entry}
+                      />
+                    ))}
+                  </InfiniteScroll>
+                );
+              }
+            })()}
           </div>
         )}
       </Layout>

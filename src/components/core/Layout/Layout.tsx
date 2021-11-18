@@ -1,10 +1,12 @@
 import Container from "components/core/Container";
 import Navigation from "components/core/Navigation";
-import { ReactNode, useEffect, useRef } from "react";
+import { ReactNode, RefObject, useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
 
 type Props = {
-  children: ReactNode;
+  children:
+    | ReactNode
+    | ((scrollContainerRef: RefObject<HTMLDivElement>) => ReactNode);
 };
 
 export default function Layout({ children }: Props) {
@@ -23,7 +25,11 @@ export default function Layout({ children }: Props) {
         className="flex-grow md:max-h-screen md:overflow-auto"
       >
         <div className="py-20 md:py-16 px-2 md:px-8 xl:px-16">
-          <Container>{children}</Container>
+          <Container>
+            {typeof children === "function"
+              ? children(scrollContainerRef)
+              : children}
+          </Container>
         </div>
       </div>
     </div>
