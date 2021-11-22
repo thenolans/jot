@@ -11,10 +11,11 @@ const Urls = {
     "list:add": "/lists/add",
   },
   api: {
-    entries: "/jot/entries",
-    entry: "/jot/entries/:id",
+    // Other
     tags: "/jot/tags",
     account: "/account",
+    "account:sample-data": "jot/account/sample-data",
+    // Journal module
     "journals:list": "/jot/journals",
     "journal:details": "/jot/journals/:id",
     "journal:entries": "/jot/journals/:id/entries",
@@ -29,6 +30,7 @@ const Urls = {
     "lists:items": "/jot/list-items",
     "lists:items:reorder": "/jot/list-items/reorder",
     "lists:item": "/jot/list-items/:id",
+    // Note module
     "notes:note": "/jot/notes/:id",
     "notes:notes": "/jot/notes",
   },

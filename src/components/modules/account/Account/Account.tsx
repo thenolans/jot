@@ -1,14 +1,24 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import Button from "components/core/Button";
 import DeleteButton from "components/core/DeleteButton";
-import Icon, { ClosingTag, Logout, OpeningTag } from "components/core/Icon";
+import Icon, {
+  ClosingTag,
+  HardDrive,
+  Logout,
+  OpeningTag,
+} from "components/core/Icon";
 import Layout from "components/core/Layout";
 import PageTitle from "components/core/PageTitle";
 import Urls from "constants/urls";
+import { useState } from "react";
 import http from "utils/http";
+
+import GenerateDataModal from "./GenerateDataModal";
 
 export default function Account() {
   const { logout } = useAuth0();
+  const [isShowingSampleDataModal, setIsShowingSampleDataModal] =
+    useState(false);
 
   return (
     <Layout>
@@ -17,6 +27,15 @@ export default function Account() {
           <PageTitle>Account</PageTitle>
         </div>
         <div className="divide-y divide-gray-300 px-2">
+          <div className="py-4">
+            <Button
+              theme="link--muted"
+              onClick={() => setIsShowingSampleDataModal(true)}
+            >
+              <Icon icon={HardDrive} />
+              <span>Generate sample data</span>
+            </Button>
+          </div>
           <div className="py-4">
             <Button
               onClick={() =>
@@ -68,6 +87,12 @@ export default function Account() {
           </div>
         </div>
       </div>
+
+      {/*Modals*/}
+      <GenerateDataModal
+        isOpen={isShowingSampleDataModal}
+        onClose={() => setIsShowingSampleDataModal(false)}
+      />
     </Layout>
   );
 }

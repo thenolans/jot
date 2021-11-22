@@ -9,6 +9,7 @@ export { default as ClosingTag } from "./icons/ClosingTag";
 export { default as Edit } from "./icons/Edit";
 export { default as Filter } from "./icons/Filter";
 export { default as Gear } from "./icons/Gear";
+export { default as HardDrive } from "./icons/HardDrive";
 export { default as Lock } from "./icons/Lock";
 export { default as Logout } from "./icons/Logout";
 export { default as OpeningTag } from "./icons/OpeningTag";

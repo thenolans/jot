@@ -5,7 +5,7 @@ import { ComponentProps } from "react";
 
 type Props = {
   isSubmitting?: boolean;
-  formId: string;
+  formId?: string;
   children: string;
 } & Omit<ComponentProps<typeof Button>, "className" | "children">;
 
