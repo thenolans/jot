@@ -1,6 +1,7 @@
 import Button from "components/core/Button";
+import ContentLoader from "components/core/ContentLoader";
+import Icon, { Plus } from "components/core/Icon";
 import Layout from "components/core/Layout";
-import Loader from "components/core/Loader";
 import PageTitle from "components/core/PageTitle";
 import Tip from "components/core/Tip";
 import Urls from "constants/urls";
@@ -35,18 +36,10 @@ export default function JournalList() {
       <div className="space-y-8 lg:space-y-16">
         <div className="flex justify-between items-center">
           <PageTitle>Journals</PageTitle>
-          <Button onClick={() => setIsCreatingJournal(true)}>
-            Create journal
-          </Button>
         </div>
         {(() => {
           if (isLoading) {
-            return (
-              <div className="text-center space-y-4 text-primary-600">
-                <Loader size={48} />
-                <div>Fetching your journals...</div>
-              </div>
-            );
+            return <ContentLoader label="Fetching your journals..." />;
           } else if (!journals.length) {
             return (
               <Tip
@@ -66,6 +59,16 @@ export default function JournalList() {
           }
         })()}
       </div>
+
+      <Button
+        className="u-floating-button"
+        theme="rounded"
+        aria-label="Create journal"
+        onClick={() => setIsCreatingJournal(true)}
+      >
+        <Icon size={32} icon={Plus} />
+      </Button>
+
       <CreateJournalModal
         isOpen={isCreatingJournal}
         onClose={(newJournal?: Journal) => {

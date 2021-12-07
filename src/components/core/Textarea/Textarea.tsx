@@ -6,11 +6,11 @@ type Props = TextareaHTMLAttributes<HTMLTextAreaElement> & {
   className?: string;
 };
 
-const Input = forwardRef<HTMLTextAreaElement, Props>(
+const Textarea = forwardRef<HTMLTextAreaElement, Props>(
   ({ className, ...props }, ref) => (
     <textarea
       className={classNames(
-        "w-full rounded-xl py-4 px-4 h-12 bg-primary-100 border-2 border-transparent focus:border-primary-700 outline-none text-gray-800 min-h-24",
+        "w-full rounded-xl py-4 px-4 h-12 bg-white border border-gray-200 focus:border-primary-500 outline-none text-primary-600 placeholder-gray-400 min-h-24",
         className
       )}
       ref={ref}
@@ -18,4 +18,4 @@ const Input = forwardRef<HTMLTextAreaElement, Props>(
     />
   )
 );
-export default Input;
+export default Textarea;

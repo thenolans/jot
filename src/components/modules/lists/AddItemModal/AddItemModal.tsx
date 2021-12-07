@@ -12,7 +12,7 @@ type Props = Pick<ModalProps, "onClose" | "isOpen"> & {
 };
 
 export default function AddItemModal({ groupId, ...props }: Props) {
-  const { list, updateList } = useList();
+  const { list, updateList, incrementCachedItemCount } = useList();
   const [isAdding, setIsAdding] = useState(false);
 
   async function handleSubmit(values: ListItemFormData) {
@@ -34,6 +34,8 @@ export default function AddItemModal({ groupId, ...props }: Props) {
 
       draft.groups[relatedGroupIndex].items = [...relatedItems, newItem];
     });
+
+    incrementCachedItemCount();
 
     setIsAdding(false);
     props.onClose();

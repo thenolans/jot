@@ -6,8 +6,8 @@ type Props = {
 } & LinkProps;
 
 const themeMap = {
-  primary: "text-primary-600 hover:text-primary-700",
-  muted: "text-gray-300 hover:text-primary-600",
+  primary: "button button--link button--link-primary",
+  muted: "button button--link button--link-muted",
   reset: "",
 };
 

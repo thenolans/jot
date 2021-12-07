@@ -16,7 +16,7 @@ http.interceptors.request.use(
     // Get all keys out of local storage
     const keys = Object.keys(localStorage);
     // Determine which key is the Auth0 session
-    const sessionKey = keys.find((key) => key.includes("auth0")) || "";
+    const sessionKey = keys.find((key) => key.includes("@@auth0spajs@@")) || "";
     // Grab the session
     const sessionData = localStorage.getItem(sessionKey);
 

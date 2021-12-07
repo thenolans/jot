@@ -19,7 +19,7 @@ type Props = {
 };
 
 export default function Item({ canDrag, index, item }: Props) {
-  const { updateList, list } = useList();
+  const { updateList, list, decrementCachedItemCount } = useList();
   const [isCompleted, setIsCompleted] = useState(item.isCompleted);
   const [isConfirmingDelete, setIsConfirmingDelete] = useState(false);
   const [isEditingItem, setIsEditingItem] = useState(false);
@@ -40,6 +40,8 @@ export default function Item({ canDrag, index, item }: Props) {
         (i) => i._id !== item._id
       );
     });
+
+    decrementCachedItemCount();
   }
 
   function updateItemInList(data: Partial<ListItemType>) {
@@ -106,7 +108,7 @@ export default function Item({ canDrag, index, item }: Props) {
             <div className="flex items-center space-x-2 pl-4">
               <div
                 className={classNames(
-                  "cursor-move text-gray-300 hover:text-primary-600",
+                  "cursor-move text-primary-300 hover:text-primary-600",
                   {
                     hidden: !(canDrag || list.groups.length > 1),
                   }

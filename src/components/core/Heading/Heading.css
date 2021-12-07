@@ -1,0 +1,34 @@
+.c-heading {
+  @apply font-semibold;
+}
+
+.c-heading--danger {
+  @apply text-danger-500;
+}
+
+.c-heading--default {
+  @apply text-gray-700;
+}
+
+.c-heading--primary {
+  @apply text-primary-500;
+}
+
+h1.c-heading {
+}
+
+h2.c-heading {
+}
+
+h3.c-heading {
+  @apply text-xl;
+}
+
+h4.c-heading {
+}
+
+h5.c-heading {
+}
+
+h6.c-heading {
+}

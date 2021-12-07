@@ -1,8 +1,10 @@
+import { Dialog } from "@reach/dialog";
 import { deleteNote as deleteNoteApi, updateNote } from "api/notes";
+import Button from "components/core/Button";
 import Checkbox from "components/core/Checkbox";
-import DeleteButton from "components/core/DeleteButton";
+import Icon, { Trash } from "components/core/Icon";
 import Modal, { ModalProps } from "components/core/Modal";
-import Textarea from "components/core/Textarea";
+import Tooltip from "components/core/Tooltip";
 import throttle from "lodash/throttle";
 import { ChangeEvent, useMemo, useState } from "react";
 import { Note } from "types";
@@ -59,33 +61,42 @@ export default function EditNoteModal({
   }
 
   return (
-    <Modal
-      title="Edit note"
-      ariaLabel="Edit note"
-      onClose={() => handleClose()}
-      {...props}
+    <Dialog
+      className="c-modal c-modal--stretch"
+      isOpen={props.isOpen}
+      onDismiss={() => onClose()}
+      aria-label="Edit note"
     >
-      <Modal.Body>
-        <Textarea
-          className="min-h-40"
+      <Modal.CloseButton onClick={() => handleClose()} />
+      <Modal.Scroll>
+        <textarea
           autoFocus
+          className="w-full resize-none p-6 flex-grow outline-none text-gray-700"
           value={content}
           onChange={handleChange}
         />
-      </Modal.Body>
-      <Modal.Footer className="text-center">
-        <div className="grid grid-cols-2 gap-2">
+
+        <Modal.Footer className="flex items-center justify-between">
           <Checkbox
+            size="sm"
             onChange={(e) => {
               togglePrivate(e.target.checked);
               setIsPrivate(e.target.checked);
             }}
+            label="Scramble note in list view?"
             checked={isPrivate}
-            label="Private?"
           />
-          <DeleteButton onClick={() => deleteNote()}>Delete note</DeleteButton>
-        </div>
-      </Modal.Footer>
-    </Modal>
+          <Tooltip title="Delete note">
+            <Button
+              aria-label="Delete note"
+              onClick={() => deleteNote()}
+              theme="link-primary"
+            >
+              <Icon size={16} icon={Trash} />
+            </Button>
+          </Tooltip>
+        </Modal.Footer>
+      </Modal.Scroll>
+    </Dialog>
   );
 }

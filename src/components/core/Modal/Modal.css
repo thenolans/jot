@@ -3,11 +3,19 @@
 }
 
 .c-modal {
-  @apply w-full bg-white shadow max-h-full md:max-w-md rounded-t-3xl md:rounded-xl flex flex-col overflow-hidden;
+  @apply relative w-full bg-white shadow max-h-full md:max-w-md md:rounded-xl flex flex-col;
+}
+
+.c-modal--stretch {
+  @apply h-full;
+}
+
+.c-modal__scroll {
+  @apply overflow-hidden flex-grow flex flex-col rounded-t-3xl md:rounded-xl;
 }
 
 .c-modal__header {
-  @apply p-4 md:p-6 flex justify-between;
+  @apply py-4 px-6 border-b border-gray-200 flex justify-between;
 }
 
 .c-modal__body {
@@ -19,5 +27,5 @@
 }
 
 .c-modal__footer {
-  @apply p-4 md:p-6 text-right;
+  @apply border-t border-gray-200 py-4 px-6;
 }

@@ -15,7 +15,7 @@ export default function LandingPage() {
   return (
     <Container>
       <div className="text-center space-y-8 py-8 text-gray-700">
-        <Logo />
+        <Logo theme="dark" />
         <p>
           Keep track of anything you can imagine by jotting down notes that can
           be easily found by searching and filtering

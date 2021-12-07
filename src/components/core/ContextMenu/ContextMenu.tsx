@@ -25,10 +25,7 @@ const ContextMenu = ({ children }: Props) => {
     <Tooltip
       interactive
       html={
-        <div
-          ref={menuRef}
-          className="flex flex-col space-y-2 bg-white rounded-xl py-4 px-8 shadow"
-        >
+        <div ref={menuRef} className="flex flex-col space-y-2 py-4 px-4">
           {Children.map(children, (child) =>
             // @ts-expect-error
             cloneElement(child, {
@@ -45,11 +42,12 @@ const ContextMenu = ({ children }: Props) => {
       trigger="click"
       theme="light"
       open={isOpen}
+      arrow
     >
       <Button
-        display="flex"
+        className="flex" // This fixes a positioning issue
         aria-label="Group actions"
-        theme="link--muted"
+        theme="link-muted"
         onClick={() => setIsOpen(!isOpen)}
       >
         <Icon strokeWidth={3} size={16} icon={VerticalEllipses} />
@@ -61,7 +59,7 @@ const ContextMenu = ({ children }: Props) => {
 ContextMenu.Action = (props: ComponentPropsWithoutRef<"button">) => {
   return (
     <button
-      className="text-right text-gray-600 hover:text-primary-600"
+      className="text-right text-gray-500 hover:text-primary-800"
       {...props}
     />
   );

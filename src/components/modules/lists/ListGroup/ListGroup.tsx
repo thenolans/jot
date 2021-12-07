@@ -52,11 +52,11 @@ export default function Group({ canDrag, index, group }: Props) {
           className="space-y-4 py-4"
         >
           <div className="flex items-center justify-between bg-primary-100 rounded-xl py-2 px-6">
-            <div className="text-primary-800">{group.name}</div>
+            <div className="text-primary-500 font-semibold">{group.name}</div>
             <div className="flex items-center space-x-2">
               <div
                 className={classNames(
-                  "cursor-move text-primary-400 hover:text-primary-600",
+                  "cursor-move text-primary-500 hover:text-primary-600",
                   {
                     hidden: !canDrag,
                   }
@@ -101,7 +101,7 @@ export default function Group({ canDrag, index, group }: Props) {
             <Button
               className="ml-14"
               onClick={() => setIsAddingItem(true)}
-              theme="link--muted"
+              theme="link-muted"
             >
               <Icon size={16} strokeWidth={3} icon={Plus} />
               <span>Add item</span>

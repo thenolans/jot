@@ -1,14 +1,14 @@
 .c-journal-link {
-  @apply w-full bg-primary-300 rounded-r-2xl relative flex items-center;
+  @apply w-full bg-primary-200 rounded-r-2xl relative flex items-center;
   aspect-ratio: 4 / 5;
 }
 
 .c-journal-link__spine {
-  @apply h-full bg-primary-600 bg-opacity-20 w-2 sm:w-4 flex-shrink-0;
+  @apply h-full bg-primary-900 bg-opacity-20 w-2 sm:w-4 flex-shrink-0;
 }
 
 .c-journal-link__name {
-  @apply flex-grow p-4 text-center sm:text-lg font-semibold text-primary-700;
+  @apply flex-grow p-4 text-center sm:text-lg font-semibold text-primary-600;
 }
 
 .c-journal-link__bookmark {
@@ -16,7 +16,7 @@
 }
 
 .c-journal-link:hover .c-journal-link__name {
-  @apply text-primary-800;
+  @apply text-primary-700;
 }
 
 .c-journal-link:hover .c-journal-link__bookmark {

@@ -1,12 +1,12 @@
 import { createNote, getNotes } from "api/notes";
 import Button from "components/core/Button";
-import Icon, { Gear } from "components/core/Icon";
-import Input from "components/core/Input";
+import ContentLoader from "components/core/ContentLoader";
+import Icon, { Eye, EyeOff, Plus } from "components/core/Icon";
+import { SearchInput } from "components/core/Input";
 import Layout from "components/core/Layout";
-import Loader from "components/core/Loader";
 import PageTitle from "components/core/PageTitle";
 import Tip from "components/core/Tip";
-import { NoteSettingsProvider } from "contexts/noteSettings";
+import Tooltip from "components/core/Tooltip";
 import useDebounce from "hooks/useDebounce";
 import useQueryWithUpdater from "hooks/useQueryWithUpdater";
 import { useEffect, useState } from "react";
@@ -16,12 +16,13 @@ import { Note as NoteType, QueryKeys } from "types";
 import EditNoteModal from "../EditNoteModal";
 import MasonryGrid from "../MasonryGrid";
 import Note from "../Note";
-import NoteSettingsModal from "../NoteSettingsModal";
 
 export default function Notes() {
   const queryClient = useQueryClient();
   const [query, setQuery] = useState("");
   const debouncedQuery = useDebounce(query, 500);
+  const [shouldScramblePrivateNotes, setShouldScramblePrivateNotes] =
+    useState(true);
   const {
     data: notes = [],
     setData: updateNotes,
@@ -31,8 +32,10 @@ export default function Notes() {
     [QueryKeys.NOTES_LIST, debouncedQuery],
     () => getNotes(query)
   );
-  const [isEditingSettings, setIsEditingSettings] = useState(false);
   const [noteToEdit, setNoteToEdit] = useState<NoteType | null>(null);
+  const tooltipText = shouldScramblePrivateNotes
+    ? "Unscramble private notes"
+    : "Scramble private notes";
 
   useEffect(() => {
     queryClient.invalidateQueries([QueryKeys.NOTES_LIST]);
@@ -45,92 +48,92 @@ export default function Notes() {
   }
 
   return (
-    <NoteSettingsProvider>
-      <Layout>
-        <div className="space-y-8 lg:space-y-16">
-          <div className="flex justify-between items-center">
-            <PageTitle>Notes</PageTitle>
-            <div className="flex items-center">
-              <Button
-                onClick={() => setIsEditingSettings(true)}
-                className="mr-4"
-                theme="link--primary"
-                aria-label="Edit settings"
-              >
-                <Icon size={32} icon={Gear} />
-              </Button>
-              <Button onClick={() => addNote()}>Create note</Button>
-            </div>
+    <Layout>
+      <div className="space-y-8 lg:space-y-16">
+        <div className="flex flex-wrap justify-between items-center">
+          <PageTitle>Notes</PageTitle>
+          <Tooltip className="ml-auto md:mr-4" title={tooltipText}>
+            <Button
+              theme="link-primary"
+              onClick={() =>
+                setShouldScramblePrivateNotes(!shouldScramblePrivateNotes)
+              }
+              aria-label={tooltipText}
+            >
+              <Icon icon={shouldScramblePrivateNotes ? Eye : EyeOff} />
+            </Button>
+          </Tooltip>
+          <div className="w-full mt-4 md:w-auto md:mt-0">
+            <SearchInput
+              placeholder="Search notes..."
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+            />
           </div>
-          <Input
-            placeholder="Search notes..."
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-          />
-          {(() => {
-            if (isLoading) {
-              return (
-                <div className="text-center space-y-4 text-primary-600">
-                  <Loader size={48} />
-                  <div>Fetching notes...</div>
-                </div>
-              );
-            } else if (!notes.length && hasLoadedData) {
-              return (
-                <Tip
-                  title="You have not created any notes, yet!"
-                  description="Use markdown to create notes with bulleted lists, links, and more!"
-                />
-              );
-            } else {
-              return (
-                <MasonryGrid>
-                  {notes.map((note) => {
-                    return (
-                      <Note
-                        note={note}
-                        onClick={() => setNoteToEdit(note)}
-                        key={note._id}
-                      />
-                    );
-                  })}
-                </MasonryGrid>
-              );
-            }
-          })()}
         </div>
+        {(() => {
+          if (isLoading) {
+            return <ContentLoader label="Fetching notes.." />;
+          } else if (!notes.length && hasLoadedData) {
+            return (
+              <Tip
+                title="You have not created any notes, yet!"
+                description="Use markdown to create notes with bulleted lists, links, and more!"
+              />
+            );
+          } else {
+            return (
+              <MasonryGrid>
+                {notes.map((note) => {
+                  return (
+                    <Note
+                      scrambleContent={shouldScramblePrivateNotes}
+                      note={note}
+                      onClick={() => setNoteToEdit(note)}
+                      key={note._id}
+                    />
+                  );
+                })}
+              </MasonryGrid>
+            );
+          }
+        })()}
+      </div>
 
-        {/* Modals */}
-        <NoteSettingsModal
-          isOpen={isEditingSettings}
-          onClose={() => setIsEditingSettings(false)}
+      <Button
+        className="u-floating-button"
+        theme="rounded"
+        aria-label="Create note"
+        onClick={() => addNote()}
+      >
+        <Icon size={32} icon={Plus} />
+      </Button>
+
+      {noteToEdit && (
+        <EditNoteModal
+          onUpdate={(note) => {
+            updateNotes((draft) => {
+              if (!draft) return;
+
+              const updatedIndex = draft.findIndex((n) => n._id === note._id);
+              draft[updatedIndex] = note;
+            });
+          }}
+          onDelete={(noteId) => {
+            updateNotes((draft) => {
+              if (!draft) return;
+
+              const deletedIndex = draft.findIndex(
+                (note) => note._id === noteId
+              );
+              draft.splice(deletedIndex, 1);
+            });
+          }}
+          note={noteToEdit}
+          isOpen={Boolean(noteToEdit)}
+          onClose={() => setNoteToEdit(null)}
         />
-        {noteToEdit && (
-          <EditNoteModal
-            onUpdate={(note) => {
-              updateNotes((draft) => {
-                if (!draft) return;
-
-                const updatedIndex = draft.findIndex((n) => n._id === note._id);
-                draft[updatedIndex] = note;
-              });
-            }}
-            onDelete={(noteId) => {
-              updateNotes((draft) => {
-                if (!draft) return;
-
-                const deletedIndex = draft.findIndex(
-                  (note) => note._id === noteId
-                );
-                draft.splice(deletedIndex, 1);
-              });
-            }}
-            note={noteToEdit}
-            isOpen={Boolean(noteToEdit)}
-            onClose={() => setNoteToEdit(null)}
-          />
-        )}
-      </Layout>
-    </NoteSettingsProvider>
+      )}
+    </Layout>
   );
 }

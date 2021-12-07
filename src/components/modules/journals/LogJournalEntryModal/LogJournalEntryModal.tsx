@@ -37,9 +37,11 @@ export default function LogEntryModal({ journalId, ...props }: Props) {
 
   return (
     <Modal ariaLabel="Log an entry" title="Log an entry" {...props}>
-      <Modal.Body>
-        <EntryForm formId="log-entry-form" onSubmit={saveItem} />
-      </Modal.Body>
+      <Modal.Scroll>
+        <Modal.Body>
+          <EntryForm formId="log-entry-form" onSubmit={saveItem} />
+        </Modal.Body>
+      </Modal.Scroll>
       <Modal.Footer>
         <SubmitButton isSubmitting={isSaving} formId="log-entry-form" fluid>
           Save entry

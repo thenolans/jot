@@ -1,10 +1,21 @@
+import "./Checkbox.css";
+
 import classNames from "classnames";
 import Icon, { Checkmark } from "components/core/Icon";
 import { InputHTMLAttributes } from "react";
 
-type Props = InputHTMLAttributes<HTMLInputElement> & {
+type Props = Pick<
+  InputHTMLAttributes<HTMLInputElement>,
+  "checked" | "className" | "onChange"
+> & {
   label: string;
+  size?: "sm" | "md";
   strikeThrough?: boolean;
+};
+
+const iconSize = {
+  sm: 12,
+  md: 16,
 };
 
 export default function Checkbox({
@@ -12,38 +23,32 @@ export default function Checkbox({
   label,
   checked,
   strikeThrough,
+  size = "md",
   ...props
 }: Props) {
   return (
     <label
       className={classNames(
-        "block hover:text-primary-600 cursor-pointer",
-        {
-          "text-gray-300": checked && strikeThrough,
-          "text-gray-600": !checked,
-        },
-        className
+        "c-checkbox",
+        `c-checkbox--${size}`,
+        checked && "c-checkbox--checked",
+        strikeThrough && "c-checkbox--strike-through"
       )}
     >
-      <div className="inline-flex items-center space-x-4 relative">
-        <div className="relative w-6 h-6 border-2 border-gray-200 rounded-full flex-shrink-0">
+      <div className="c-checkbox__container">
+        <div className="c-checkbox__box">
           {checked && (
             <Icon
-              className={classNames(
-                "u-absolute-center",
-                !strikeThrough && "text-primary-600"
-              )}
-              size={16}
+              className="c-checkbox__checkmark u-absolute-center"
+              size={iconSize[size]}
               strokeWidth={4}
               icon={Checkmark}
             />
           )}
         </div>
-        <div>
+        <div className="c-checkbox__label">
           {label}
-          {strikeThrough && checked && (
-            <div className="border-t absolute top-1/2 border-gray-400 -left-2 -right-2" />
-          )}
+          {strikeThrough && checked && <div className="c-checkbox__strike" />}
         </div>
       </div>
       <input checked={checked} className="sr-only" type="checkbox" {...props} />

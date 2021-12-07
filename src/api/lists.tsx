@@ -7,7 +7,9 @@ export async function getLists(): Promise<List[]> {
   return http.get(Urls.api["lists:lists"]).then((res) => res.data.data);
 }
 
-export async function createList(data: Omit<List, "_id" | "groups">) {
+export async function createList(
+  data: Omit<List, "_id" | "groups" | "itemCount">
+) {
   return http.post(Urls.api["lists:lists"], data).then((res) => res.data.data);
 }
 

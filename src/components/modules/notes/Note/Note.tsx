@@ -1,6 +1,5 @@
 import "./Note.css";
 
-import useNoteSettings from "hooks/useNoteSettings";
 import marked from "marked";
 import { Note as NoteType } from "types";
 import scramble from "utils/scramble";
@@ -8,16 +7,16 @@ import scramble from "utils/scramble";
 type Props = {
   note: NoteType;
   onClick: () => void;
+  scrambleContent?: boolean;
 };
 
-export default function Note({ note, onClick }: Props) {
-  const { scramblePrivateNotes } = useNoteSettings();
+export default function Note({ note, onClick, scrambleContent }: Props) {
   const { content, isPrivate } = note;
 
   function createMarkup() {
     return {
       __html: marked.parse(
-        isPrivate && scramblePrivateNotes ? scramble(content) : content
+        isPrivate && scrambleContent ? scramble(content) : content
       ),
     };
   }

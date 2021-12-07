@@ -26,3 +26,7 @@ body * {
 .u-absolute-center {
   @apply absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2;
 }
+
+.u-floating-button {
+  @apply fixed right-4 bottom-20 md:right-8 md:bottom-8;
+}

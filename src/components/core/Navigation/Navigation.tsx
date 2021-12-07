@@ -26,7 +26,7 @@ export default function Navigation() {
         </NavLink>
       </div>
       <NavLink
-        className="px-4 rounded-full md:px-8"
+        className="rounded-full px-4 md:px-8"
         icon={User}
         to={Urls.routes.account}
       >

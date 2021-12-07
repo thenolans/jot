@@ -1,13 +1,15 @@
-import "./JournalEntry.css";
-
-import Button from "components/core/Button";
+import BodyText from "components/core/BodyText";
+import ConfirmModal from "components/core/ConfirmModal";
+import ContextMenu from "components/core/ContextMenu";
+import Heading from "components/core/Heading";
 import Highlighter from "components/core/Highlighter";
-import Icon, { Edit } from "components/core/Icon";
 import Tag from "components/core/Tag";
-import dayjs from "dayjs";
+import Urls from "constants/urls";
 import useSearchParams, { asStringParam } from "hooks/useSearchParams";
+import { reverse } from "named-urls";
 import { useState } from "react";
 import { Entry } from "types";
+import http from "utils/http";
 
 import EditJournalEntryModal from "../EditJournalEntryModal";
 
@@ -20,50 +22,54 @@ export default function JournalEntry({ entry, refetch }: Props) {
   const [searchParams] = useSearchParams();
   const highlightTerm = asStringParam(searchParams.q) || "";
   const [isEditing, setIsEditing] = useState(false);
+  const [isConfirmingDelete, setIsConfirmingDelete] = useState(false);
+
+  async function deleteEntry() {
+    await http.delete(
+      reverse(Urls.api["journal:entry"], {
+        journalId: entry.journalId,
+        entryId: entry._id,
+      })
+    );
+
+    refetch();
+  }
 
   return (
-    <div className="c-journal-entry">
-      <div className="c-journal-entry__date">
-        <div>{dayjs(entry.date).format("MMM")}</div>
-        <div>{dayjs(entry.date).format("D")}</div>
+    <div className="p-4 border rounded-lg bg-white space-y-4">
+      <div className="flex items-center justify-between">
+        <Heading as="h4">
+          <Highlighter
+            autoEscape
+            searchWords={[highlightTerm]}
+            textToHighlight={entry.title}
+          />
+        </Heading>
+        <ContextMenu>
+          <ContextMenu.Action onClick={() => setIsEditing(true)}>
+            Edit entry
+          </ContextMenu.Action>
+          <ContextMenu.Action onClick={() => setIsConfirmingDelete(true)}>
+            Delete entry
+          </ContextMenu.Action>
+        </ContextMenu>
       </div>
-      <div className="c-journal-entry__content">
-        <div>
-          <div className="flex items-center justify-between">
-            <h3 className="c-journal-entry__title">
-              <Highlighter
-                autoEscape
-                searchWords={[highlightTerm]}
-                textToHighlight={entry.title}
-              />
-            </h3>
-            <Button
-              onClick={() => setIsEditing(true)}
-              className="ml-auto pl-4"
-              theme="link--muted"
-              aria-label="Edit entry"
-            >
-              <Icon size={20} icon={Edit} />
-            </Button>
-          </div>
+      {entry.notes && (
+        <BodyText>
+          <Highlighter
+            autoEscape
+            searchWords={[highlightTerm]}
+            textToHighlight={entry.notes}
+          />
+        </BodyText>
+      )}
+      {!!entry.tags.length && (
+        <div className="space-x-1">
+          {entry.tags.map((tag) => (
+            <Tag key={tag._id}>{tag.name}</Tag>
+          ))}
         </div>
-        {entry.notes && (
-          <div>
-            <Highlighter
-              autoEscape
-              searchWords={[highlightTerm]}
-              textToHighlight={entry.notes}
-            />
-          </div>
-        )}
-        {!!entry.tags.length && (
-          <div className="c-journal-entry__tags">
-            {entry.tags.map((tag) => (
-              <Tag key={tag._id}>{tag.name}</Tag>
-            ))}
-          </div>
-        )}
-      </div>
+      )}
 
       <EditJournalEntryModal
         entry={entry}
@@ -75,6 +81,13 @@ export default function JournalEntry({ entry, refetch }: Props) {
 
           setIsEditing(false);
         }}
+      />
+      <ConfirmModal
+        ariaLabel="Confirm entry delete"
+        isOpen={isConfirmingDelete}
+        onClose={() => setIsConfirmingDelete(false)}
+        onConfirm={() => deleteEntry()}
+        title="Are you sure you want to delete this entry?"
       />
     </div>
   );

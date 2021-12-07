@@ -8,7 +8,7 @@ type Props = {
 
 export default function DeleteButton({ children, ...props }: Props) {
   return (
-    <Button theme="link--danger" {...props}>
+    <Button theme="link-danger" {...props}>
       <Icon icon={Trash} />
       <span>{children}</span>
     </Button>

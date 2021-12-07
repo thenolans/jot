@@ -29,10 +29,6 @@ export type Entry = {
   journalId: string;
 };
 
-export type SortedEntries = {
-  [formattedDate: string]: Entry[];
-};
-
 export type Journal = {
   _id: string;
   name: string;
@@ -43,6 +39,14 @@ export type PaginatedEntries = {
   meta: {
     journal: Journal;
   };
+};
+
+export type SortedEntries = {
+  dates: string[];
+  entriesByDate: {
+    [date: string]: Entry[];
+  };
+  count: number;
 };
 
 export type JournalFormData = Pick<Journal, "name">;
@@ -88,9 +92,10 @@ export type List = {
   type: ListType;
   showCompletedItems: boolean;
   groups: ListGroup[];
+  itemCount: number;
 };
 
-export type ListFormData = Omit<List, "_id" | "groups">;
+export type ListFormData = Omit<List, "_id" | "groups" | "itemCount">;
 export type ListGroupFormData = Pick<ListGroup, "name">;
 export type ListItemFormData = Pick<ListItem, "title">;
 

@@ -1,9 +1,13 @@
 .c-note {
-  @apply rounded-xl bg-primary-100 p-6 text-primary-800 space-y-4 select-none;
+  @apply border border-gray-200 text-gray-600 rounded-xl p-6 space-y-4 select-none bg-white;
 }
 
 .c-note h1 {
-  @apply text-lg font-bold border-b pb-2 border-primary-200;
+  @apply font-bold border-b pb-2 border-gray-200;
+}
+
+.c-note :not(h1) {
+  @apply text-sm;
 }
 
 .c-note ul {
@@ -15,7 +19,7 @@
 }
 
 .c-note hr {
-  @apply border-primary-200;
+  @apply border-gray-200;
 }
 
 .c-note table {
@@ -30,5 +34,5 @@
 .c-note table,
 .c-note th,
 .c-note td {
-  @apply border border-primary-300;
+  @apply border border-gray-300;
 }

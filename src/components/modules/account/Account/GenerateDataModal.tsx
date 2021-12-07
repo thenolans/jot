@@ -1,3 +1,4 @@
+import BodyText from "components/core/BodyText";
 import Button from "components/core/Button";
 import Checkbox from "components/core/Checkbox";
 import Modal, { ModalProps } from "components/core/Modal";
@@ -39,6 +40,7 @@ export default function GenerateDataConfirmation(props: Props) {
       await http.post(Urls.api["account:sample-data"], {
         modules: selectedOptions,
       });
+
       queryClient.clear();
       props.onClose();
     } catch {
@@ -52,15 +54,14 @@ export default function GenerateDataConfirmation(props: Props) {
     <Modal
       title="Generate sample data"
       ariaLabel="Generate sample data"
-      hideClose
       {...props}
     >
       <Modal.Body>
         <div className="space-y-8">
-          <div>
+          <BodyText>
             Sample data can give you a quick look at how Jot can be used. For
             which modules would you like to generate sample data?
-          </div>
+          </BodyText>
           <div className="space-y-1">
             <Checkbox
               checked={selectedOptions.includes(DataOptions.NOTES)}
@@ -82,7 +83,7 @@ export default function GenerateDataConfirmation(props: Props) {
       </Modal.Body>
       <Modal.Footer>
         <div className="grid grid-cols-2 gap-2">
-          <Button onClick={() => props.onClose()} theme="link--muted">
+          <Button onClick={() => props.onClose()} theme="link-muted">
             Cancel
           </Button>
           <SubmitButton

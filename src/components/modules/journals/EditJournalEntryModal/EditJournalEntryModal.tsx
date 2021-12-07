@@ -1,4 +1,3 @@
-import DeleteButton from "components/core/DeleteButton";
 import Modal, { ModalProps } from "components/core/Modal";
 import SubmitButton from "components/core/SubmitButton";
 import Urls from "constants/urls";
@@ -37,19 +36,6 @@ export default function EditJournalEntryModal({ entry, ...props }: Props) {
     props.onClose(true);
   }
 
-  async function deleteEntry() {
-    if (window.confirm("Are you sure you want to delete this entry?")) {
-      await http.delete(
-        reverse(Urls.api["journal:entry"], {
-          journalId: entry.journalId,
-          entryId: entry._id,
-        })
-      );
-
-      props.onClose(true);
-    }
-  }
-
   return (
     <Modal
       ariaLabel="Edit a journal entry"
@@ -66,18 +52,13 @@ export default function EditJournalEntryModal({ entry, ...props }: Props) {
           onSubmit={saveItem}
         />
       </Modal.Body>
-      <Modal.Footer>
-        <div className="grid grid-cols-2 gap-2">
-          <DeleteButton onClick={() => deleteEntry()} fluid>
-            Delete entry
-          </DeleteButton>
-          <SubmitButton
-            isSubmitting={isSaving}
-            formId={`edit-entry-${entry._id}`}
-          >
-            Save entry
-          </SubmitButton>
-        </div>
+      <Modal.Footer className="text-right">
+        <SubmitButton
+          isSubmitting={isSaving}
+          formId={`edit-entry-${entry._id}`}
+        >
+          Save entry
+        </SubmitButton>
       </Modal.Footer>
     </Modal>
   );

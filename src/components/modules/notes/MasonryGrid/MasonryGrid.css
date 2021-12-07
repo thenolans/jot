@@ -1,13 +1,10 @@
 .c-masonry-grid {
-  display: flex;
-  margin-left: -30px; /* gutter size offset */
-  width: auto;
+  @apply flex -ml-4 w-auto;
 }
 .c-masonry-grid__column {
-  padding-left: 30px; /* gutter size */
-  background-clip: padding-box;
+  @apply pl-4 bg-clip-padding;
 }
 
 .c-masonry-grid__column > * {
-  margin-bottom: 30px;
+  @apply mb-4;
 }

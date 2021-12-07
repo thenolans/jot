@@ -1,7 +1,8 @@
 import { getLists } from "api/lists";
 import Button from "components/core/Button";
+import ContentLoader from "components/core/ContentLoader";
+import Icon, { Plus } from "components/core/Icon";
 import Layout from "components/core/Layout";
-import Loader from "components/core/Loader";
 import PageTitle from "components/core/PageTitle";
 import Tip from "components/core/Tip";
 import useQueryWithUpdater from "hooks/useQueryWithUpdater";
@@ -25,17 +26,11 @@ export default function Lists() {
       <div className="space-y-8 lg:space-y-16">
         <div className="flex justify-between items-center">
           <PageTitle>Lists</PageTitle>
-          <Button onClick={() => setIsCreatingList(true)}>Create list</Button>
         </div>
         <div>
           {(() => {
             if (isLoading) {
-              return (
-                <div className="text-center space-y-4 text-primary-600">
-                  <Loader size={48} />
-                  <div>Fetching your lists...</div>
-                </div>
-              );
+              return <ContentLoader label="Fetching your lists..." />;
             } else if (!lists.length && hasLoadedData) {
               return (
                 <Tip
@@ -45,7 +40,7 @@ export default function Lists() {
               );
             } else {
               return (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                   {lists.map((list) => {
                     return <ListCard list={list} key={list._id} />;
                   })}
@@ -55,6 +50,15 @@ export default function Lists() {
           })()}
         </div>
       </div>
+
+      <Button
+        className="u-floating-button"
+        theme="rounded"
+        aria-label="Create list"
+        onClick={() => setIsCreatingList(true)}
+      >
+        <Icon size={32} icon={Plus} />
+      </Button>
 
       <AddListModal
         isOpen={isCreatingList}

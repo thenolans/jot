@@ -1,11 +1,26 @@
-import { getList, reorderGroups, reorderItems, resetList } from "api/lists";
+import {
+  deleteList as deleteListApi,
+  getList,
+  reorderGroups,
+  reorderItems,
+  resetList,
+} from "api/lists";
 import Button from "components/core/Button";
 import ConfirmModal from "components/core/ConfirmModal";
-import Icon, { Gear, Plus } from "components/core/Icon";
+import ContentLoader from "components/core/ContentLoader";
+import Icon, {
+  Gear,
+  OpeningTag,
+  Plus,
+  Refresh,
+  Trash,
+} from "components/core/Icon";
 import Layout from "components/core/Layout";
-import Loader from "components/core/Loader";
+import Link from "components/core/Link";
 import PageTitle from "components/core/PageTitle";
 import Tip from "components/core/Tip";
+import Tooltip from "components/core/Tooltip";
+import Urls from "constants/urls";
 import ListContext from "contexts/list";
 import useNProgress from "hooks/useNProgress";
 import useQueryWithUpdater from "hooks/useQueryWithUpdater";
@@ -16,10 +31,17 @@ import {
   DroppableProvided,
   DropResult,
 } from "react-beautiful-dnd";
-import { useLocation, useRouteMatch } from "react-router-dom";
-import { List as ListType, ListItem, ListType as ListTypes } from "types";
+import { useQueryClient } from "react-query";
+import { useHistory, useLocation, useRouteMatch } from "react-router-dom";
+import {
+  List as ListType,
+  ListItem,
+  ListType as ListTypes,
+  QueryKeys,
+} from "types";
 import moveItemBetweenArrays from "utils/moveItemBetweenArrays";
 import reorder from "utils/reorder";
+import updateQueryCacheIfExists from "utils/updateQueryCacheIfExists";
 
 import AddGroupModal from "../AddGroupModal.tsx";
 import EditListModal from "../EditListModal";
@@ -36,6 +58,8 @@ type Location = {
 };
 
 export default function List() {
+  const queryClient = useQueryClient();
+  const history = useHistory();
   const location = useLocation();
   const match = useRouteMatch<Params>();
   const listId = match.params.id;
@@ -43,6 +67,7 @@ export default function List() {
   const [isEditingList, setIsEditingList] = useState(false);
   const [isAddingGroup, setIsAddingGroup] = useState(false);
   const [isConfirmingReset, setIsConfirmingReset] = useState(false);
+  const [isConfirmingDelete, setIsConfirmingDelete] = useState(false);
   const {
     data: list,
     setData: updateList,
@@ -170,140 +195,215 @@ export default function List() {
     }
   }
 
+  function incrementCachedItemCount() {
+    updateQueryCacheIfExists(
+      queryClient,
+      QueryKeys.LISTS_LIST,
+      (lists: ListType[]) =>
+        lists.map((l) => {
+          if (l._id === list?._id) {
+            return {
+              ...l,
+              itemCount: l.itemCount + 1,
+            };
+          }
+          return l;
+        })
+    );
+  }
+
+  function decrementCachedItemCount() {
+    updateQueryCacheIfExists(
+      queryClient,
+      QueryKeys.LISTS_LIST,
+      (lists: ListType[]) =>
+        lists.map((l) => {
+          if (l._id === list?._id) {
+            return {
+              ...l,
+              itemCount: l.itemCount - 1,
+            };
+          }
+          return l;
+        })
+    );
+  }
+
+  async function deleteList() {
+    if (!list) return;
+
+    if (window.confirm("Are you sure you want to delete this list?")) {
+      await deleteListApi(list._id);
+
+      updateQueryCacheIfExists(
+        queryClient,
+        QueryKeys.LISTS_LIST,
+        (lists: ListType[]) => lists.filter((l) => l._id !== list?._id)
+      );
+
+      history.push(Urls.routes["lists:list"]);
+    }
+  }
+
   return (
     <Layout>
       <div className="space-y-8 lg:space-y-16">
+        {!isLoading && (
+          <div className="flex items-center justify-between">
+            <Link theme="muted" to={Urls.routes["lists:list"]}>
+              <Icon icon={OpeningTag} />
+              <span>Back to all lists</span>
+            </Link>
+            <div className="space-x-4">
+              {listIsReusable && (
+                <Tooltip title="Reset list items">
+                  <Button
+                    onClick={() => setIsConfirmingReset(true)}
+                    theme="link-muted"
+                    aria-label="Reset list items"
+                  >
+                    <Icon icon={Refresh} />
+                  </Button>
+                </Tooltip>
+              )}
+              <Tooltip title="Edit list settings">
+                <Button
+                  onClick={() => setIsEditingList(true)}
+                  theme="link-muted"
+                  aria-label="Edit list settings"
+                >
+                  <Icon icon={Gear} />
+                </Button>
+              </Tooltip>
+              <Tooltip title="Delete list">
+                <Button
+                  onClick={() => setIsConfirmingDelete(true)}
+                  theme="link-danger"
+                  aria-label="Delete list"
+                >
+                  <Icon icon={Trash} />
+                </Button>
+              </Tooltip>
+            </div>
+          </div>
+        )}
         <div className="flex justify-between items-center">
           <PageTitle>{displayName}</PageTitle>
-          <Button
-            onClick={() => setIsEditingList(true)}
-            className="ml-4"
-            theme="link--primary"
-            aria-label="Edit list"
-          >
-            <Icon size={32} icon={Gear} />
-          </Button>
         </div>
-      </div>
-      <div className="space-y-8 py-8 md:py-16">
-        {(() => {
-          if (isLoading) {
-            return (
-              <div className="text-center space-y-4 text-primary-600">
-                <Loader size={48} />
-                <div>Fetching list details...</div>
-              </div>
-            );
-          }
+        <div className="space-y-8">
+          {(() => {
+            if (isLoading) {
+              return <ContentLoader label="Fetching list details..." />;
+            }
 
-          if (!list) {
-            return (
-              <Tip
-                title="There was a problem fetching this list"
-                description="Please refresh the page and try again"
-              />
-            );
-          }
+            if (!list) {
+              return (
+                <Tip
+                  title="There was a problem fetching this list"
+                  description="Please refresh the page and try again"
+                />
+              );
+            }
 
-          return (
-            <ListContext.Provider
-              value={{
-                list,
-                updateList,
-              }}
-            >
-              {(() => {
-                if (!list.groups.length && hasLoadedData) {
-                  return (
-                    <Tip
-                      title="You have not added any groups to this list, yet!"
-                      description="Groups allow you to organize list items into sections"
-                      action={
-                        <Button
-                          theme="primary"
-                          onClick={() => setIsAddingGroup(true)}
-                        >
-                          Add group
-                        </Button>
-                      }
-                    />
-                  );
-                }
-                return (
-                  <div>
-                    <DragDropContext onDragEnd={handleDragEnd}>
-                      <Droppable droppableId="groups" type="GROUP">
-                        {(provided: DroppableProvided) => (
-                          <div
-                            ref={provided.innerRef}
-                            {...provided.droppableProps}
+            return (
+              <ListContext.Provider
+                value={{
+                  list,
+                  updateList,
+                  incrementCachedItemCount,
+                  decrementCachedItemCount,
+                }}
+              >
+                {(() => {
+                  if (!list.groups.length && hasLoadedData) {
+                    return (
+                      <Tip
+                        title="You have not added any groups to this list, yet!"
+                        description="Groups allow you to organize list items into sections"
+                        action={
+                          <Button
+                            theme="primary"
+                            onClick={() => setIsAddingGroup(true)}
                           >
-                            {list.groups.map((group, index) => {
-                              return (
-                                <ListGroup
-                                  canDrag={list.groups.length > 1}
-                                  index={index}
-                                  key={group._id}
-                                  group={group}
-                                />
-                              );
-                            })}
-                            {provided.placeholder}
-                          </div>
-                        )}
-                      </Droppable>
-                    </DragDropContext>
-                    <div className="text-center mt-8">
-                      <Button
-                        theme="secondary"
-                        onClick={() => setIsAddingGroup(true)}
-                        fluid
-                      >
-                        <Icon strokeWidth={3} size={16} icon={Plus} />
-                        <span>Add group</span>
-                      </Button>
-                    </div>
-                    {listIsReusable && (
+                            Add group
+                          </Button>
+                        }
+                      />
+                    );
+                  }
+                  return (
+                    <div>
+                      <DragDropContext onDragEnd={handleDragEnd}>
+                        <Droppable droppableId="groups" type="GROUP">
+                          {(provided: DroppableProvided) => (
+                            <div
+                              ref={provided.innerRef}
+                              {...provided.droppableProps}
+                            >
+                              {list.groups.map((group, index) => {
+                                return (
+                                  <ListGroup
+                                    canDrag={list.groups.length > 1}
+                                    index={index}
+                                    key={group._id}
+                                    group={group}
+                                  />
+                                );
+                              })}
+                              {provided.placeholder}
+                            </div>
+                          )}
+                        </Droppable>
+                      </DragDropContext>
                       <div className="text-center mt-8">
                         <Button
-                          theme="link--danger"
-                          onClick={() => setIsConfirmingReset(true)}
+                          theme="secondary"
+                          onClick={() => setIsAddingGroup(true)}
+                          fluid
                         >
-                          Reset all items
+                          <Icon strokeWidth={3} size={16} icon={Plus} />
+                          <span>Add group</span>
                         </Button>
                       </div>
-                    )}
-                  </div>
-                );
-              })()}
+                    </div>
+                  );
+                })()}
 
-              {/* Modal Actions */}
-              <AddGroupModal
-                isOpen={isAddingGroup}
-                onClose={() => setIsAddingGroup(false)}
-              />
-              {list && (
-                <EditListModal
-                  list={list}
-                  isOpen={isEditingList}
-                  onClose={() => setIsEditingList(false)}
-                  onUpdate={() => {
-                    refetch();
-                  }}
+                {/* Modal Actions */}
+                <AddGroupModal
+                  isOpen={isAddingGroup}
+                  onClose={() => setIsAddingGroup(false)}
                 />
-              )}
-              {listIsReusable && (
+                {list && (
+                  <EditListModal
+                    list={list}
+                    isOpen={isEditingList}
+                    onClose={() => setIsEditingList(false)}
+                    onUpdate={() => {
+                      refetch();
+                    }}
+                  />
+                )}
+                {listIsReusable && (
+                  <ConfirmModal
+                    ariaLabel="Confirm reset all items"
+                    isOpen={isConfirmingReset}
+                    onClose={() => setIsConfirmingReset(false)}
+                    onConfirm={() => resetAllItems()}
+                    title="Are you sure you want to reset all items to be unchecked?"
+                  />
+                )}
                 <ConfirmModal
-                  ariaLabel="Confirm reset all items"
-                  isOpen={isConfirmingReset}
-                  onClose={() => setIsConfirmingReset(false)}
-                  onConfirm={() => resetAllItems()}
-                  title="Are you sure you want to reset all items to be unchecked?"
+                  ariaLabel="Confirm list delete"
+                  isOpen={isConfirmingDelete}
+                  onClose={() => setIsConfirmingDelete(false)}
+                  onConfirm={() => deleteList()}
+                  title="Are you sure you want to delete this list?"
                 />
-              )}
-            </ListContext.Provider>
-          );
-        })()}
+              </ListContext.Provider>
+            );
+          })()}
+        </div>
       </div>
     </Layout>
   );

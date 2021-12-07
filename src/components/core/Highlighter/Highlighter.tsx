@@ -9,7 +9,7 @@ export default function Highlighter({ ...findAllArgs }: Props) {
       {findAll(findAllArgs).map((chunk, index) => {
         const text = findAllArgs.textToHighlight.slice(chunk.start, chunk.end);
         return chunk.highlight ? (
-          <mark key={index} className="bg-primary-300 text-primary-900">
+          <mark key={index} className="bg-yellow-100 text-yellow-900">
             {text}
           </mark>
         ) : (

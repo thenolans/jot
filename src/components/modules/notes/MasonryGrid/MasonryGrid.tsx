@@ -11,7 +11,8 @@ export default function MasonryGrid({ children }: Props) {
   return (
     <Masonry
       breakpointCols={{
-        default: 2,
+        default: 3,
+        1280: 2,
         768: 1,
       }}
       className="c-masonry-grid"

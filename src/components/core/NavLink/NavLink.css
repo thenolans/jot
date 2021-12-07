@@ -7,9 +7,13 @@
 }
 
 .c-nav-link[aria-current="page"] {
-  @apply bg-primary-700 text-primary-50;
+  @apply bg-primary-600 text-white;
 }
 
 .c-nav-link:not([aria-current="page"]) {
-  @apply text-primary-700 hover:bg-primary-200;
+  @apply text-primary-100;
+}
+
+.c-navigation__list .c-nav-link:not([aria-current="page"]) {
+  @apply text-primary-400 md:text-primary-100;
 }

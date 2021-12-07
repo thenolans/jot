@@ -27,7 +27,7 @@ export default function JournalCard({ id, name }: Props) {
       >
         <path
           d="M0.476105 0.115967H24.4761V31.2207L12.4761 19.3094L0.476105 31.2207V0.115967Z"
-          fill="#d97706"
+          fill="#0e1715"
           fillOpacity="0.2"
         />
       </svg>
