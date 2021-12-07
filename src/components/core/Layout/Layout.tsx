@@ -18,18 +18,11 @@ export default function Layout({ children }: Props) {
   }, [location.pathname]);
 
   return (
-    <div className="h-screen flex flex-col md:flex-row">
+    <div className="flex flex-col md:flex-row">
       <Navigation />
-      <div
-        ref={scrollContainerRef}
-        className="flex-grow md:max-h-screen md:overflow-auto"
-      >
+      <div ref={scrollContainerRef} className="flex-grow">
         <div className="py-20 md:py-16 px-2 md:px-8 xl:px-16">
-          <Container>
-            {typeof children === "function"
-              ? children(scrollContainerRef)
-              : children}
-          </Container>
+          <Container>{children}</Container>
         </div>
       </div>
     </div>

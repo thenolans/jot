@@ -125,129 +125,118 @@ export default function JournalList() {
   return (
     <TagProvider type={TagTypes.JOURNAL} typeId={journalId}>
       <Layout>
-        {(scrollContainerRef) => (
-          <div className="space-y-8 lg:space-y-16 pb-24 lg:pb-0">
-            {!isLoading && (
-              <div className="flex items-center justify-between">
-                <Link theme="muted" to={Urls.routes["journal:list"]}>
-                  <Icon icon={OpeningTag} />
-                  <span>Back to all journals</span>
-                </Link>
-                <div className="space-x-4">
-                  <Tooltip title="Edit journal settings">
-                    <Button
-                      onClick={() => setIsEditingJournal(true)}
-                      theme="link-muted"
-                      aria-label="Edit journal settings"
-                    >
-                      <Icon icon={Gear} />
-                    </Button>
-                  </Tooltip>
-                  <Tooltip title="Delete journal">
-                    <Button
-                      onClick={() => setIsConfirmingDelete(true)}
-                      theme="link-danger"
-                      aria-label="Delete journal"
-                    >
-                      <Icon icon={Trash} />
-                    </Button>
-                  </Tooltip>
-                </div>
-              </div>
-            )}
+        <div className="space-y-8 lg:space-y-16 pb-24 lg:pb-0">
+          {!isLoading && (
             <div className="flex items-center justify-between">
-              <PageTitle>{displayName}</PageTitle>
-              <div className="right-3 bottom-24 fixed md:static"></div>
-            </div>
-            {displayName && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <Input
-                  placeholder="Search journal..."
-                  className="flex-grow"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                />
-                <TagSelect
-                  placeholder="Tags..."
-                  inputId=""
-                  onChange={(selectedTags) =>
-                    setSearchParams({
-                      tag: selectedTags,
-                    })
-                  }
-                  value={selectedTags}
-                />
-              </div>
-            )}
-            {(() => {
-              if (isLoading) {
-                return <ContentLoader label="Fetching journal details..." />;
-              } else if (
-                !sortedEntries.count &&
-                !searchParams.q &&
-                !searchParams.tag
-              ) {
-                return (
-                  <Tip
-                    title="You have not logged any entries, yet."
-                    description="Entries are the individual pieces that make up a journal. You can search them by keyword or by tag after you create some!"
-                  />
-                );
-              } else if (!sortedEntries.count) {
-                return (
-                  <Tip
-                    title="No entries match your filters!"
-                    description="We could not find any entries that match your search term or tags. Try searching by a new keyword or adjusting the tags to refine results."
-                  />
-                );
-              } else if (scrollContainerRef) {
-                return (
-                  <InfiniteScroll
-                    scrollableTarget={
-                      // TODO: Make this dynamic so it doesn't require a page reload,
-                      // but I don't think react-infinite-scroll-component supports
-                      // changing this prop after mount
-                      window.innerWidth >= 768
-                        ? scrollContainerRef.current
-                        : undefined
-                    }
-                    className="space-y-8"
-                    dataLength={sortedEntries.count}
-                    next={fetchNextPage}
-                    hasMore={Boolean(hasNextPage)}
-                    loader={
-                      <div className="text-center p-4 text-primary-500 space-y-8">
-                        <Loader />
-                      </div>
-                    }
+              <Link theme="muted" to={Urls.routes["journal:list"]}>
+                <Icon icon={OpeningTag} />
+                <span>Back to all journals</span>
+              </Link>
+              <div className="space-x-4">
+                <Tooltip title="Edit journal settings">
+                  <Button
+                    onClick={() => setIsEditingJournal(true)}
+                    theme="link-muted"
+                    aria-label="Edit journal settings"
                   >
-                    {sortedEntries.dates.map((date) => {
-                      const entries = sortedEntries.entriesByDate[date];
-                      return (
-                        <div key={date}>
-                          <div className="bg-gray-50 py-2 text-primary-300 sticky top-0 uppercase text-sm">
-                            {date}
-                          </div>
-                          <div className="space-y-4">
-                            {entries.map((entry) => {
-                              return (
-                                <JournalEntry
-                                  refetch={refetch}
-                                  key={entry._id}
-                                  entry={entry}
-                                />
-                              );
-                            })}
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </InfiniteScroll>
-                );
-              }
-            })()}
+                    <Icon icon={Gear} />
+                  </Button>
+                </Tooltip>
+                <Tooltip title="Delete journal">
+                  <Button
+                    onClick={() => setIsConfirmingDelete(true)}
+                    theme="link-danger"
+                    aria-label="Delete journal"
+                  >
+                    <Icon icon={Trash} />
+                  </Button>
+                </Tooltip>
+              </div>
+            </div>
+          )}
+          <div className="flex items-center justify-between">
+            <PageTitle>{displayName}</PageTitle>
+            <div className="right-3 bottom-24 fixed md:static"></div>
           </div>
-        )}
+          {displayName && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <Input
+                placeholder="Search journal..."
+                className="flex-grow"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+              <TagSelect
+                placeholder="Tags..."
+                inputId=""
+                onChange={(selectedTags) =>
+                  setSearchParams({
+                    tag: selectedTags,
+                  })
+                }
+                value={selectedTags}
+              />
+            </div>
+          )}
+          {(() => {
+            if (isLoading) {
+              return <ContentLoader label="Fetching journal details..." />;
+            } else if (
+              !sortedEntries.count &&
+              !searchParams.q &&
+              !searchParams.tag
+            ) {
+              return (
+                <Tip
+                  title="You have not logged any entries, yet."
+                  description="Entries are the individual pieces that make up a journal. You can search them by keyword or by tag after you create some!"
+                />
+              );
+            } else if (!sortedEntries.count) {
+              return (
+                <Tip
+                  title="No entries match your filters!"
+                  description="We could not find any entries that match your search term or tags. Try searching by a new keyword or adjusting the tags to refine results."
+                />
+              );
+            }
+            return (
+              <InfiniteScroll
+                className="space-y-8"
+                dataLength={sortedEntries.count}
+                next={fetchNextPage}
+                hasMore={Boolean(hasNextPage)}
+                loader={
+                  <div className="text-center p-4 text-primary-500 space-y-8">
+                    <Loader />
+                  </div>
+                }
+              >
+                {sortedEntries.dates.map((date) => {
+                  const entries = sortedEntries.entriesByDate[date];
+                  return (
+                    <div key={date}>
+                      <div className="bg-gray-50 py-2 text-primary-300 sticky top-0 uppercase text-sm">
+                        {date}
+                      </div>
+                      <div className="space-y-4">
+                        {entries.map((entry) => {
+                          return (
+                            <JournalEntry
+                              refetch={refetch}
+                              key={entry._id}
+                              entry={entry}
+                            />
+                          );
+                        })}
+                      </div>
+                    </div>
+                  );
+                })}
+              </InfiniteScroll>
+            );
+          })()}
+        </div>
       </Layout>
 
       <Button
