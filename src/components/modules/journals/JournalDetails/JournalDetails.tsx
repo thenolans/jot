@@ -203,6 +203,7 @@ export default function JournalList() {
             return (
               <InfiniteScroll
                 className="space-y-8"
+                style={{ overflow: undefined }}
                 dataLength={sortedEntries.count}
                 next={fetchNextPage}
                 hasMore={Boolean(hasNextPage)}
@@ -216,7 +217,7 @@ export default function JournalList() {
                   const entries = sortedEntries.entriesByDate[date];
                   return (
                     <div key={date}>
-                      <div className="bg-gray-50 py-2 text-primary-300 sticky top-0 uppercase text-sm">
+                      <div className="bg-gray-50 py-2 text-primary-300 sticky top-16 md:top-0 uppercase text-sm">
                         {date}
                       </div>
                       <div className="space-y-4">
