@@ -6,7 +6,7 @@ import Icon, { Trash } from "components/core/Icon";
 import Modal, { ModalProps } from "components/core/Modal";
 import Tooltip from "components/core/Tooltip";
 import throttle from "lodash/throttle";
-import { ChangeEvent, useMemo, useState } from "react";
+import { ChangeEvent, useCallback, useMemo, useState } from "react";
 import { Note } from "types";
 
 type Props = Pick<ModalProps, "isOpen" | "onClose"> & {
@@ -24,6 +24,12 @@ export default function EditNoteModal({
 }: Props) {
   const [content, setContent] = useState(note.content);
   const [isPrivate, setIsPrivate] = useState(note.isPrivate);
+
+  const textareaRef = useCallback((node) => {
+    if (node !== null) {
+      node.setSelectionRange(note.content.length, note.content.length);
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const throttleSave = useMemo(() => throttle(saveContentUpdate, 1000), []); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -70,6 +76,7 @@ export default function EditNoteModal({
       <Modal.CloseButton onClick={() => handleClose()} />
       <Modal.Scroll>
         <textarea
+          ref={textareaRef}
           autoFocus
           className="w-full resize-none p-6 flex-grow outline-none text-gray-700"
           value={content}
