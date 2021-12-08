@@ -1,10 +1,13 @@
 import Urls from "constants/urls";
 import { reverse } from "named-urls";
+import { stringifyUrl } from "query-string";
 import { List, ListGroup, ListItem } from "types";
 import http from "utils/http";
 
-export async function getLists(): Promise<List[]> {
-  return http.get(Urls.api["lists:lists"]).then((res) => res.data.data);
+export async function getLists(q: string): Promise<List[]> {
+  return http
+    .get(stringifyUrl({ url: Urls.api["lists:lists"], query: { q } }))
+    .then((res) => res.data.data);
 }
 
 export async function createList(
