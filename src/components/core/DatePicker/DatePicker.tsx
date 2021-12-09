@@ -10,6 +10,7 @@ type Props = {
 };
 
 export default function DatePicker({ onChange, value }: Props) {
+  console.log(value);
   return (
     <DayPicker
       classNames={{
@@ -42,6 +43,7 @@ export default function DatePicker({ onChange, value }: Props) {
         disabled: "DayPicker-Day--disabled",
         outside: "DayPicker-Day--outside",
       }}
+      initialMonth={value ? new Date(value) : undefined}
       onDayClick={onChange}
       selectedDays={value ? dayjs(value).toDate() : undefined}
     />
