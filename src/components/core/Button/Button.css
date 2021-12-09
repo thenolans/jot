@@ -11,7 +11,11 @@
 }
 
 .button--primary {
-  @apply bg-primary-500 hover:bg-primary-600 text-white;
+  @apply bg-primary-500 text-white;
+}
+
+.button--primary:not(:disabled) {
+  @apply hover:bg-primary-600;
 }
 
 .button--danger {

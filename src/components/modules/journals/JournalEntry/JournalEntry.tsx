@@ -12,6 +12,7 @@ import { Entry } from "types";
 import http from "utils/http";
 
 import EditJournalEntryModal from "../EditJournalEntryModal";
+import MoveJournalEntryModal from "../MoveJournalEntryModal";
 
 type Props = {
   entry: Entry;
@@ -22,6 +23,7 @@ export default function JournalEntry({ entry, refetch }: Props) {
   const [searchParams] = useSearchParams();
   const highlightTerm = asStringParam(searchParams.q) || "";
   const [isEditing, setIsEditing] = useState(false);
+  const [isMoving, setIsMoving] = useState(false);
   const [isConfirmingDelete, setIsConfirmingDelete] = useState(false);
 
   async function deleteEntry() {
@@ -48,6 +50,9 @@ export default function JournalEntry({ entry, refetch }: Props) {
         <ContextMenu>
           <ContextMenu.Action onClick={() => setIsEditing(true)}>
             Edit entry
+          </ContextMenu.Action>
+          <ContextMenu.Action onClick={() => setIsMoving(true)}>
+            Move entry
           </ContextMenu.Action>
           <ContextMenu.Action onClick={() => setIsConfirmingDelete(true)}>
             Delete entry
@@ -80,6 +85,17 @@ export default function JournalEntry({ entry, refetch }: Props) {
           }
 
           setIsEditing(false);
+        }}
+      />
+      <MoveJournalEntryModal
+        entry={entry}
+        isOpen={isMoving}
+        onClose={(shouldRefetch?: boolean) => {
+          if (shouldRefetch) {
+            refetch();
+          }
+
+          setIsMoving(false);
         }}
       />
       <ConfirmModal
