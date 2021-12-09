@@ -48,7 +48,7 @@ export default function EditNoteModal({
 
   function handleChange(e: ChangeEvent<HTMLTextAreaElement>) {
     setContent(e.target.value);
-    throttleSave(note._id, e.target.value);
+    throttleSave(note._id, e.target.value.trim());
   }
 
   function handleClose() {
