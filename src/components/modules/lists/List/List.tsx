@@ -43,7 +43,7 @@ import moveItemBetweenArrays from "utils/moveItemBetweenArrays";
 import reorder from "utils/reorder";
 import updateQueryCacheIfExists from "utils/updateQueryCacheIfExists";
 
-import AddGroupModal from "../AddGroupModal.tsx";
+import AddGroupModal from "../AddGroupModal";
 import EditListModal from "../EditListModal";
 import ListGroup from "../ListGroup";
 
