@@ -232,17 +232,15 @@ export default function List() {
   async function deleteList() {
     if (!list) return;
 
-    if (window.confirm("Are you sure you want to delete this list?")) {
-      await deleteListApi(list._id);
+    await deleteListApi(list._id);
 
-      updateQueryCacheIfExists(
-        queryClient,
-        QueryKeys.LISTS_LIST,
-        (lists: ListType[]) => lists.filter((l) => l._id !== list?._id)
-      );
+    updateQueryCacheIfExists(
+      queryClient,
+      QueryKeys.LISTS_LIST,
+      (lists: ListType[]) => lists.filter((l) => l._id !== list?._id)
+    );
 
-      history.push(Urls.routes["lists:list"]);
-    }
+    history.push(Urls.routes["lists:list"]);
   }
 
   return (

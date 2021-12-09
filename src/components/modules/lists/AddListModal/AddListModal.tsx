@@ -1,7 +1,10 @@
 import { createList } from "api/lists";
 import Modal, { ModalProps } from "components/core/Modal";
 import SubmitButton from "components/core/SubmitButton";
+import Urls from "constants/urls";
+import { reverse } from "named-urls";
 import { useState } from "react";
+import { useHistory } from "react-router-dom";
 import { FormIds, List, ListFormData } from "types";
 
 import ListForm from "../ListForm";
@@ -12,6 +15,7 @@ type Props = Pick<ModalProps, "isOpen"> & {
 };
 
 export default function AddListModal({ onAdd, ...props }: Props) {
+  const history = useHistory();
   const [isAdding, setIsAdding] = useState(false);
 
   async function handleSubmit(data: ListFormData) {
@@ -21,8 +25,12 @@ export default function AddListModal({ onAdd, ...props }: Props) {
 
     setIsAdding(false);
 
-    onAdd(newList);
-    props.onClose();
+    onAdd({
+      ...newList,
+      itemCount: 0,
+    });
+
+    history.push(reverse(Urls.routes["list:details"], { id: newList._id }));
   }
 
   return (

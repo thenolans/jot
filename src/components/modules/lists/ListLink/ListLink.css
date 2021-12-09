@@ -1,0 +1,20 @@
+.c-list-link {
+  @apply flex items-center py-4;
+}
+
+.c-list-link .c-list-link__name {
+  @apply font-semibold text-gray-500 pr-4;
+}
+
+.c-list-link .c-list-link__count {
+  @apply text-gray-400 text-sm;
+}
+
+.c-list-link .c-list-link__icon {
+  @apply text-gray-300 ml-auto flex-shrink-0;
+}
+
+.c-list-link:hover .c-list-link__icon,
+.c-list-link:hover .c-list-link__name {
+  @apply text-primary-700;
+}

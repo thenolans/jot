@@ -3,6 +3,7 @@ export { default as Bars } from "./icons/Bars";
 export { default as Book } from "./icons/Book";
 export { default as Checkmark } from "./icons/Checkmark";
 export { default as CheckSquare } from "./icons/CheckSquare";
+export { default as ChevronRight } from "./icons/ChevronRight";
 export { default as CircleNotch } from "./icons/CircleNotch";
 export { default as Close } from "./icons/Close";
 export { default as ClosingTag } from "./icons/ClosingTag";

@@ -5,5 +5,5 @@ export default function BodyText({
   className,
   ...props
 }: ComponentPropsWithoutRef<"div">) {
-  return <div className={classNames("text-gray-600", className)} {...props} />;
+  return <div className={classNames("text-gray-700", className)} {...props} />;
 }

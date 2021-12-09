@@ -12,7 +12,7 @@ import { useState } from "react";
 import { List, QueryKeys } from "types";
 
 import AddListModal from "../AddListModal";
-import ListCard from "../ListCard";
+import ListLink from "../ListLink";
 
 export default function Lists() {
   const [isCreatingList, setIsCreatingList] = useState(false);
@@ -53,10 +53,10 @@ export default function Lists() {
               );
             } else {
               return (
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                  {lists.map((list) => {
-                    return <ListCard list={list} key={list._id} />;
-                  })}
+                <div className="divide-gray-200 divide-y">
+                  {lists.map((list) => (
+                    <ListLink key={list._id} list={list} />
+                  ))}
                 </div>
               );
             }
