@@ -28,6 +28,7 @@ export default function EditNoteModal({
   const textareaRef = useCallback((node) => {
     if (node !== null) {
       node.setSelectionRange(note.content.length, note.content.length);
+      node.scrollTop = node.scrollHeight;
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
