@@ -6,13 +6,23 @@ import Icon, { Trash } from "components/core/Icon";
 import Modal, { ModalProps } from "components/core/Modal";
 import Tooltip from "components/core/Tooltip";
 import throttle from "lodash/throttle";
-import { ChangeEvent, useCallback, useMemo, useState } from "react";
+import {
+  ChangeEvent,
+  KeyboardEvent,
+  useCallback,
+  useMemo,
+  useState,
+} from "react";
 import { Note } from "types";
+import getListItemStart from "utils/getListItemStart";
+import getStartOfLineText from "utils/getStartOfLineText";
+import insertTextAtIndex from "utils/insertTextAtIndex";
 
 type Props = Pick<ModalProps, "isOpen" | "onClose"> & {
   note: Note;
   onUpdate: (note: Note) => void;
   onDelete: (noteId: string) => void;
+  selection?: number | null;
 };
 
 export default function EditNoteModal({
@@ -20,15 +30,17 @@ export default function EditNoteModal({
   note,
   onUpdate,
   onClose,
+  selection,
   ...props
 }: Props) {
   const [content, setContent] = useState(note.content);
   const [isPrivate, setIsPrivate] = useState(note.isPrivate);
 
   const textareaRef = useCallback((node) => {
+    const set = selection || note.content.length;
     if (node !== null) {
-      node.setSelectionRange(note.content.length, note.content.length);
-      node.scrollTop = node.scrollHeight;
+      node.setSelectionRange(set, set);
+      // node.scrollTop = node.scrollHeight;
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -67,6 +79,30 @@ export default function EditNoteModal({
     }
   }
 
+  function handleKeyDown(e: KeyboardEvent<HTMLTextAreaElement>) {
+    if (e.key === "Enter") {
+      const target = e.target as HTMLTextAreaElement;
+      const startOfLineText = getStartOfLineText(target);
+      const listItemStart = getListItemStart(startOfLineText);
+
+      if (listItemStart) {
+        e.preventDefault();
+        const currentSelection = target.selectionStart;
+        const newSelection = currentSelection + listItemStart.length + 1;
+        const newContent = insertTextAtIndex(
+          currentSelection,
+          content,
+          `\n${listItemStart} `
+        );
+        setContent(newContent);
+        setTimeout(() => {
+          target.selectionStart = newSelection;
+          target.selectionEnd = newSelection;
+        }, 0);
+      }
+    }
+  }
+
   return (
     <Dialog
       className="c-modal c-modal--stretch"
@@ -81,6 +117,7 @@ export default function EditNoteModal({
           autoFocus
           className="w-full resize-none p-6 flex-grow outline-none text-gray-700"
           value={content}
+          onKeyDown={handleKeyDown}
           onChange={handleChange}
         />
 
