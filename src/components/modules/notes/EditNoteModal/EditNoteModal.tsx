@@ -22,6 +22,7 @@ type Props = Pick<ModalProps, "isOpen" | "onClose"> & {
   note: Note;
   onUpdate: (note: Note) => void;
   onDelete: (noteId: string) => void;
+  selection?: number | null;
 };
 
 export default function EditNoteModal({
@@ -29,15 +30,17 @@ export default function EditNoteModal({
   note,
   onUpdate,
   onClose,
+  selection,
   ...props
 }: Props) {
   const [content, setContent] = useState(note.content);
   const [isPrivate, setIsPrivate] = useState(note.isPrivate);
 
   const textareaRef = useCallback((node) => {
+    const set = selection || note.content.length;
     if (node !== null) {
-      node.setSelectionRange(note.content.length, note.content.length);
-      node.scrollTop = node.scrollHeight;
+      node.setSelectionRange(set, set);
+      // node.scrollTop = node.scrollHeight;
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 

@@ -12,6 +12,7 @@ import useQueryWithUpdater from "hooks/useQueryWithUpdater";
 import { useEffect, useState } from "react";
 import { useQueryClient } from "react-query";
 import { Note as NoteType, QueryKeys } from "types";
+import getMarkdownSelection from "utils/getMarkdownSelection";
 
 import EditNoteModal from "../EditNoteModal";
 import MasonryGrid from "../MasonryGrid";
@@ -33,6 +34,7 @@ export default function Notes() {
     () => getNotes(query)
   );
   const [noteToEdit, setNoteToEdit] = useState<NoteType | null>(null);
+  const [selection, setSelection] = useState<number | null>(null);
   const tooltipText = shouldScramblePrivateNotes
     ? "Unscramble private notes"
     : "Scramble private notes";
@@ -89,7 +91,11 @@ export default function Notes() {
                     <Note
                       scrambleContent={shouldScramblePrivateNotes}
                       note={note}
-                      onClick={() => setNoteToEdit(note)}
+                      // @ts-expect-error
+                      onClick={(e) => {
+                        setNoteToEdit(note);
+                        setSelection(getMarkdownSelection(e.target));
+                      }}
                       key={note._id}
                     />
                   );
@@ -111,6 +117,7 @@ export default function Notes() {
 
       {noteToEdit && (
         <EditNoteModal
+          selection={selection}
           onUpdate={(note) => {
             updateNotes((draft) => {
               if (!draft) return;

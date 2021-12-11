@@ -66,6 +66,7 @@ export default function getMarkdownSelection(element) {
   if (!element) return undefined;
 
   const elementsToOffset = getElementAncestors(element);
+  console.log(elementsToOffset);
   const clickOffset = window?.getSelection()?.focusOffset;
 
   if (!elementsToOffset || !clickOffset) return undefined;

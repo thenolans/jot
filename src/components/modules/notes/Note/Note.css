@@ -1,5 +1,5 @@
 .c-note {
-  @apply border border-gray-200 text-gray-600 rounded-xl p-6 space-y-4 select-none bg-white;
+  @apply border border-gray-200 text-gray-600 rounded-xl p-6 space-y-4 bg-white;
 }
 
 .c-note h1 {
