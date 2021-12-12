@@ -26,6 +26,7 @@ export type Entry = {
   title: string;
   notes: string | null;
   tags: Tag[];
+  images?: string[];
   journalId: string;
 };
 

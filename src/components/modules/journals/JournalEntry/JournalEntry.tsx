@@ -12,6 +12,7 @@ import { Entry } from "types";
 import http from "utils/http";
 
 import EditJournalEntryModal from "../EditJournalEntryModal";
+import EntryImages from "../EntryImages";
 import MoveJournalEntryModal from "../MoveJournalEntryModal";
 
 type Props = {
@@ -68,6 +69,7 @@ export default function JournalEntry({ entry, refetch }: Props) {
           />
         </BodyText>
       )}
+      {entry?.images?.length && <EntryImages images={entry.images} />}
       {!!entry.tags.length && (
         <div className="space-x-1">
           {entry.tags.map((tag) => (
