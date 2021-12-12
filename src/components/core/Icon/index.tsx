@@ -20,5 +20,6 @@ export { default as Plus } from "./icons/Plus";
 export { default as Refresh } from "./icons/Refresh";
 export { default as Search } from "./icons/Search";
 export { default as Trash } from "./icons/Trash";
+export { default as Upload } from "./icons/Upload";
 export { default as User } from "./icons/User";
 export { default as VerticalEllipses } from "./icons/VerticalEllipses";
