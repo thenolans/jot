@@ -1,5 +1,5 @@
 {
-  "name": "react-app-template",
+  "name": "jot",
   "version": "0.3.4",
   "private": true,
   "dependencies": {
@@ -61,7 +61,8 @@
     "deploy:staging": "netlify deploy --dir build",
     "deploy:prod": "netlify deploy --prod --dir build",
     "version": "yarn build",
-    "postversion": "yarn deploy:prod"
+    "preversion": "node scripts/preversion.js",
+    "postversion": "git add . && git commit --amend --no-edit && yarn deploy:prod"
   },
   "eslintConfig": {
     "extends": [
