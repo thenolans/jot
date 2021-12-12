@@ -1,6 +1,12 @@
 import Urls from "constants/urls";
 import { reverse } from "named-urls";
-import { Entry, EntryFormData, Journal } from "types";
+import {
+  Attachment,
+  BlobWithPreview,
+  Entry,
+  Journal,
+  JournalEntryRequestData,
+} from "types";
 import http from "utils/http";
 
 export async function getJournals(): Promise<Journal[]> {
@@ -10,7 +16,7 @@ export async function getJournals(): Promise<Journal[]> {
 export async function updateEntry(
   journalId: string,
   entryId: string,
-  data: Partial<Entry>
+  data: Partial<JournalEntryRequestData>
 ): Promise<Entry> {
   return http
     .patch(reverse(Urls.api["journal:entry"], { journalId, entryId }), data)
@@ -19,30 +25,23 @@ export async function updateEntry(
 
 export async function createEntry(
   journalId: string,
-  data: EntryFormData
+  data: JournalEntryRequestData
 ): Promise<Entry> {
-  const { images, ...remainingData } = data;
-  console.log(data);
+  return http
+    .post(reverse(Urls.api["journal:entries"], { id: journalId }), data)
+    .then((res) => res.data.data);
+}
+
+export async function uploadImages(
+  images: BlobWithPreview[]
+): Promise<Attachment[]> {
   const formData = new FormData();
 
-  if (images && images.length) {
-    images.forEach((image) => {
-      formData.append("images", image);
-    });
-  }
-
-  Object.keys(remainingData).forEach((key) => {
-    // @ts-expect-error
-    const keyData = remainingData[key];
-
-    if (Array.isArray(keyData) && !keyData.length) return;
-
-    console.log(key, keyData);
-
-    formData.append(key, keyData);
+  images.forEach((image) => {
+    formData.append("images", image);
   });
 
   return http
-    .post(reverse(Urls.api["journal:entries"], { id: journalId }), formData)
+    .post(Urls.api["attachments:upload"], formData)
     .then((res) => res.data.data);
 }

@@ -1,8 +1,8 @@
-import { createEntry } from "api/journals";
+import { createEntry, uploadImages } from "api/journals";
 import Modal, { ModalProps } from "components/core/Modal";
 import SubmitButton from "components/core/SubmitButton";
 import { useState } from "react";
-import { EntryFormData } from "types";
+import { BlobWithPreview, EntryFormData } from "types";
 
 import EntryForm from "../EntryForm";
 
@@ -15,10 +15,24 @@ export default function LogEntryModal({ journalId, ...props }: Props) {
   const [isSaving, setIsSaving] = useState(false);
 
   async function saveItem(values: EntryFormData) {
+    const { images: formImages, ...remainingData } = values;
     setIsSaving(true);
 
     try {
-      await createEntry(journalId, values);
+      let images: string[] = [];
+
+      if (formImages.length) {
+        const uploadedImages = await uploadImages(
+          formImages as BlobWithPreview[]
+        );
+        images = uploadedImages.map((img) => img._id);
+      }
+
+      await createEntry(journalId, {
+        ...remainingData,
+        images,
+      });
+
       props.onClose(true);
     } catch {
       // TODO

@@ -1,10 +1,8 @@
+import { updateEntry, uploadImages } from "api/journals";
 import Modal, { ModalProps } from "components/core/Modal";
 import SubmitButton from "components/core/SubmitButton";
-import Urls from "constants/urls";
-import { reverse } from "named-urls";
 import { useState } from "react";
-import { Entry, EntryFormData } from "types";
-import http from "utils/http";
+import { BlobWithPreview, Entry, EntryFormData } from "types";
 
 import EntryForm from "../EntryForm";
 
@@ -13,27 +11,43 @@ type Props = Pick<ModalProps, "isOpen"> & {
   entry: Entry;
 };
 
-async function saveEntry(
-  data: EntryFormData,
-  journalId: string,
-  entryId: string
-): Promise<Entry> {
-  return http
-    .patch(reverse(Urls.api["journal:entry"], { journalId, entryId }), data)
-    .then((res) => res.data.data);
-}
-
 export default function EditJournalEntryModal({ entry, ...props }: Props) {
   const [isSaving, setIsSaving] = useState(false);
 
-  async function saveItem(values: EntryFormData) {
+  async function saveItem({
+    images: formImages,
+    ...remainingValues
+  }: EntryFormData) {
     setIsSaving(true);
 
-    await saveEntry(values, entry.journalId, entry._id);
+    try {
+      // @ts-expect-error
+      let images = formImages.filter((img) => img.src).map((img) => img._id);
+      const imagesToUpload = formImages.filter((img) =>
+        // @ts-expect-error
+        Boolean(img.preview)
+      ) as BlobWithPreview[];
 
-    setIsSaving(false);
+      if (imagesToUpload.length) {
+        const uploadedImages = await uploadImages(
+          imagesToUpload as BlobWithPreview[]
+        );
+        uploadedImages.forEach((img) => {
+          images.push(img._id);
+        });
+      }
 
-    props.onClose(true);
+      await updateEntry(entry.journalId, entry._id, {
+        ...remainingValues,
+        images,
+      });
+
+      props.onClose(true);
+    } catch {
+      // TODO
+    } finally {
+      setIsSaving(false);
+    }
   }
 
   return (
@@ -48,7 +62,6 @@ export default function EditJournalEntryModal({ entry, ...props }: Props) {
           initialData={{
             ...entry,
             tags: entry.tags.map((tag) => tag._id),
-            images: [],
           }}
           onSubmit={saveItem}
         />

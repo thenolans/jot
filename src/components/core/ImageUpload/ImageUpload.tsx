@@ -1,11 +1,12 @@
 import Icon, { Trash, Upload } from "components/core/Icon";
 import { useEffect } from "react";
 import { useDropzone } from "react-dropzone";
-import { FileWithPreview } from "types";
+import { LocalImage } from "types";
+import getBlobsFromLocalImages from "utils/getBlobsFromLocalImages";
 
 type Props = {
-  value: FileWithPreview[];
-  onChange: (files: FileWithPreview[]) => void;
+  value: LocalImage[];
+  onChange: (files: LocalImage[]) => void;
 };
 
 const MAX_IMAGES = 3;
@@ -30,7 +31,9 @@ export default function ImageUpload({ onChange, value = [] }: Props) {
 
   useEffect(
     () => () => {
-      value.forEach((file) => URL.revokeObjectURL(file.preview));
+      getBlobsFromLocalImages(value).forEach((file) =>
+        URL.revokeObjectURL(file.preview)
+      );
     },
     [value]
   );
@@ -44,18 +47,20 @@ export default function ImageUpload({ onChange, value = [] }: Props) {
       {!!value.length && (
         <div className="flex items-center space-x-4 pt-2">
           {value.map((file, index) => (
-            <div key={file.preview} className="relative">
+            <div key={index} className="relative">
               <button
                 onClick={() => removeImage(index)}
                 className="text-white bg-danger-500 rounded-full w-6 h-6 flex items-center justify-center absolute -right-3 -top-2"
                 aria-label="Remove image"
+                type="button"
               >
                 <Icon size={12} icon={Trash} />
               </button>
               <img
                 className="w-12 h-12 rounded-lg object-cover"
                 alt=""
-                src={file.preview}
+                // @ts-expect-error
+                src={file.preview || file.src}
               />
             </div>
           ))}

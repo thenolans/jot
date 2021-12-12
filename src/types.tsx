@@ -9,7 +9,7 @@ export enum FilterKeys {
   TAGS = "tag",
 }
 
-export type FileWithPreview = File & {
+export type BlobWithPreview = Blob & {
   preview: string;
 };
 
@@ -59,13 +59,14 @@ export type SortedEntries = {
   count: number;
 };
 
+export type LocalImage = BlobWithPreview | Attachment;
 export type JournalFormData = Pick<Journal, "name">;
 export type EntryFormData = Omit<
   Entry,
   "_id" | "journalId" | "tags" | "images"
 > & {
   tags: string[];
-  images: FileWithPreview[];
+  images: LocalImage[];
 };
 
 export type Response<T> = {
@@ -133,3 +134,17 @@ export enum FormIds {
   EDIT_LIST_GROUP = "edit-list-group-form",
   EDIT_LIST_ITEM = "edit-list-item-form",
 }
+
+export type ImageChanges = {
+  imagesToAdd: BlobWithPreview[];
+  imagesToDelete: Attachment[];
+};
+
+export type JournalEntryRequestData = Omit<
+  Entry,
+  "_id" | "tags" | "images" | "journalId"
+> & {
+  images: string[];
+  tags: string[];
+  journalId?: string;
+};

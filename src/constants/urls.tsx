@@ -15,11 +15,13 @@ const Urls = {
     tags: "/jot/tags",
     account: "/account",
     "account:sample-data": "jot/account/sample-data",
+    "attachments:upload": "jot/attachments",
     // Journal module
     "journals:list": "/jot/journals",
     "journal:details": "/jot/journals/:id",
     "journal:entries": "/jot/journals/:id/entries",
     "journal:entry": "/jot/journals/:journalId/entries/:entryId",
+    "journal:entry:images": "/jot/journals/:journalId/entries/:entryId/images",
     // List module
     "lists:lists": "/jot/lists",
     "lists:list": "/jot/lists/:id",
