@@ -48,6 +48,7 @@ export default function EditJournalEntryModal({ entry, ...props }: Props) {
           initialData={{
             ...entry,
             tags: entry.tags.map((tag) => tag._id),
+            images: [],
           }}
           onSubmit={saveItem}
         />

@@ -9,6 +9,10 @@ export enum FilterKeys {
   TAGS = "tag",
 }
 
+export type FileWithPreview = File & {
+  preview: string;
+};
+
 export enum TagTypes {
   JOURNAL = "journal",
 }
@@ -51,8 +55,12 @@ export type SortedEntries = {
 };
 
 export type JournalFormData = Pick<Journal, "name">;
-export type EntryFormData = Omit<Entry, "_id" | "journalId" | "tags"> & {
+export type EntryFormData = Omit<
+  Entry,
+  "_id" | "journalId" | "tags" | "images"
+> & {
   tags: string[];
+  images: FileWithPreview[];
 };
 
 export type Response<T> = {

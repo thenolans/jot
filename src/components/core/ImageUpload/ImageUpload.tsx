@@ -1,23 +1,24 @@
 import Icon, { Trash, Upload } from "components/core/Icon";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useDropzone } from "react-dropzone";
+import { FileWithPreview } from "types";
 
-type FileWithPreview = File & {
-  preview: string;
+type Props = {
+  value: FileWithPreview[];
+  onChange: (files: FileWithPreview[]) => void;
 };
 
 const MAX_IMAGES = 3;
 
-export default function ImageUpload() {
-  const [files, setFiles] = useState<FileWithPreview[]>([]);
-  const availableUploadCount = MAX_IMAGES - files.length;
+export default function ImageUpload({ onChange, value = [] }: Props) {
+  const availableUploadCount = MAX_IMAGES - value.length;
   const { getRootProps, getInputProps } = useDropzone({
     accept: "image/*",
     maxFiles: availableUploadCount,
-    disabled: files.length === MAX_IMAGES,
+    disabled: value.length === MAX_IMAGES,
     onDrop: (acceptedFiles: File[]) => {
-      setFiles([
-        ...files,
+      onChange([
+        ...value,
         ...acceptedFiles.map((file) =>
           Object.assign(file, {
             preview: URL.createObjectURL(file),
@@ -29,20 +30,20 @@ export default function ImageUpload() {
 
   useEffect(
     () => () => {
-      files.forEach((file) => URL.revokeObjectURL(file.preview));
+      value.forEach((file) => URL.revokeObjectURL(file.preview));
     },
-    [files]
+    [value]
   );
 
   function removeImage(index: number) {
-    setFiles(files.filter((_, i) => i !== index));
+    onChange(value.filter((_, i) => i !== index));
   }
 
   return (
     <div className="space-y-4">
-      {files && (
+      {!!value.length && (
         <div className="flex items-center space-x-4 pt-2">
-          {files.map((file, index) => (
+          {value.map((file, index) => (
             <div key={file.preview} className="relative">
               <button
                 onClick={() => removeImage(index)}

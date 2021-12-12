@@ -1,5 +1,6 @@
 import DatePicker from "components/core/DatePicker";
 import FormError from "components/core/FormError";
+import ImageUpload from "components/core/ImageUpload";
 import Input from "components/core/Input";
 import Label from "components/core/Label";
 import TagSelect from "components/core/TagSelect";
@@ -28,6 +29,7 @@ export default function EntryForm({ formId, initialData, onSubmit }: Props) {
         title: "",
         notes: "",
         tags: [],
+        images: [],
         ...initialData,
       },
       onSubmit(values) {
@@ -56,6 +58,15 @@ export default function EntryForm({ formId, initialData, onSubmit }: Props) {
         {errors.title && <FormError>Please enter a title</FormError>}
       </div>
       <div>
+        <Label htmlFor="create-entry--notes">Notes</Label>
+        <Textarea
+          id="create-entry--notes"
+          name="notes"
+          onChange={handleChange}
+          value={values.notes || ""}
+        />
+      </div>
+      <div>
         <Label htmlFor="create-entry--tags">Tags</Label>
         <TagSelect
           creatable
@@ -65,12 +76,12 @@ export default function EntryForm({ formId, initialData, onSubmit }: Props) {
         />
       </div>
       <div>
-        <Label htmlFor="create-entry--notes">Notes</Label>
-        <Textarea
-          id="create-entry--notes"
-          name="notes"
-          onChange={handleChange}
-          value={values.notes || ""}
+        <Label>Images?</Label>
+        <ImageUpload
+          value={values.images}
+          onChange={(images) => {
+            setFieldValue("images", images);
+          }}
         />
       </div>
       <div>
