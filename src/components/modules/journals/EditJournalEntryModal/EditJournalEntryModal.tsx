@@ -1,4 +1,5 @@
 import { updateEntry, uploadImages } from "api/journals";
+import Button from "components/core/Button";
 import Modal, { ModalProps } from "components/core/Modal";
 import SubmitButton from "components/core/SubmitButton";
 import { useState } from "react";
@@ -67,12 +68,17 @@ export default function EditJournalEntryModal({ entry, ...props }: Props) {
         />
       </Modal.Body>
       <Modal.Footer className="text-right">
-        <SubmitButton
-          isSubmitting={isSaving}
-          formId={`edit-entry-${entry._id}`}
-        >
-          Save entry
-        </SubmitButton>
+        <div className="grid grid-cols-2 gap-2">
+          <Button onClick={() => props.onClose()} theme="link-muted">
+            Cancel
+          </Button>
+          <SubmitButton
+            isSubmitting={isSaving}
+            formId={`edit-entry-${entry._id}`}
+          >
+            Save entry
+          </SubmitButton>
+        </div>
       </Modal.Footer>
     </Modal>
   );

@@ -66,20 +66,22 @@ export default function ImageUpload({ onChange, value = [] }: Props) {
           ))}
         </div>
       )}
-      <div
-        className="border border-dashed border-gray-200 text-gray-400 rounded-lg h-12 flex items-center justify-center cursor-pointer hover:border-primary-500 hover:text-primary-500"
-        {...getRootProps()}
-      >
-        <input {...getInputProps()} />
-        <div className="text-sm flex items-center justify-center space-x-2">
-          <Icon icon={Upload} />
-          {availableUploadCount ? (
-            <span>Select up to {availableUploadCount} images</span>
-          ) : (
-            <span>Remove images above to select new images</span>
-          )}
+      {!!availableUploadCount && (
+        <div
+          className="border border-dashed border-gray-200 text-gray-400 rounded-lg h-12 flex items-center justify-center cursor-pointer hover:border-primary-500 hover:text-primary-500"
+          {...getRootProps()}
+        >
+          <input {...getInputProps()} />
+          <div className="text-sm flex items-center justify-center space-x-2">
+            <Icon icon={Upload} />
+            <span>
+              {availableUploadCount === 1
+                ? "You can select 1 more image"
+                : `Select up to ${availableUploadCount} images`}
+            </span>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
