@@ -24,13 +24,18 @@ export type Tag = {
   typeId: string;
 };
 
+export type Attachment = {
+  src: string;
+  _id: string;
+};
+
 export type Entry = {
   _id: string;
   date: Date;
   title: string;
   notes: string | null;
   tags: Tag[];
-  images?: string[];
+  images?: Attachment[];
   journalId: string;
 };
 

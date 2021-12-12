@@ -69,7 +69,9 @@ export default function JournalEntry({ entry, refetch }: Props) {
           />
         </BodyText>
       )}
-      {entry?.images?.length && <EntryImages images={entry.images} />}
+      {!!entry?.images?.length && (
+        <EntryImages images={entry.images.map((image) => image.src)} />
+      )}
       {!!entry.tags.length && (
         <div className="space-x-1">
           {entry.tags.map((tag) => (

@@ -1,10 +1,8 @@
+import { createEntry } from "api/journals";
 import Modal, { ModalProps } from "components/core/Modal";
 import SubmitButton from "components/core/SubmitButton";
-import Urls from "constants/urls";
-import { reverse } from "named-urls";
 import { useState } from "react";
-import { Entry, EntryFormData } from "types";
-import http from "utils/http";
+import { EntryFormData } from "types";
 
 import EntryForm from "../EntryForm";
 
@@ -13,26 +11,20 @@ type Props = Pick<ModalProps, "isOpen"> & {
   journalId: string;
 };
 
-async function logEntry(
-  journalId: string,
-  data: EntryFormData
-): Promise<Entry> {
-  return http
-    .post(reverse(Urls.api["journal:entries"], { id: journalId }), data)
-    .then((res) => res.data.data);
-}
-
 export default function LogEntryModal({ journalId, ...props }: Props) {
   const [isSaving, setIsSaving] = useState(false);
 
   async function saveItem(values: EntryFormData) {
     setIsSaving(true);
 
-    await logEntry(journalId, values);
-
-    setIsSaving(false);
-
-    props.onClose(true);
+    try {
+      await createEntry(journalId, values);
+      props.onClose(true);
+    } catch {
+      // TODO
+    } finally {
+      setIsSaving(false);
+    }
   }
 
   return (
