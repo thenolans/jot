@@ -28,11 +28,20 @@ export default function EntryImages({ images }: Props) {
           </button>
         ))}
       </div>
+      {console.log(images[(lighboxIndex + 1) % images.length])}
       {lightboxIsOpen && (
         <Lightbox
           mainSrc={images[lighboxIndex]}
-          nextSrc={images[(lighboxIndex + 1) % images.length]}
-          prevSrc={images[(lighboxIndex + images.length - 1) % images.length]}
+          nextSrc={
+            images.length > 1
+              ? images[(lighboxIndex + 1) % images.length]
+              : undefined
+          }
+          prevSrc={
+            images.length > 1
+              ? images[(lighboxIndex + images.length - 1) % images.length]
+              : undefined
+          }
           onCloseRequest={() => setLightboxIsOpen(false)}
           onMovePrevRequest={() =>
             setLightboxIndex((lighboxIndex + images.length - 1) % images.length)
