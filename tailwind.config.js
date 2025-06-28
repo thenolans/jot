@@ -1,54 +1,28 @@
+/** @type {import('tailwindcss').Config} */
 module.exports = {
-  purge: ["./src/**/*.{js,jsx,ts,tsx}", "./public/index.html"],
-  darkMode: false, // or 'media' or 'class'
+  content: [
+    "./src/**/*.{js,jsx,ts,tsx}",
+    "node_modules/@thenolans/nolan-ui/**/*.js",
+  ],
   theme: {
-    // boxShadow: {
-    //   DEFAULT: "0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)",
-    //   none: "none",
-    // },
     extend: {
       colors: {
+        // Mapped from Emerald
         primary: {
-          100: "#dae3e1",
-          200: "#b5c7c3",
-          300: "#91aca4",
-          400: "#6c9086",
-          500: "#477468",
-          600: "#395d53",
-          700: "#2b463e",
-          800: "#1c2e2a",
-          900: "#0e1715",
-        },
-        danger: {
-          100: "#eed2d2",
-          200: "#dda5a5",
-          300: "#cd7777",
-          400: "#bc4a4a",
-          500: "#ab1d1d",
-          600: "#891717",
-          700: "#671111",
-          800: "#440c0c",
-          900: "#220606",
+          50: "#ecfdf5",
+          100: "#d1fae5",
+          200: "#a7f3d0",
+          300: "#6ee7b7",
+          400: "#34d399",
+          500: "#10b981",
+          600: "#059669",
+          700: "#047857",
+          800: "#065f46",
+          900: "#064e3b",
+          950: "#022c22",
         },
       },
-      fontFamily: {
-        display: "'Damion', sans-serif",
-        body: "'Nunito', sans-serif",
-      },
-      minHeight: {
-        24: "6rem",
-        40: "10rem",
-      },
-      maxWidth: {
-        container: "480px",
-      },
-    },
-  },
-  variants: {
-    extend: {
-      textColor: ["active"],
     },
   },
   plugins: [],
-  important: true,
 };

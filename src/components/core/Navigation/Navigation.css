@@ -1,7 +1,0 @@
-.c-navigation {
-  @apply bg-primary-500 z-40 flex fixed top-0 left-0 w-full items-center justify-between pl-8 pr-4 py-3 flex-shrink-0 md:pr-8 md:h-screen md:sticky md:py-16 md:flex-col md:w-48 lg:w-64 xl:w-80;
-}
-
-.c-navigation__list {
-  @apply shadow overflow-hidden z-40 fixed bottom-0 left-0 right-0 bg-white flex md:shadow-none md:space-y-4 md:divide-none md:static md:block md:bg-transparent;
-}

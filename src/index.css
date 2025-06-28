@@ -2,31 +2,45 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --reach-dialog: 1;
+body {
+  background: url("./assets/topography.jpeg") repeat;
 }
 
 body * {
-  @apply font-body;
+  font-family: "Nunito", sans-serif;
 }
 
-#nprogress {
-  pointer-events: none;
+.u-markdown h1 {
+  @apply font-bold border-b pb-2 border-gray-200;
 }
 
-#nprogress .bar {
-  @apply bg-primary-700 z-10;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 2px;
+.u-markdown :not(h1) {
+  @apply text-sm;
 }
 
-.u-absolute-center {
-  @apply absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2;
+.u-markdown ul {
+  @apply list-disc ml-6;
 }
 
-.u-floating-button {
-  @apply fixed right-4 bottom-20 md:right-8 md:bottom-8;
+.u-markdown ol {
+  @apply list-decimal ml-6;
+}
+
+.u-markdown hr {
+  @apply border-gray-200;
+}
+
+.u-markdown table {
+  @apply border-collapse w-full;
+}
+
+.u-markdown th,
+.u-markdown td {
+  @apply p-2;
+}
+
+.u-markdown table,
+.u-markdown th,
+.u-markdown td {
+  @apply border border-gray-300;
 }

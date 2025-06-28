@@ -1,79 +1,37 @@
 {
   "name": "jot",
-  "version": "0.5.2",
+  "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@auth0/auth0-react": "^1.6.0",
-    "@craco/craco": "^6.2.0",
-    "@reach/dialog": "^0.16.0",
-    "@testing-library/jest-dom": "^5.11.4",
-    "@testing-library/react": "^11.1.0",
-    "@testing-library/user-event": "^12.1.10",
+    "@testing-library/dom": "^10.4.0",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.1.0",
+    "@testing-library/user-event": "^13.2.1",
+    "@thenolans/nolan-ui": "^1.26.0",
     "@types/jest": "^27.0.1",
-    "@types/node": "^16.6.2",
-    "@types/react": "^17.0.18",
-    "@types/react-dom": "^17.0.9",
-    "accessible-nprogress": "^2.1.2",
-    "axios": "^0.21.1",
-    "classnames": "^2.3.1",
-    "dayjs": "^1.10.7",
-    "formik": "^2.2.9",
-    "highlight-words-core": "^1.2.2",
-    "lodash": "^4.17.21",
-    "marked": "3.0.7",
-    "named-urls": "^2.0.1",
-    "query-string": "^7.0.1",
-    "react": "^17.0.2",
-    "react-beautiful-dnd": "^13.1.0",
-    "react-day-picker": "^7.4.10",
-    "react-dom": "^17.0.2",
-    "react-dropzone": "^11.4.2",
-    "react-image-lightbox": "^5.1.4",
-    "react-infinite-scroll-component": "^6.1.0",
+    "@types/node": "^16.7.13",
+    "@types/react": "^18.0.0",
+    "@types/react-dom": "^18.0.0",
+    "marked": "^15.0.12",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "react-masonry-css": "^1.0.16",
-    "react-query": "^3.24.1",
-    "react-router-dom": "^5.2.0",
-    "react-scripts": "4.0.3",
-    "react-select": "^4.3.1",
-    "react-sticky": "^6.0.3",
-    "react-tippy": "^1.4.0",
-    "typescript": "^4.3.5",
-    "use-immer": "^0.6.0",
-    "web-vitals": "^1.0.1",
-    "workbox-background-sync": "^5.1.3",
-    "workbox-broadcast-update": "^5.1.3",
-    "workbox-cacheable-response": "^5.1.3",
-    "workbox-core": "^5.1.3",
-    "workbox-expiration": "^5.1.3",
-    "workbox-google-analytics": "^5.1.3",
-    "workbox-navigation-preload": "^5.1.3",
-    "workbox-precaching": "^5.1.3",
-    "workbox-range-requests": "^5.1.3",
-    "workbox-routing": "^5.1.3",
-    "workbox-strategies": "^5.1.3",
-    "workbox-streams": "^5.1.3",
-    "yup": "^0.32.9"
+    "react-router-dom": "6.26.0",
+    "react-scripts": "5.0.1",
+    "typescript": "^4.4.2",
+    "web-vitals": "^2.1.0"
   },
   "scripts": {
-    "start": "craco start",
-    "test": "craco test",
-    "build": "sh -ac '. .env.prod; craco build'",
-    "deploy:staging": "netlify deploy --dir build",
-    "deploy:prod": "netlify deploy --prod --dir build",
-    "version": "yarn build",
-    "postversion": "yarn deploy:prod"
+    "start": "concurrently \"react-scripts start\" \"npx tailwindcss -i ./src/index.css -o ./public/output.css --watch\"",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": [
       "react-app",
       "react-app/jest"
-    ],
-    "plugins": [
-      "simple-import-sort"
-    ],
-    "rules": {
-      "simple-import-sort/imports": "error"
-    }
+    ]
   },
   "browserslist": {
     "production": [
@@ -88,21 +46,6 @@
     ]
   },
   "devDependencies": {
-    "@types/highlight-words-core": "^1.2.1",
-    "@types/marked": "3.0.1",
-    "@types/query-string": "^6.3.0",
-    "@types/react-beautiful-dnd": "^13.1.2",
-    "@types/react-router-dom": "^5.1.8",
-    "@types/react-select": "^4.0.17",
-    "@types/react-sticky": "^6.0.4",
-    "autoprefixer": "^9",
-    "babel-plugin-polyfill-corejs2": "^0.3.0",
-    "babel-plugin-polyfill-corejs3": "^0.4.0",
-    "babel-plugin-polyfill-regenerator": "^0.3.0",
-    "craco-workbox": "^0.2.0",
-    "eslint-plugin-simple-import-sort": "^7.0.0",
-    "netlify-cli": "^6.6.1",
-    "postcss": "^7",
-    "tailwindcss": "npm:@tailwindcss/postcss7-compat"
+    "concurrently": "^9.2.0"
   }
 }
