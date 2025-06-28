@@ -1,12 +1,14 @@
+import "./index.css";
+
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { SSOContextProvider } from "@thenolans/nolan-ui";
+import GitHubLink from "components/GitHubLink";
 import React from "react";
 import ReactDOM from "react-dom/client";
-import "./index.css";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
-import GitHubLink from "components/GitHubLink";
-import { SSOContextProvider } from "@thenolans/nolan-ui";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
