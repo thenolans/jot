@@ -1,8 +1,10 @@
 import "./index.css";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { SSOContextProvider } from "@thenolans/nolan-ui";
+import { ProtectedRoutes, SSOContextProvider } from "@thenolans/nolan-ui";
 import GitHubLink from "components/GitHubLink";
+import LandingPage from "components/LandingPage";
+import { ROUTE_PATHS } from "constants/urls";
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
@@ -34,7 +36,12 @@ root.render(
       >
         <BrowserRouter>
           <Routes>
-            <Route index path="/" element={<App />} />
+            <Route path={ROUTE_PATHS.root} element={<LandingPage />} />
+            <Route
+              element={<ProtectedRoutes redirectPath={ROUTE_PATHS.root} />}
+            >
+              <Route index path={ROUTE_PATHS.notes} element={<App />} />
+            </Route>
           </Routes>
         </BrowserRouter>
       </SSOContextProvider>

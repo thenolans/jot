@@ -2005,10 +2005,10 @@
   dependencies:
     "@babel/runtime" "^7.12.5"
 
-"@thenolans/nolan-ui@^1.32.0":
-  version "1.32.0"
-  resolved "https://npm.pkg.github.com/download/@thenolans/nolan-ui/1.32.0/2289989b7a047dc48a85e7a72ee0edd0bd9e514e#2289989b7a047dc48a85e7a72ee0edd0bd9e514e"
-  integrity sha512-l0lO0arF3+Rf0yFuAoaYFObIcxpMZxO/SI7RX/zE5k5RCa8KJwkALMBgQxzEdoJnB80b0IGvatKaXVsQDIR5Zw==
+"@thenolans/nolan-ui@^1.33.1":
+  version "1.33.1"
+  resolved "https://npm.pkg.github.com/download/@thenolans/nolan-ui/1.33.1/e05e6e6674c034c61ae3a53395711700b4a1ede5#e05e6e6674c034c61ae3a53395711700b4a1ede5"
+  integrity sha512-Nm3kgCCAn4jn0dzPhgOTykeCpSgn/QzBSiuqRyfyhzbZvAVNZXHRekC896Jjun50KThK8l2t71GQ11dKX0FquQ==
   dependencies:
     "@reach/dialog" "^0.18.0"
     "@react-spring/web" "^9.7.3"

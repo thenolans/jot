@@ -7,7 +7,7 @@ import NoteGrid from "components/NoteGrid";
 import { Note, QueryKeys } from "types";
 
 function App() {
-  const { data = [], isFetching } = useQuery<Note[]>({
+  const { data = [] } = useQuery<Note[]>({
     queryKey: [QueryKeys.NOTES],
     queryFn: fetchNotes,
   });
