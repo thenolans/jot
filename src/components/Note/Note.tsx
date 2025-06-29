@@ -1,7 +1,10 @@
 import { marked } from "marked";
-import { Note as NoteType } from "types";
 
-export default function Note({ content }: NoteType) {
+type Props = {
+  content: string;
+};
+
+export default function Note({ content }: Props) {
   function createMarkup() {
     return {
       __html: marked.parse(content),
