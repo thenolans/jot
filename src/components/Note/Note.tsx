@@ -1,10 +1,12 @@
+import classNames from "classnames";
 import { marked } from "marked";
 
 type Props = {
   content: string;
+  className?: string;
 };
 
-export default function Note({ content }: Props) {
+export default function Note({ content, className }: Props) {
   function createMarkup() {
     return {
       __html: marked.parse(content),
@@ -12,7 +14,12 @@ export default function Note({ content }: Props) {
   }
 
   return (
-    <div className="border-2 border-gray-100 text-gray-600 rounded-xl p-6 bg-white mb-4 shadow-lg transition-all hover:shadow-xl hover:border-primary-800">
+    <div
+      className={classNames(
+        "border-2 text-sm sm:text-base border-gray-100 text-gray-600 rounded-xl p-3 sm:p-6 bg-white mb-4 shadow-lg",
+        className
+      )}
+    >
       <div
         className="u-markdown space-y-4"
         // @ts-expect-error

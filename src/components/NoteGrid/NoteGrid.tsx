@@ -18,8 +18,11 @@ export default function NoteGrid({ notes }: Props) {
       columnClassName="pl-4 bg-clip-padding"
     >
       {notes.map(({ content, id }) => (
-        // TODO Fix index
-        <Note key={id} content={content} />
+        <Note
+          className="transition-all hover:shadow-xl hover:border-primary-800"
+          key={id}
+          content={content}
+        />
       ))}
     </Masonry>
   );
