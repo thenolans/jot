@@ -15,12 +15,13 @@ const DEMO_MARKDOWN = `# Jot
 
 A dead-simple, markdown note taking application. It currently supports the following elements:
 
-1. Headings
+1. Heading
 1. Ordered lists
 1. Unordered lists
 1. Anchors
 1. Tables
 1. Dividers
+1. **Bold** and _italics_
 
 ---
 
@@ -34,7 +35,7 @@ export default function LandingPage() {
   useRedirectIfAuthenticated(ROUTE_PATHS.notes);
 
   return (
-    <div className="flex min-h-screen items-center justify-center flex-col">
+    <div className="flex min-h-screen items-center justify-center flex-col py-8">
       <div className="space-y-8">
         <img className="w-12 mx-auto" src={JotLogo} alt="Jot" />
         <div className="flex items-center  space-x-4 justify-center">
