@@ -1504,6 +1504,10 @@ body * {
     right: 1.5rem;
   }
 
+  .sm\:-ml-4 {
+    margin-left: -1rem;
+  }
+
   .sm\:flex {
     display: flex;
   }
@@ -1522,6 +1526,15 @@ body * {
 
   .sm\:p-6 {
     padding: 1.5rem;
+  }
+
+  .sm\:px-4 {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .sm\:pl-4 {
+    padding-left: 1rem;
   }
 
   .sm\:text-base {

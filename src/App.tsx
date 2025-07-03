@@ -13,7 +13,7 @@ function App() {
   });
 
   return (
-    <div className="container mx-auto max-w-5xl py-8 space-y-8">
+    <div className="container mx-auto max-w-5xl py-8 space-y-8 px-2 sm:px-4">
       <NavBar />
       <NoteGrid notes={data} />
       <AddNoteButton />
