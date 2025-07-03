@@ -25,8 +25,7 @@ A dead-simple, markdown note taking application. It currently supports the follo
 
 ---
 
-Test it out by modifying this markdown!
-`;
+Test it out by modifying this markdown!`;
 
 export default function LandingPage() {
   const { redirectToLogin, redirectToRegister } = useSSO();
