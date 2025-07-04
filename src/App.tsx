@@ -4,11 +4,14 @@ import { fetchNotes } from "api/notes";
 import AddNoteButton from "components/AddNoteButton";
 import NavBar from "components/NavBar";
 import NoteGrid from "components/NoteGrid";
+import { useLocation } from "react-router-dom";
 import { Note, QueryKeys } from "types";
 
 function App() {
+  const location = useLocation();
+  const appliedFilters = location.search;
   const { data = [] } = useQuery<Note[]>({
-    queryKey: [QueryKeys.NOTES],
+    queryKey: [QueryKeys.NOTES, appliedFilters],
     queryFn: fetchNotes,
   });
 

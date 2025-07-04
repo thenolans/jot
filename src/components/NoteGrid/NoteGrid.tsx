@@ -19,7 +19,7 @@ export default function NoteGrid({ notes }: Props) {
     >
       {notes.map(({ content, id }) => (
         <Note
-          className="transition-all hover:shadow-xl hover:border-primary-800"
+          className="transition-all hover:border-primary-800"
           key={id}
           content={content}
         />

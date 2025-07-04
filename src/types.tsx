@@ -8,3 +8,7 @@ export type Note = {
 export enum QueryKeys {
   NOTES = "notes",
 }
+
+export enum NotesFilterParams {
+  SEARCH = "q",
+}
