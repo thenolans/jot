@@ -1,4 +1,4 @@
-import { AccountDropdown, Container, useSSO } from "@thenolans/nolan-ui";
+import { AccountDropdown, useSSO } from "@thenolans/nolan-ui";
 
 export default function NavBar() {
   const { logout } = useSSO();
