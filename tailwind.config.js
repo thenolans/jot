@@ -6,6 +6,9 @@ module.exports = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        display: '"Caveat", sans-serif',
+      },
       colors: {
         // Mapped from Emerald
         primary: {

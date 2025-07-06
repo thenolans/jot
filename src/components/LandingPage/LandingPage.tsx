@@ -37,7 +37,9 @@ export default function LandingPage() {
   return (
     <div className="flex min-h-screen items-center justify-center flex-col py-8">
       <div className="space-y-8">
-        <img className="w-12 mx-auto" src={JotLogo} alt="Jot" />
+        <h1 className="font-display font-semibold text-6xl text-primary-800 text-center">
+          Jot
+        </h1>
         <div className="flex items-center  space-x-4 justify-center">
           <Button onClick={() => redirectToLogin(window.location.href)}>
             Log in
@@ -63,6 +65,7 @@ export default function LandingPage() {
             <Note className="h-full" content={demoMarkdown} />
           </div>
         </div>
+
         <BuiltByTheNolans />
       </div>
       <GitHubLink />

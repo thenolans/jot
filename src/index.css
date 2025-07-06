@@ -52,3 +52,8 @@ body * {
 .u-markdown a {
   @apply text-primary-800 hover:underline;
 }
+
+.u-hide-scrollbar {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* Internet Explorer and Edge */
+}
