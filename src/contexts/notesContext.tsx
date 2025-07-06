@@ -23,6 +23,7 @@ export const NotesContext = createContext<NotesContextType>({
   isFetching: false,
   updateNote() {},
   removeNote() {},
+  appliedFilters: "",
   addNote() {
     return Promise.resolve({
       id: 0,
@@ -87,6 +88,7 @@ export default function NotesContextProvider({ children }: Props) {
         updateNote,
         addNote,
         removeNote,
+        appliedFilters,
       }}
     >
       {children}

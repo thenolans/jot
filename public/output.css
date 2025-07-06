@@ -932,6 +932,16 @@ video {
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
 }
 
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
 .cursor-not-allowed {
   cursor: not-allowed;
 }
@@ -1205,6 +1215,10 @@ video {
 
 .p-\[8\%\] {
   padding: 8%;
+}
+
+.p-12 {
+  padding: 3rem;
 }
 
 .px-2 {
