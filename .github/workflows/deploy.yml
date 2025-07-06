@@ -19,5 +19,6 @@ jobs:
           build_command: yarn build
         env:
           REACT_APP_API_BASE_URL: https://api-v2.thenolans.io
+          REACT_APP_SSO_URL: https://sso.thenolans.io
           REACT_APP_TOKEN_COOKIE_DOMAIN: .thenolans.io
           PACKAGES_TOKEN: ${{ secrets.PACKAGES_TOKEN }}
