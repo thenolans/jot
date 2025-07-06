@@ -35,7 +35,7 @@ Modal.Scroll = ({ children, className }: ComponentPropsWithoutRef<"div">) => {
   return (
     <div
       className={classNames(
-        "overflow-hidden flex-grow flex flex-col rounded-t-3xl md:rounded-xl",
+        "overflow-hidden flex-grow flex flex-col md:rounded-xl",
         className
       )}
     >
