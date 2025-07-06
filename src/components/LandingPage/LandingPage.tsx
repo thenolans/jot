@@ -5,7 +5,6 @@ import {
   useRedirectIfAuthenticated,
   useSSO,
 } from "@thenolans/nolan-ui";
-import JotLogo from "assets/logo.svg";
 import GitHubLink from "components/GitHubLink";
 import Note from "components/Note";
 import Textarea from "components/Textarea";
