@@ -19,7 +19,7 @@ body * {
 }
 
 .u-markdown :not(h1) {
-  @apply text-sm;
+  @apply text-xs sm:text-sm;
 }
 
 .u-markdown ul {
