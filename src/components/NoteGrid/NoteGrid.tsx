@@ -25,7 +25,7 @@ export default function NoteGrid() {
           state={{ noteContent: content }}
         >
           <Note
-            className="transition-all hover:border-primary-800"
+            className="transition-all hover:border-primary-800 mb-2 sm:mb-4"
             content={content}
           />
         </Link>

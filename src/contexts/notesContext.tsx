@@ -1,4 +1,4 @@
-import { Query, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   createNote,
   deleteNote,

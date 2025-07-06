@@ -6,6 +6,7 @@ import {
   useSSO,
 } from "@thenolans/nolan-ui";
 import JotLogo from "assets/logo.svg";
+import GitHubLink from "components/GitHubLink";
 import Note from "components/Note";
 import Textarea from "components/Textarea";
 import { ROUTE_PATHS } from "constants/urls";
@@ -64,6 +65,7 @@ export default function LandingPage() {
         </div>
         <BuiltByTheNolans />
       </div>
+      <GitHubLink />
     </div>
   );
 }
