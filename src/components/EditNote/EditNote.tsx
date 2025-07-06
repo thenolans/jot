@@ -22,8 +22,10 @@ export default function EditNote() {
   }, [navigate]);
 
   function handleDelete() {
-    closeEditModal();
-    removeNote(noteIdToEdit);
+    if (window.confirm("Are you sure you want to delete this note?")) {
+      closeEditModal();
+      removeNote(noteIdToEdit);
+    }
   }
 
   useEffect(() => {

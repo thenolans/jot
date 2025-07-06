@@ -51,7 +51,7 @@ export default function NoteEditor({ onChange, defaultContent }: Props) {
     <textarea
       ref={textareaRef}
       autoFocus
-      className="w-full resize-none p-6 flex-grow outline-none text-gray-600 min-h-64 text-sm leading-snug"
+      className="w-full resize-none p-6 flex-grow outline-none text-gray-600 min-h-96 text-sm leading-snug"
       value={localContent}
       onKeyDown={handleKeyDown}
       onChange={(e) => handleChange(e.target.value)}

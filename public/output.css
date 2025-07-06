@@ -762,6 +762,10 @@ video {
   max-height: 100%;
 }
 
+.max-h-0\.5 {
+  max-height: 0.125rem;
+}
+
 .min-h-16 {
   min-height: 4rem;
 }
@@ -776,6 +780,10 @@ video {
 
 .min-h-screen {
   min-height: 100vh;
+}
+
+.min-h-96 {
+  min-height: 24rem;
 }
 
 .w-1\/2 {
