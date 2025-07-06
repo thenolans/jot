@@ -1,0 +1,60 @@
+import { KeyboardEvent, useCallback, useState } from "react";
+import getListItemStart from "utils/getListItemStart";
+import getStartOfLineText from "utils/getStartOfLineText";
+import insertTextAtIndex from "utils/insertTextAtIndex";
+
+type Props = {
+  onChange(content: string): void;
+  defaultContent?: string;
+};
+
+export default function NoteEditor({ onChange, defaultContent }: Props) {
+  const [localContent, setLocalContent] = useState(defaultContent || "");
+
+  function handleChange(newContent: string) {
+    setLocalContent(newContent);
+    onChange(newContent);
+  }
+
+  const textareaRef = useCallback((node: HTMLTextAreaElement) => {
+    const set = localContent.length;
+    if (node !== null) {
+      node.setSelectionRange(set, set);
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  function handleKeyDown(e: KeyboardEvent<HTMLTextAreaElement>) {
+    if (e.key === "Enter") {
+      const target = e.target as HTMLTextAreaElement;
+      const startOfLineText = getStartOfLineText(target);
+      const listItemStart = getListItemStart(startOfLineText);
+
+      if (listItemStart) {
+        e.preventDefault();
+        const currentSelection = target.selectionStart;
+        const newSelection = currentSelection + listItemStart.length + 1;
+        const newContent = insertTextAtIndex(
+          currentSelection,
+          localContent,
+          `\n${listItemStart} `
+        );
+        handleChange(newContent);
+        setTimeout(() => {
+          target.selectionStart = newSelection;
+          target.selectionEnd = newSelection;
+        }, 0);
+      }
+    }
+  }
+
+  return (
+    <textarea
+      ref={textareaRef}
+      autoFocus
+      className="w-full resize-none p-6 flex-grow outline-none text-gray-600 min-h-64 text-sm leading-snug"
+      value={localContent}
+      onKeyDown={handleKeyDown}
+      onChange={(e) => handleChange(e.target.value)}
+    />
+  );
+}

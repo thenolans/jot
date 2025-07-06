@@ -5,6 +5,14 @@ export type Note = {
   updated_at: string;
 };
 
+export type NotePATCH = Pick<Note, "content">;
+
+export type NotesContext = {
+  notes: Note[];
+  isFetching: boolean;
+  updateNote: (noteId: number, data: NotePATCH) => void;
+};
+
 export enum QueryKeys {
   NOTES = "notes",
 }

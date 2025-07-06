@@ -1,27 +1,21 @@
-import { useQuery } from "@tanstack/react-query";
 import { BuiltByTheNolans } from "@thenolans/nolan-ui";
-import { fetchNotes } from "api/notes";
 import AddNoteButton from "components/AddNoteButton";
 import NavBar from "components/NavBar";
 import NoteGrid from "components/NoteGrid";
-import { useLocation } from "react-router-dom";
-import { Note, QueryKeys } from "types";
+import NotesContextProvider from "contexts/notesContext";
+import { Outlet } from "react-router-dom";
 
 function App() {
-  const location = useLocation();
-  const appliedFilters = location.search;
-  const { data = [] } = useQuery<Note[]>({
-    queryKey: [QueryKeys.NOTES, appliedFilters],
-    queryFn: fetchNotes,
-  });
-
   return (
-    <div className="container mx-auto max-w-5xl py-8 space-y-8 px-2 sm:px-4">
-      <NavBar />
-      <NoteGrid notes={data} />
-      <AddNoteButton />
-      <BuiltByTheNolans />
-    </div>
+    <NotesContextProvider>
+      <div className="container mx-auto max-w-5xl py-8 space-y-8 px-2 sm:px-4">
+        <NavBar />
+        <NoteGrid />
+        <AddNoteButton />
+        <BuiltByTheNolans />
+      </div>
+      <Outlet />
+    </NotesContextProvider>
   );
 }
 

@@ -10,6 +10,10 @@ body * {
   font-family: "Nunito", sans-serif;
 }
 
+[data-reach-dialog-overlay] {
+  @apply z-50 top-0 left-0 fixed w-full h-full bg-black bg-opacity-30 pt-12 md:pb-16 flex items-end md:items-center md:justify-center;
+}
+
 .u-markdown h1 {
   @apply font-bold border-b pb-2 border-gray-200;
 }
@@ -43,4 +47,8 @@ body * {
 .u-markdown th,
 .u-markdown td {
   @apply border border-gray-300;
+}
+
+.u-markdown a {
+  @apply text-primary-800 hover:underline;
 }

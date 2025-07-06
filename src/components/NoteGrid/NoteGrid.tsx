@@ -1,12 +1,13 @@
 import Note from "components/Note";
+import { ROUTE_PATHS } from "constants/urls";
+import useNotes from "hooks/useNotes";
+import { reverse } from "named-urls";
 import Masonry from "react-masonry-css";
-import { Note as NoteType } from "types";
+import { Link } from "react-router-dom";
 
-type Props = {
-  notes: NoteType[];
-};
+export default function NoteGrid() {
+  const { notes } = useNotes();
 
-export default function NoteGrid({ notes }: Props) {
   return (
     <Masonry
       breakpointCols={{
@@ -18,11 +19,12 @@ export default function NoteGrid({ notes }: Props) {
       columnClassName="pl-2 sm:pl-4 bg-clip-padding"
     >
       {notes.map(({ content, id }) => (
-        <Note
-          className="transition-all hover:border-primary-800"
-          key={id}
-          content={content}
-        />
+        <Link to={reverse(ROUTE_PATHS.editNote, { id })} key={id}>
+          <Note
+            className="transition-all hover:border-primary-800"
+            content={content}
+          />
+        </Link>
       ))}
     </Masonry>
   );

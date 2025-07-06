@@ -1,7 +1,8 @@
 import { QueryFunctionContext } from "@tanstack/react-query";
-import { get } from "@thenolans/nolan-ui";
+import { destroy, get, patch } from "@thenolans/nolan-ui";
 import { API_URLS } from "constants/urls";
-import { Note, NotesFilterParams } from "types";
+import { reverse } from "named-urls";
+import { Note, NotePATCH, NotesFilterParams } from "types";
 import cleanFilterParams from "utils/cleanFilterParams";
 
 export async function fetchNotes({
@@ -21,4 +22,17 @@ export async function fetchNotes({
   return await get({
     path,
   });
+}
+
+export async function deleteNote(noteId: number) {
+  const path = reverse(API_URLS["note:detail"], { id: noteId });
+  return destroy({ path });
+}
+
+export async function updateNote(
+  noteId: number,
+  data: NotePATCH
+): Promise<Note> {
+  const path = reverse(API_URLS["note:detail"], { id: noteId });
+  return await patch({ path, data });
 }

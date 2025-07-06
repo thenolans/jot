@@ -766,6 +766,10 @@ video {
   min-height: 4rem;
 }
 
+.min-h-64 {
+  min-height: 16rem;
+}
+
 .min-h-full {
   min-height: 100%;
 }
@@ -834,6 +838,10 @@ video {
   flex-shrink: 0;
 }
 
+.flex-grow {
+  flex-grow: 1;
+}
+
 .grow {
   flex-grow: 1;
 }
@@ -873,6 +881,10 @@ video {
 
 .cursor-pointer {
   cursor: pointer;
+}
+
+.resize-none {
+  resize: none;
 }
 
 .resize {
@@ -987,6 +999,11 @@ video {
   border-radius: 0.75rem;
 }
 
+.rounded-t-3xl {
+  border-top-left-radius: 1.5rem;
+  border-top-right-radius: 1.5rem;
+}
+
 .rounded-t-xl {
   border-top-left-radius: 0.75rem;
   border-top-right-radius: 0.75rem;
@@ -1002,6 +1019,10 @@ video {
 
 .border-b {
   border-bottom-width: 1px;
+}
+
+.border-t-2 {
+  border-top-width: 2px;
 }
 
 .border-gray-100 {
@@ -1124,6 +1145,11 @@ video {
   padding-right: 1rem;
 }
 
+.px-6 {
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+
 .py-1 {
   padding-top: 0.25rem;
   padding-bottom: 0.25rem;
@@ -1137,6 +1163,11 @@ video {
 .py-3 {
   padding-top: 0.75rem;
   padding-bottom: 0.75rem;
+}
+
+.py-4 {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
 }
 
 .py-8 {
@@ -1351,6 +1382,28 @@ body * {
   font-family: "Nunito", sans-serif;
 }
 
+[data-reach-dialog-overlay] {
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  z-index: 50;
+  display: flex;
+  height: 100%;
+  width: 100%;
+  align-items: flex-end;
+  background-color: rgb(0 0 0 / var(--tw-bg-opacity, 1));
+  --tw-bg-opacity: 0.3;
+  padding-top: 3rem;
+}
+
+@media (min-width: 768px) {
+  [data-reach-dialog-overlay] {
+    align-items: center;
+    justify-content: center;
+    padding-bottom: 4rem;
+  }
+}
+
 .u-markdown h1 {
   border-bottom-width: 1px;
   --tw-border-opacity: 1;
@@ -1395,6 +1448,16 @@ body * {
   border-width: 1px;
   --tw-border-opacity: 1;
   border-color: rgb(209 213 219 / var(--tw-border-opacity, 1));
+}
+
+.u-markdown a {
+  --tw-text-opacity: 1;
+  color: rgb(6 95 70 / var(--tw-text-opacity, 1));
+}
+
+.u-markdown a:hover {
+  -webkit-text-decoration-line: underline;
+          text-decoration-line: underline;
 }
 
 .first\:ml-0:first-child {
@@ -1546,6 +1609,16 @@ body * {
   .sm\:text-base {
     font-size: 1rem;
     line-height: 1.5rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .md\:max-w-md {
+    max-width: 28rem;
+  }
+
+  .md\:rounded-xl {
+    border-radius: 0.75rem;
   }
 }
 
