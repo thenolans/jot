@@ -1,5 +1,10 @@
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { createNote, fetchNotes, updateNote as updateNoteAPI } from "api/notes";
+import { Query, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  createNote,
+  deleteNote,
+  fetchNotes,
+  updateNote as updateNoteAPI,
+} from "api/notes";
 import { createContext, ReactNode } from "react";
 import { useLocation } from "react-router-dom";
 import {
@@ -17,6 +22,7 @@ export const NotesContext = createContext<NotesContextType>({
   notes: [],
   isFetching: false,
   updateNote() {},
+  removeNote() {},
   addNote() {
     return Promise.resolve({
       id: 0,
@@ -58,16 +64,19 @@ export default function NotesContextProvider({ children }: Props) {
   async function addNote() {
     const newNote = await createNote({ content: "" });
 
-    if (!appliedFilters) {
-      // New notes won't have content, so if something was searched,
-      // don't add it to the query cache
-      queryClient.setQueryData(
-        [QueryKeys.NOTES, appliedFilters],
-        (notes: Note[]) => [newNote, ...notes]
-      );
-    }
+    queryClient.invalidateQueries({
+      queryKey: [QueryKeys.NOTES, appliedFilters],
+    });
 
     return newNote;
+  }
+
+  async function removeNote(id: number) {
+    await deleteNote(id);
+
+    queryClient.invalidateQueries({
+      queryKey: [QueryKeys.NOTES, appliedFilters],
+    });
   }
 
   return (
@@ -77,6 +86,7 @@ export default function NotesContextProvider({ children }: Props) {
         isFetching,
         updateNote,
         addNote,
+        removeNote,
       }}
     >
       {children}

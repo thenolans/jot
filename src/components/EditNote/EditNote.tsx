@@ -12,7 +12,7 @@ export default function EditNote() {
   const location = useLocation();
   const { noteContent } = location.state || {};
   const noteIdToEdit = parseInt(id || "");
-  const { updateNote } = useNotes();
+  const { updateNote, removeNote } = useNotes();
   const navigate = useNavigate();
 
   const throttleUpdateNote = useMemo(() => throttle(updateNote, 1000), []); // eslint-disable-line react-hooks/exhaustive-deps
@@ -20,6 +20,11 @@ export default function EditNote() {
   const closeEditModal = useCallback(() => {
     navigate(ROUTE_PATHS.notes);
   }, [navigate]);
+
+  function handleDelete() {
+    closeEditModal();
+    removeNote(noteIdToEdit);
+  }
 
   return (
     <Modal isOpen onClose={() => closeEditModal()} ariaLabel="Edit Note">
@@ -32,7 +37,11 @@ export default function EditNote() {
         />
       </Modal.Scroll>
       <Modal.Footer className="flex items-center justify-between">
-        <Button aria-label="Delete note" onClick={() => {}} theme="tertiary">
+        <Button
+          aria-label="Delete note"
+          onClick={() => handleDelete()}
+          theme="tertiary"
+        >
           <Icon size={16} icon="Trash" />
         </Button>
         <Button

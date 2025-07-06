@@ -24,9 +24,9 @@ export async function fetchNotes({
   });
 }
 
-export async function deleteNote(noteId: number) {
+export async function deleteNote(noteId: number): Promise<void> {
   const path = reverse(API_URLS["note:detail"], { id: noteId });
-  return destroy({ path });
+  return await destroy({ path });
 }
 
 export async function updateNote(
