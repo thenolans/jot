@@ -1,5 +1,5 @@
 import { QueryFunctionContext } from "@tanstack/react-query";
-import { destroy, get, patch } from "@thenolans/nolan-ui";
+import { destroy, get, patch, post } from "@thenolans/nolan-ui";
 import { API_URLS } from "constants/urls";
 import { reverse } from "named-urls";
 import { Note, NotePATCH, NotesFilterParams } from "types";
@@ -35,4 +35,8 @@ export async function updateNote(
 ): Promise<Note> {
   const path = reverse(API_URLS["note:detail"], { id: noteId });
   return await patch({ path, data });
+}
+
+export async function createNote(data: NotePATCH): Promise<Note> {
+  return await post({ path: API_URLS["note:list"], data });
 }

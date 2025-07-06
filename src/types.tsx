@@ -11,6 +11,7 @@ export type NotesContext = {
   notes: Note[];
   isFetching: boolean;
   updateNote: (noteId: number, data: NotePATCH) => void;
+  addNote: () => Promise<Note>;
 };
 
 export enum QueryKeys {
