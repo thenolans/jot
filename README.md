@@ -12,4 +12,4 @@
 
 |                                           Mobile                                           |                                           Desktop                                           |
 | :----------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------: |
-| ![Mobile](https://github.com/user-attachments/assets/606a81d5-5456-4d49-a6c0-2b041dae552b) | ![Desktop](https://github.com/user-attachments/assets/4adbd706-1404-48f4-8e94-d8d26617114f) |
+| ![Mobile](https://github.com/user-attachments/assets/606a81d5-5456-4d49-a6c0-2b041dae552b) | ![Desktop](https://github.com/user-attachments/assets/7793e958-d163-4be5-9233-f28170538c91) |
