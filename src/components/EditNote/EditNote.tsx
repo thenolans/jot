@@ -4,7 +4,7 @@ import NoteEditor from "components/NoteEditor";
 import { ROUTE_PATHS } from "constants/urls";
 import useNotes from "hooks/useNotes";
 import { throttle } from "lodash";
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 export default function EditNote() {
@@ -25,6 +25,13 @@ export default function EditNote() {
     closeEditModal();
     removeNote(noteIdToEdit);
   }
+
+  useEffect(() => {
+    // TODO Handle case where noteContent is not provided (e.g. page refresh)
+    if (!noteContent && noteContent !== "") {
+      closeEditModal();
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <Modal isOpen onClose={() => closeEditModal()} ariaLabel="Edit Note">
