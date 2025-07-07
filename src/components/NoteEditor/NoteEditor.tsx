@@ -8,8 +8,11 @@ type Props = {
   defaultContent?: string;
 };
 
+const AUTO_FOCUS_THRESHOLD = 640; // px
+
 export default function NoteEditor({ onChange, defaultContent }: Props) {
   const [localContent, setLocalContent] = useState(defaultContent || "");
+  const shouldAutoFocus = window.innerWidth > AUTO_FOCUS_THRESHOLD;
 
   function handleChange(newContent: string) {
     setLocalContent(newContent);
@@ -18,8 +21,15 @@ export default function NoteEditor({ onChange, defaultContent }: Props) {
 
   const textareaRef = useCallback((node: HTMLTextAreaElement) => {
     const set = localContent.length;
+
     if (node !== null) {
-      node.setSelectionRange(set, set);
+      if (!shouldAutoFocus) {
+        // If the window is small, blur the textarea to prevent keyboard from showing
+        setTimeout(() => node.blur(), 0);
+      } else {
+        // Otherwise scroll to the bottom of the textarea and set the cursor position
+        node.setSelectionRange(set, set);
+      }
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -50,7 +60,7 @@ export default function NoteEditor({ onChange, defaultContent }: Props) {
   return (
     <textarea
       ref={textareaRef}
-      autoFocus
+      autoFocus={shouldAutoFocus}
       className="w-full resize-none p-6 flex-grow outline-none text-gray-600 min-h-96 text-sm leading-snug"
       value={localContent}
       onKeyDown={handleKeyDown}
