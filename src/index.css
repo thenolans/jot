@@ -11,7 +11,7 @@ body * {
 }
 
 [data-reach-dialog-overlay] {
-  @apply z-50 top-0 left-0 fixed w-full h-full bg-black bg-opacity-30 pt-12 md:pb-16 flex items-end md:items-center md:justify-center;
+  @apply z-50 top-0 left-0 fixed w-full h-full bg-black bg-opacity-30 pt-16 md:pb-16 flex items-end md:items-center md:justify-center;
 }
 
 .u-markdown h1 {

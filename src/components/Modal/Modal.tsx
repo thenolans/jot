@@ -21,7 +21,7 @@ const Modal = ({
 
   return (
     <Dialog
-      className="relative w-full bg-white shadow max-h-full md:max-w-md md:rounded-xl flex flex-col"
+      className="relative w-full bg-white shadow h-full md:h-auto md:max-h-full md:max-w-md md:rounded-xl flex flex-col"
       isOpen={isOpen}
       onDismiss={() => onClose()}
       aria-label={ariaLabel}
