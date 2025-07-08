@@ -6,13 +6,15 @@ import insertTextAtIndex from "utils/insertTextAtIndex";
 type Props = {
   onChange(content: string): void;
   defaultContent?: string;
+  shouldAutoFocus?: boolean;
 };
 
-const AUTO_FOCUS_THRESHOLD = 640; // px
-
-export default function NoteEditor({ onChange, defaultContent }: Props) {
+export default function NoteEditor({
+  onChange,
+  defaultContent,
+  shouldAutoFocus,
+}: Props) {
   const [localContent, setLocalContent] = useState(defaultContent || "");
-  const shouldAutoFocus = window.innerWidth > AUTO_FOCUS_THRESHOLD;
 
   function handleChange(newContent: string) {
     setLocalContent(newContent);
@@ -23,11 +25,8 @@ export default function NoteEditor({ onChange, defaultContent }: Props) {
     const set = localContent.length;
 
     if (node !== null) {
-      if (!shouldAutoFocus) {
-        // If the window is small, blur the textarea to prevent keyboard from showing
-        setTimeout(() => node.blur(), 0);
-      } else {
-        // Otherwise scroll to the bottom of the textarea and set the cursor position
+      if (shouldAutoFocus) {
+        // Set cursor position to end of the content
         node.setSelectionRange(set, set);
       }
     }
