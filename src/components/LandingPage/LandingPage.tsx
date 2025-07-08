@@ -7,7 +7,7 @@ import {
 } from "@thenolans/nolan-ui";
 import GitHubLink from "components/GitHubLink";
 import Note from "components/Note";
-import Textarea from "components/Textarea";
+import NoteEditor from "components/NoteEditor";
 import { ROUTE_PATHS } from "constants/urls";
 import { useState } from "react";
 
@@ -52,9 +52,10 @@ export default function LandingPage() {
         </div>
         <div className="flex items-stretch max-w-2xl gap-2 px-2">
           <div className="flex-1 relative">
-            <Textarea
-              value={demoMarkdown}
-              onChange={(e) => setDemoMarkdown(e.target.value)}
+            <NoteEditor
+              defaultContent={demoMarkdown}
+              className="u-hide-scrollbar absolute resize-none scroll text-gray-600 text-sm w-full min-h-full h-full max-h-full bg-white border-2 rounded-xl border-gray-100 p-4  focus:border-primary-800 overflow-scroll outline-none hover:border-primary-300 leading-snug"
+              onChange={(content) => setDemoMarkdown(content)}
             />
           </div>
           <div className="px-2 text-primary-800 sm:flex items-center hidden">

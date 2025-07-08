@@ -7,9 +7,11 @@ type Props = {
   onChange(content: string): void;
   defaultContent?: string;
   shouldAutoFocus?: boolean;
+  className?: string;
 };
 
 export default function NoteEditor({
+  className,
   onChange,
   defaultContent,
   shouldAutoFocus,
@@ -60,7 +62,10 @@ export default function NoteEditor({
     <textarea
       ref={textareaRef}
       autoFocus={shouldAutoFocus}
-      className="w-full resize-none p-6 flex-grow outline-none text-gray-600 min-h-96 text-sm leading-snug"
+      className={
+        className ||
+        "w-full resize-none p-6 flex-grow outline-none text-gray-600 min-h-96 text-sm leading-snug"
+      }
       value={localContent}
       onKeyDown={handleKeyDown}
       onChange={(e) => handleChange(e.target.value)}
