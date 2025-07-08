@@ -11,7 +11,7 @@ export default function AddNoteButton() {
   async function handleAdd() {
     const { id, content } = await addNote();
     navigate(reverse(ROUTE_PATHS.editNote, { id }), {
-      state: { noteContent: content },
+      state: { noteContent: content, isNew: true },
     });
   }
 

@@ -12,11 +12,12 @@ const AUTO_FOCUS_THRESHOLD = 640;
 export default function EditNote() {
   const { id } = useParams();
   const location = useLocation();
-  const { noteContent } = location.state || {};
+  const { noteContent, isNew } = location.state || {};
   const noteIdToEdit = parseInt(id || "");
   const { updateNote, removeNote } = useNotes();
   const navigate = useNavigate();
-  const shouldAutoFocusEditor = window.innerWidth > AUTO_FOCUS_THRESHOLD;
+  const shouldAutoFocusEditor =
+    isNew || window.innerWidth > AUTO_FOCUS_THRESHOLD;
 
   const throttleUpdateNote = useMemo(() => throttle(updateNote, 1000), []); // eslint-disable-line react-hooks/exhaustive-deps
 
