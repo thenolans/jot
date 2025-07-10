@@ -27,7 +27,7 @@ export default function NoteSearch() {
         placeholder="Search notes..."
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
-        className="border-2 border-gray-100 h-12 w-full pl-12 mr-auto bg-white rounded-xl sm:rounded-3xl px-4 outline-none focus:border-primary-800 text-gray-700"
+        className="border-2 border-transparent shadow h-12 w-full pl-12 mr-auto bg-white rounded-xl sm:rounded-3xl px-4 outline-none focus:border-primary-800 text-gray-700"
       />
     </div>
   );

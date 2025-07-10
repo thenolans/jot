@@ -52,6 +52,7 @@ export default function NoteGrid() {
           state={{ noteContent: content }}
         >
           <Note
+            canClick
             className="transition-all hover:border-primary-800 mb-2 sm:mb-4"
             content={content}
           />

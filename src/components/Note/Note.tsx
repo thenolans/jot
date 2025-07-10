@@ -1,13 +1,14 @@
-import classNames from "classnames";
+import { Card } from "@thenolans/nolan-ui";
 import { useEffect, useRef } from "react";
 import marked from "utils/marked";
 
 type Props = {
+  canClick?: boolean;
   content: string;
   className?: string;
 };
 
-export default function Note({ content, className }: Props) {
+export default function Note({ canClick, content, className }: Props) {
   const markdownEl = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -37,18 +38,15 @@ export default function Note({ content, className }: Props) {
   }
 
   return (
-    <div
-      className={classNames(
-        "border-2 border-gray-100 text-gray-600 rounded-xl p-3 sm:p-6 bg-white",
-        className
-      )}
-    >
-      <div
-        className="u-markdown space-y-4"
-        ref={markdownEl}
-        // @ts-expect-error
-        dangerouslySetInnerHTML={createMarkup()}
-      />
-    </div>
+    <Card canClick={canClick} className={className}>
+      <Card.Body>
+        <div
+          className="u-markdown space-y-4 text-gray-600"
+          ref={markdownEl}
+          // @ts-expect-error
+          dangerouslySetInnerHTML={createMarkup()}
+        />
+      </Card.Body>
+    </Card>
   );
 }

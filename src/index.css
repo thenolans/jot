@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 body {
-  background: url("./assets/topography.jpeg") repeat;
+  background: url("./assets/topography_gray.png") repeat;
 }
 
 body * {

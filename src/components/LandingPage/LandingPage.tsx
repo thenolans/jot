@@ -36,7 +36,7 @@ export default function LandingPage() {
   return (
     <div className="flex min-h-screen items-center justify-center flex-col py-8">
       <div className="space-y-8">
-        <h1 className="font-display font-semibold text-6xl text-primary-800 text-center">
+        <h1 className="font-display font-semibold text-6xl text-primary-700 text-center">
           Jot
         </h1>
         <div className="flex items-center  space-x-4 justify-center">
@@ -54,11 +54,11 @@ export default function LandingPage() {
           <div className="flex-1 relative">
             <NoteEditor
               defaultContent={demoMarkdown}
-              className="u-hide-scrollbar absolute resize-none scroll text-gray-600 text-sm w-full min-h-full h-full max-h-full bg-white border-2 rounded-xl border-gray-100 p-4  focus:border-primary-800 overflow-scroll outline-none hover:border-primary-300 leading-snug"
+              className="u-hide-scrollbar absolute resize-none scroll text-gray-600 text-sm w-full min-h-full h-full max-h-full bg-white border-2 rounded-xl border-transparent shadow p-4  focus:border-primary-800 overflow-scroll outline-none hover:border-primary-300 leading-snug"
               onChange={(content) => setDemoMarkdown(content)}
             />
           </div>
-          <div className="px-2 text-primary-800 sm:flex items-center hidden">
+          <div className="px-2 text-primary-700 sm:flex items-center hidden">
             <Icon icon="ArrowRight" />
           </div>
           <div className="flex-1">
