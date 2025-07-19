@@ -17,14 +17,12 @@ function SectionTitle(props: ComponentPropsWithoutRef<"div">) {
 export default function NoteList() {
   const { notes, isFetching, appliedFilters } = useNotes();
 
-  console.log(notes);
-
   const sortedNotes = orderBy(notes, "updated_at", "desc").reduce(
     (sorted, note) => {
       if (note.is_pinned) {
-        sorted.pinned = [...sorted.pinned, note];
+        sorted.pinned.push(note);
       } else {
-        sorted.other = [...sorted.other, note];
+        sorted.other.push(note);
       }
       return sorted;
     },
