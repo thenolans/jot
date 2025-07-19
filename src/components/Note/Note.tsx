@@ -1,6 +1,6 @@
 import { Card, Icon } from "@thenolans/nolan-ui";
-import { updateNote } from "api/notes";
 import classNames from "classnames";
+import useNotes from "hooks/useNotes";
 import React, { useEffect, useRef, useState } from "react";
 import { Note as NoteType } from "types";
 import marked from "utils/marked";
@@ -13,6 +13,8 @@ type Props = {
 };
 
 export default function Note({ canClick, note, className, isDemo }: Props) {
+  const { updateNote } = useNotes();
+
   const markdownEl = useRef<HTMLDivElement>(null);
   const [isPinned, setIsPinned] = useState(note.is_pinned);
 
@@ -55,7 +57,10 @@ export default function Note({ canClick, note, className, isDemo }: Props) {
   }
 
   return (
-    <Card canClick={canClick} className={classNames("relative", className)}>
+    <Card
+      canClick={canClick}
+      className={classNames("relative min-h-16", className)}
+    >
       {!isDemo && (
         <button
           aria-label={isPinned ? "Unpin note" : "Pin note"}

@@ -55,6 +55,7 @@ export default function NotesContextProvider({ children }: Props) {
           if (note.id === id) {
             return {
               ...note,
+              updated_at: new Date().toISOString(),
               ...data,
             };
           }
