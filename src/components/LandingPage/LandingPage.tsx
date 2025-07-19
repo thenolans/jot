@@ -27,6 +27,14 @@ A dead-simple, markdown note taking application. It currently supports the follo
 
 Test it out by modifying this markdown!`;
 
+const NOTE = {
+  content: DEMO_MARKDOWN,
+  id: 1,
+  created_at: "2025-07-19 13:10:23.499315-04",
+  updated_at: "2025-07-19 13:10:23.499315-04",
+  is_pinned: false,
+};
+
 export default function LandingPage() {
   const { redirectToLogin, redirectToRegister } = useSSO();
 
@@ -62,7 +70,7 @@ export default function LandingPage() {
             <Icon icon="ArrowRight" />
           </div>
           <div className="flex-1">
-            <Note className="h-full" content={demoMarkdown} />
+            <Note isDemo note={NOTE} className="h-full" />
           </div>
         </div>
 

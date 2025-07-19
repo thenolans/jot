@@ -3,9 +3,10 @@ export type Note = {
   content: string;
   created_at: string;
   updated_at: string;
+  is_pinned: boolean;
 };
 
-export type NotePATCH = Pick<Note, "content">;
+export type NotePATCH = Partial<Pick<Note, "content" | "is_pinned">>;
 
 export type NotesContext = {
   notes: Note[];

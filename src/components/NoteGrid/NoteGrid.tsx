@@ -45,16 +45,16 @@ export default function NoteGrid() {
       className="flex -ml-2 sm:-ml-4 w-auto"
       columnClassName="pl-2 sm:pl-4 bg-clip-padding"
     >
-      {notes.map(({ content, id }) => (
+      {notes.map((note) => (
         <Link
-          to={reverse(ROUTE_PATHS.editNote, { id })}
-          key={id}
-          state={{ noteContent: content }}
+          to={reverse(ROUTE_PATHS.editNote, { id: note.id })}
+          key={note.id}
+          state={{ noteContent: note.content }}
         >
           <Note
             canClick
             className="transition-all hover:border-primary-800 mb-2 sm:mb-4"
-            content={content}
+            note={note}
           />
         </Link>
       ))}

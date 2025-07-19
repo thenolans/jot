@@ -30,6 +30,7 @@ export const NotesContext = createContext<NotesContextType>({
       content: "",
       created_at: "",
       updated_at: "",
+      is_pinned: false,
     });
   },
 });
