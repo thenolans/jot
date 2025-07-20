@@ -1,10 +1,5 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import {
-  createNote,
-  deleteNote,
-  fetchNotes,
-  updateNote as updateNoteAPI,
-} from "api/notes";
+import { deleteNote, fetchNotes, updateNote as updateNoteAPI } from "api/notes";
 import { createContext, ReactNode } from "react";
 import { useLocation } from "react-router-dom";
 import {
@@ -18,20 +13,22 @@ type Props = {
   children: ReactNode;
 };
 
+const PLACEHOLDER_NOTE = {
+  id: 0,
+  content: "",
+  created_at: "",
+  updated_at: "",
+  is_pinned: false,
+};
+
 export const NotesContext = createContext<NotesContextType>({
   notes: [],
   isFetching: false,
   updateNote() {},
   removeNote() {},
   appliedFilters: "",
-  addNote() {
-    return Promise.resolve({
-      id: 0,
-      content: "",
-      created_at: "",
-      updated_at: "",
-      is_pinned: false,
-    });
+  getNoteById() {
+    return PLACEHOLDER_NOTE;
   },
 });
 
@@ -44,6 +41,10 @@ export default function NotesContextProvider({ children }: Props) {
     queryKey: [QueryKeys.NOTES, appliedFilters],
     queryFn: fetchNotes,
   });
+
+  function getNoteById(noteId: number) {
+    return data.find((note) => note.id === noteId);
+  }
 
   function updateNote(id: number, data: NotePATCH) {
     updateNoteAPI(id, data);
@@ -64,16 +65,6 @@ export default function NotesContextProvider({ children }: Props) {
     );
   }
 
-  async function addNote() {
-    const newNote = await createNote({ content: "" });
-
-    queryClient.invalidateQueries({
-      queryKey: [QueryKeys.NOTES, appliedFilters],
-    });
-
-    return newNote;
-  }
-
   async function removeNote(id: number) {
     await deleteNote(id);
 
@@ -88,9 +79,9 @@ export default function NotesContextProvider({ children }: Props) {
         notes: data,
         isFetching,
         updateNote,
-        addNote,
         removeNote,
         appliedFilters,
+        getNoteById,
       }}
     >
       {children}

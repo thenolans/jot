@@ -14,6 +14,7 @@
     "@types/react": "^18.0.0",
     "@types/react-dom": "^18.0.0",
     "classnames": "^2.5.1",
+    "dompurify": "^3.2.6",
     "lodash": "^4.17.21",
     "marked": "^15.0.12",
     "named-urls": "2.0.1",

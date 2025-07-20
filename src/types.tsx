@@ -13,11 +13,12 @@ export type NotesContext = {
   isFetching: boolean;
   updateNote: (noteId: number, data: NotePATCH) => void;
   removeNote: (noteId: number) => void;
-  addNote: () => Promise<Note>;
   appliedFilters: string;
+  getNoteById: (noteId: number) => Note | undefined;
 };
 
 export enum QueryKeys {
+  NOTE = "note",
   NOTES = "notes",
 }
 

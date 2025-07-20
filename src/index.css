@@ -23,11 +23,11 @@ body * {
 }
 
 .u-markdown ul {
-  @apply list-disc ml-6;
+  @apply list-disc ml-0 lg:ml-6 pl-4 lg:pl-0;
 }
 
 .u-markdown ol {
-  @apply list-decimal ml-6;
+  @apply list-decimal ml-0 lg:ml-6 pl-4 lg:pl-0;
 }
 
 .u-markdown hr {

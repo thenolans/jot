@@ -70,7 +70,11 @@ export default function LandingPage() {
             <Icon icon="ArrowRight" />
           </div>
           <div className="flex-1">
-            <Note isDemo note={NOTE} className="h-full" />
+            <Note
+              isDemo
+              note={{ ...NOTE, content: demoMarkdown }}
+              className="h-full"
+            />
           </div>
         </div>
 

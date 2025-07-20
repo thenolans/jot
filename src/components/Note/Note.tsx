@@ -1,7 +1,8 @@
-import { Card, Icon } from "@thenolans/nolan-ui";
+import { Card } from "@thenolans/nolan-ui";
 import classNames from "classnames";
-import useNotes from "hooks/useNotes";
-import React, { useEffect, useRef, useState } from "react";
+import PinNoteButton from "components/PinNoteButton/PinNoteButton";
+import DOMPurify from "dompurify";
+import { useEffect, useRef } from "react";
 import { Note as NoteType } from "types";
 import marked from "utils/marked";
 
@@ -13,22 +14,7 @@ type Props = {
 };
 
 export default function Note({ canClick, note, className, isDemo }: Props) {
-  const { updateNote } = useNotes();
-
   const markdownEl = useRef<HTMLDivElement>(null);
-  const [isPinned, setIsPinned] = useState(note.is_pinned);
-
-  function handlePin(e: React.MouseEvent<HTMLButtonElement>) {
-    // Prevent button click from propagating to the link
-    // that opens the edit note modal
-    e.stopPropagation();
-    e.preventDefault();
-
-    const newPinnedValue = !isPinned;
-
-    setIsPinned(newPinnedValue);
-    updateNote(note.id, { is_pinned: newPinnedValue });
-  }
 
   useEffect(() => {
     // Prevent anchor clicks in the markdown from propagating to the link
@@ -52,7 +38,7 @@ export default function Note({ canClick, note, className, isDemo }: Props) {
 
   function createMarkup() {
     return {
-      __html: marked.parse(note.content),
+      __html: DOMPurify.sanitize(marked.parse(note.content) as string),
     };
   }
 
@@ -62,27 +48,14 @@ export default function Note({ canClick, note, className, isDemo }: Props) {
       className={classNames("relative min-h-16", className)}
     >
       {!isDemo && (
-        <button
-          aria-label={isPinned ? "Unpin note" : "Pin note"}
-          onClick={(e) => handlePin(e)}
-          className="absolute right-3 top-3"
-        >
-          <Icon
-            className={classNames(
-              "text-gray-500 hover:text-primary-800",
-              isPinned &&
-                "fill-primary-800 text-primary-800 hover:text-primary-600 hover:fill-primary-600"
-            )}
-            size={20}
-            icon="Thumbtack"
-          />
-        </button>
+        <div className="hidden lg:flex px-2 absolute right-0 top-3">
+          <PinNoteButton noteId={note.id} isPinned={note.is_pinned} />
+        </div>
       )}
-      <Card.Body>
+      <Card.Body className="max-h-96 flex">
         <div
-          className="u-markdown space-y-4 text-gray-600 pr-4"
+          className="u-markdown space-y-4 text-gray-600 lg:pr-4 max-h-full overflow-hidden"
           ref={markdownEl}
-          // @ts-expect-error
           dangerouslySetInnerHTML={createMarkup()}
         />
       </Card.Body>

@@ -40,3 +40,13 @@ export async function updateNote(
 export async function createNote(data: NotePATCH): Promise<Note> {
   return await post({ path: API_URLS["note:list"], data });
 }
+
+export async function getNote({
+  queryKey,
+}: QueryFunctionContext): Promise<Note> {
+  const noteId = queryKey[1] as number;
+  const path = reverse(API_URLS["note:detail"], {
+    id: noteId,
+  });
+  return await get({ path });
+}

@@ -20,11 +20,7 @@ export default function NoteGrid({ notes }: Props) {
       columnClassName="pl-2 sm:pl-4 bg-clip-padding"
     >
       {notes.map((note) => (
-        <Link
-          to={reverse(ROUTE_PATHS.editNote, { id: note.id })}
-          key={note.id}
-          state={{ noteContent: note.content }}
-        >
+        <Link to={reverse(ROUTE_PATHS.editNote, { id: note.id })} key={note.id}>
           <Note
             canClick
             className="transition-all hover:border-primary-800 mb-2 sm:mb-4"
