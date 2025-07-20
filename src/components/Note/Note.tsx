@@ -48,7 +48,7 @@ export default function Note({ canClick, note, className, isDemo }: Props) {
       className={classNames("relative min-h-16", className)}
     >
       {!isDemo && (
-        <div className="hidden lg:flex px-2 absolute right-0 top-3">
+        <div className="hidden md:flex px-2 absolute right-0 top-3">
           <PinNoteButton noteId={note.id} isPinned={note.is_pinned} />
         </div>
       )}
