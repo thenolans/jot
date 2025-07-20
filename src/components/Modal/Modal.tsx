@@ -47,7 +47,10 @@ Modal.Scroll = ({ children, className }: ComponentPropsWithoutRef<"div">) => {
 Modal.Header = ({ children, className }: ComponentPropsWithoutRef<"div">) => {
   return (
     <div
-      className={classNames("border-b-2 py-4 px-6 flex justify-end", className)}
+      className={classNames(
+        "border-b-2 border-gray-100 py-4 px-6 flex justify-end",
+        className
+      )}
     >
       {children}
     </div>
