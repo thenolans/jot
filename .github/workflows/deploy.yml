@@ -10,6 +10,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - run: |
+          TAG_NAME="${GITHUB_REF_NAME}" 
+          echo "TAG_NAME=$TAG_NAME" >> "$GITHUB_ENV"
+        env:
+          GITHUB_REF_NAME: ${{ github.ref_name }}
       - uses: jsmrcaga/action-netlify-deploy@v2.4.0
         with:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
@@ -21,4 +26,4 @@ jobs:
           REACT_APP_API_BASE_URL: https://api-v2.thenolans.io
           REACT_APP_SSO_URL: https://sso.thenolans.io
           REACT_APP_TOKEN_COOKIE_DOMAIN: .thenolans.io
-          PACKAGES_TOKEN: ${{ secrets.PACKAGES_TOKEN }}
+          REACT_APP_VERSION: ${{ env.TAG_NAME }}
