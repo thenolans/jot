@@ -7,6 +7,7 @@ import NotesContextProvider from "contexts/notesContext";
 import { Outlet } from "react-router-dom";
 
 function App() {
+  const versionNumber = process.env.REACT_APP_VERSION;
   return (
     <NotesContextProvider>
       <NavBar />
@@ -14,7 +15,14 @@ function App() {
         <NoteSearch />
         <NoteList />
         <AddNoteButton />
-        <BuiltByTheNolans />
+        <div className="space-y-1">
+          <BuiltByTheNolans />
+          {versionNumber && (
+            <div className="text-gray-500 text-sm text-center">
+              {versionNumber}
+            </div>
+          )}
+        </div>
       </div>
       <Outlet />
     </NotesContextProvider>
