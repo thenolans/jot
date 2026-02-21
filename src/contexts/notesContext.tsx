@@ -6,8 +6,10 @@ import {
   Note,
   NotePATCH,
   NotesContext as NotesContextType,
+  NotesFilterParams,
   QueryKeys,
 } from "types";
+import cleanFilterParams from "utils/cleanFilterParams";
 
 type Props = {
   children: ReactNode;
@@ -35,7 +37,12 @@ export const NotesContext = createContext<NotesContextType>({
 export default function NotesContextProvider({ children }: Props) {
   const queryClient = useQueryClient();
   const location = useLocation();
-  const appliedFilters = location.search;
+  // Clean filters to exclude non-filter params like editing_note_id
+  // This prevents query key changes when modal opens/closes
+  const appliedFilters = cleanFilterParams(
+    location.search,
+    Object.values(NotesFilterParams),
+  );
 
   const { data = [], isFetching } = useQuery<Note[]>({
     queryKey: [QueryKeys.NOTES, appliedFilters],
@@ -66,11 +73,20 @@ export default function NotesContextProvider({ children }: Props) {
   }
 
   async function removeNote(id: number) {
-    await deleteNote(id);
+    queryClient.setQueryData(
+      [QueryKeys.NOTES, appliedFilters],
+      (notes: Note[] | undefined) =>
+        notes?.filter((note: Note) => note.id !== id) || [],
+    );
 
-    queryClient.invalidateQueries({
-      queryKey: [QueryKeys.NOTES, appliedFilters],
-    });
+    try {
+      await deleteNote(id);
+    } catch (error) {
+      queryClient.invalidateQueries({
+        queryKey: [QueryKeys.NOTES, appliedFilters],
+      });
+      throw error;
+    }
   }
 
   return (
