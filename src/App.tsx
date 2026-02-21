@@ -4,7 +4,6 @@ import EditNote from "components/EditNote";
 import FolderList from "components/FolderList";
 import NavBar from "components/NavBar";
 import NoteList from "components/NoteList";
-import NoteSearch from "components/NoteSearch";
 import FolderContextProvider from "contexts/folderContext";
 import NotesContextProvider from "contexts/notesContext";
 import { useSearchParams } from "react-router-dom";
@@ -16,24 +15,27 @@ function App() {
 
   return (
     <NotesContextProvider>
-      <FolderContextProvider>
-        <NavBar />
-        <div className="container mx-auto max-w-5xl py-4 sm:py-8 space-y-4 sm:space-y-8 px-2 sm:px-4">
-          <NoteSearch />
-          <FolderList />
+      <NavBar />
+      <div className="grid grid-cols-4">
+        <div className="col-span-4 md:col-span-1">
+          <FolderContextProvider>
+            <FolderList />
+          </FolderContextProvider>
+        </div>
+        <div className="col-span-4 md:col-span-3 container py-4 sm:py-8 space-y-4 sm:space-y-8 px-2 sm:px-4">
           <NoteList />
           <AddNoteButton />
-          <div className="space-y-1">
-            <BuiltByTheNolans />
-            {versionNumber && (
-              <div className="text-gray-500 text-sm text-center">
-                {versionNumber}
-              </div>
-            )}
-          </div>
         </div>
         {editingNoteId && <EditNote />}
-      </FolderContextProvider>
+      </div>
+      <div className="space-y-1">
+        <BuiltByTheNolans />
+        {versionNumber && (
+          <div className="text-gray-500 text-sm text-center">
+            {versionNumber}
+          </div>
+        )}
+      </div>
     </NotesContextProvider>
   );
 }
