@@ -13,12 +13,13 @@ export default function NoteSearch() {
 
   useEffect(() => {
     if (debouncedSearchQuery) {
-      // Navigate to search route with only the 'q' param, clearing all other params
-      const newSearchParams = new URLSearchParams();
+      const newSearchParams = new URLSearchParams(searchParams);
       newSearchParams.set(
         NotesFilterParams.SEARCH,
         String(debouncedSearchQuery),
       );
+      // We don't want to search just folders, so we remove folder ID
+      newSearchParams.delete(NotesFilterParams.FOLDER_ID);
       navigate(`${ROUTE_PATHS.search_notes}?${newSearchParams.toString()}`, {
         replace: true,
       });

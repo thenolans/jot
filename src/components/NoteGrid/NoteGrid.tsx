@@ -2,7 +2,7 @@ import Note from "components/Note";
 import { ROUTE_PATHS } from "constants/urls";
 import { reverse } from "named-urls";
 import Masonry from "react-masonry-css";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { Note as NoteType, NotesFilterParams } from "types";
 
 type Props = {
@@ -12,11 +12,12 @@ type Props = {
 export default function NoteGrid({ notes }: Props) {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleNoteClick = (noteId: number) => {
     const newSearchParams = new URLSearchParams(searchParams);
     newSearchParams.set(NotesFilterParams.EDITING_NOTE_ID, String(noteId));
-    navigate(`${reverse(ROUTE_PATHS.notes)}?${newSearchParams.toString()}`, {
+    navigate(`${location.pathname}?${newSearchParams.toString()}`, {
       replace: true,
     });
   };
