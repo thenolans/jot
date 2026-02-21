@@ -61,7 +61,7 @@ export default function NotesContextProvider({ children }: Props) {
             };
           }
           return note;
-        })
+        }),
     );
   }
 

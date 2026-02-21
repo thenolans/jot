@@ -3,7 +3,6 @@ import { Button, Icon } from "@thenolans/nolan-ui";
 import { getNote } from "api/notes";
 import Modal from "components/Modal";
 import NoteEditor from "components/NoteEditor";
-import PinNoteButton from "components/PinNoteButton";
 import { ROUTE_PATHS } from "constants/urls";
 import useNotes from "hooks/useNotes";
 import { throttle } from "lodash";
@@ -51,11 +50,6 @@ export default function EditNote() {
 
   return (
     <Modal isOpen onClose={() => closeEditModal()} ariaLabel="Edit Note">
-      <Modal.Header>
-        <div className="px-4 translate-x-4">
-          <PinNoteButton isPinned={note.is_pinned} noteId={note.id} />
-        </div>
-      </Modal.Header>
       <Modal.Scroll>
         <NoteEditor
           shouldAutoFocus={shouldAutoFocusEditor}

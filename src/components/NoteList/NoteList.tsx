@@ -3,17 +3,8 @@ import classNames from "classnames";
 import NoteGrid from "components/NoteGrid";
 import useNotes from "hooks/useNotes";
 import orderBy from "lodash/orderBy";
-import { ComponentPropsWithoutRef, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Note } from "types";
-
-function SectionTitle(props: ComponentPropsWithoutRef<"div">) {
-  return (
-    <div
-      className="text-gray-500 uppercase font-bold text-sm mb-2 ml-4"
-      {...props}
-    />
-  );
-}
 
 export default function NoteList() {
   const { notes, isFetching, appliedFilters } = useNotes();
@@ -30,20 +21,7 @@ export default function NoteList() {
     }
   }, [notes, isFetching]);
 
-  const sortedNotes = orderBy(cachedNotes, "updated_at", "desc").reduce(
-    (sorted, note) => {
-      if (note.is_pinned) {
-        sorted.pinned.push(note);
-      } else {
-        sorted.other.push(note);
-      }
-      return sorted;
-    },
-    {
-      pinned: [] as Note[],
-      other: [] as Note[],
-    }
-  );
+  const sortedNotes = orderBy(cachedNotes, "updated_at", "desc");
 
   if (isFetching && !cachedNotes.length) {
     // TODO Skeleton loaders
@@ -82,21 +60,10 @@ export default function NoteList() {
       <div
         className={classNames(
           "space-y-8 sm:space-y-16 ",
-          isFetching && "opacity-50"
+          isFetching && "opacity-50",
         )}
       >
-        {!!sortedNotes.pinned.length && (
-          <div>
-            {!!sortedNotes.other.length && <SectionTitle>Pinned</SectionTitle>}
-            <NoteGrid notes={sortedNotes.pinned} />
-          </div>
-        )}
-        {!!sortedNotes.other.length && (
-          <div>
-            {!!sortedNotes.pinned.length && <SectionTitle>Other</SectionTitle>}
-            <NoteGrid notes={sortedNotes.other} />
-          </div>
-        )}
+        <NoteGrid notes={sortedNotes} />
       </div>
     </div>
   );
