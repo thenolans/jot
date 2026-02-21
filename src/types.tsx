@@ -29,6 +29,7 @@ export enum QueryKeys {
 export enum NotesFilterParams {
   SEARCH = "q",
   FOLDER_ID = "folder_id",
+  EDITING_NOTE_ID = "editing_note_id",
 }
 
 export type Folder = {

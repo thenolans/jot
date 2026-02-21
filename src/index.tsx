@@ -8,11 +8,11 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
-import App from "./App";
+import AppBase from "./AppBase";
 import reportWebVitals from "./reportWebVitals";
 
 const root = ReactDOM.createRoot(
-  document.getElementById("root") as HTMLElement
+  document.getElementById("root") as HTMLElement,
 );
 
 const queryClient = new QueryClient({
@@ -39,13 +39,14 @@ root.render(
             <Route
               element={<ProtectedRoutes redirectPath={ROUTE_PATHS.root} />}
             >
-              <Route path={ROUTE_PATHS.notes} element={<App />} />
+              <Route path={ROUTE_PATHS.notes} element={<AppBase />} />
+              <Route path={ROUTE_PATHS.search_notes} element={<AppBase />} />
             </Route>
           </Routes>
         </BrowserRouter>
       </SSOContextProvider>
     </QueryClientProvider>
-  </React.StrictMode>
+  </React.StrictMode>,
 );
 
 // If you want to start measuring performance in your app, pass a function

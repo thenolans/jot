@@ -7,13 +7,15 @@ import useNotes from "hooks/useNotes";
 import { throttle } from "lodash";
 import { useCallback, useEffect, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
-import { Note, QueryKeys } from "types";
+import { Note, NotesFilterParams, QueryKeys } from "types";
 
 const AUTO_FOCUS_THRESHOLD = 640;
 
 export default function EditNote() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const editingNoteIdParam = searchParams.get("editing_note_id");
+  const editingNoteIdParam = searchParams.get(
+    NotesFilterParams.EDITING_NOTE_ID,
+  );
   const noteIdToEdit = parseInt(editingNoteIdParam || "");
   const { updateNote, removeNote, getNoteById } = useNotes();
   const noteFromContext = getNoteById(noteIdToEdit);
@@ -30,7 +32,7 @@ export default function EditNote() {
 
   const closeEditModal = useCallback(() => {
     const newSearchParams = new URLSearchParams(searchParams);
-    newSearchParams.delete("editing_note_id");
+    newSearchParams.delete(NotesFilterParams.EDITING_NOTE_ID);
     setSearchParams(newSearchParams, { replace: true });
   }, [searchParams, setSearchParams]);
 

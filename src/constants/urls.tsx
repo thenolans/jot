@@ -8,4 +8,5 @@ export const API_URLS = {
 export const ROUTE_PATHS = {
   root: "/",
   notes: "/notes",
+  search_notes: "/notes/search",
 };

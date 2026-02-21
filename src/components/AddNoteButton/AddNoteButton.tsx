@@ -5,7 +5,7 @@ import { ROUTE_PATHS } from "constants/urls";
 import { reverse } from "named-urls";
 import { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { QueryKeys } from "types";
+import { NotesFilterParams, QueryKeys } from "types";
 
 export default function AddNoteButton() {
   const queryClient = useQueryClient();
@@ -44,7 +44,7 @@ export default function AddNoteButton() {
     const note = await addNote();
     if (note) {
       const newSearchParams = new URLSearchParams(searchParams);
-      newSearchParams.set("editing_note_id", String(note.id));
+      newSearchParams.set(NotesFilterParams.EDITING_NOTE_ID, String(note.id));
       navigate(`${reverse(ROUTE_PATHS.notes)}?${newSearchParams.toString()}`, {
         replace: true,
       });
