@@ -12,7 +12,7 @@ export default function Folder({ folder }: Props) {
         <div className="px-4">
           <div className="flex items-center space-x-4">
             <Icon className="text-primary-800" icon="Folder" />
-            <div>{folder.name}</div>
+            <div className="text-sm sm:text-base">{folder.name}</div>
           </div>
         </div>
         <div className="ml-auto w-12 h-12 text-sm text-primary-800 font-bold bg-primary-50 flex items-center justify-center">

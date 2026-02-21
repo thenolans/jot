@@ -19,7 +19,7 @@ export default function NoteSearch() {
   }, [debouncedSearchQuery, searchParams, setSearchParams]);
 
   return (
-    <div className="sm:max-w-96 mx-auto">
+    <div className="w-full">
       <SearchInput
         name="search"
         placeholder="Search notes..."
