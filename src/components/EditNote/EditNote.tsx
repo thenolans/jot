@@ -3,35 +3,36 @@ import { Button, Icon } from "@thenolans/nolan-ui";
 import { getNote } from "api/notes";
 import Modal from "components/Modal";
 import NoteEditor from "components/NoteEditor";
-import { ROUTE_PATHS } from "constants/urls";
 import useNotes from "hooks/useNotes";
 import { throttle } from "lodash";
 import { useCallback, useEffect, useMemo } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { Note, QueryKeys } from "types";
 
 const AUTO_FOCUS_THRESHOLD = 640;
 
 export default function EditNote() {
-  const { id } = useParams();
-  const noteIdToEdit = parseInt(id || "");
+  const [searchParams, setSearchParams] = useSearchParams();
+  const editingNoteIdParam = searchParams.get("editing_note_id");
+  const noteIdToEdit = parseInt(editingNoteIdParam || "");
   const { updateNote, removeNote, getNoteById } = useNotes();
   const noteFromContext = getNoteById(noteIdToEdit);
   const { data: fetchedNote, isFetching } = useQuery<Note>({
     queryKey: [QueryKeys.NOTE, noteIdToEdit],
     queryFn: getNote,
-    enabled: !noteFromContext,
+    enabled: !noteFromContext && !!noteIdToEdit,
   });
   const note = noteFromContext || fetchedNote;
 
-  const navigate = useNavigate();
   const shouldAutoFocusEditor = window.innerWidth > AUTO_FOCUS_THRESHOLD;
 
   const throttleUpdateNote = useMemo(() => throttle(updateNote, 1000), []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const closeEditModal = useCallback(() => {
-    navigate(ROUTE_PATHS.notes);
-  }, [navigate]);
+    const newSearchParams = new URLSearchParams(searchParams);
+    newSearchParams.delete("editing_note_id");
+    setSearchParams(newSearchParams, { replace: true });
+  }, [searchParams, setSearchParams]);
 
   function handleDelete() {
     if (window.confirm("Are you sure you want to delete this note?")) {

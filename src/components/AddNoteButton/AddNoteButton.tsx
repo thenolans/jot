@@ -4,12 +4,13 @@ import { createNote } from "api/notes";
 import { ROUTE_PATHS } from "constants/urls";
 import { reverse } from "named-urls";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { QueryKeys } from "types";
 
 export default function AddNoteButton() {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [isAdding, setIsAdding] = useState(false);
 
   async function addNote() {
@@ -33,7 +34,9 @@ export default function AddNoteButton() {
   async function handleAdd() {
     const note = await addNote();
     if (note) {
-      navigate(reverse(ROUTE_PATHS.editNote, { id: note.id }));
+      const newSearchParams = new URLSearchParams(searchParams);
+      newSearchParams.set("editing_note_id", String(note.id));
+      navigate(`${reverse(ROUTE_PATHS.notes)}?${newSearchParams.toString()}`);
     }
   }
 

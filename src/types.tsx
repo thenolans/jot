@@ -20,8 +20,20 @@ export type NotesContext = {
 export enum QueryKeys {
   NOTE = "note",
   NOTES = "notes",
+  FOLDERS = "folders",
 }
 
 export enum NotesFilterParams {
   SEARCH = "q",
+  FOLDER_ID = "folder_id",
 }
+
+export type Folder = {
+  id: number;
+  name: string;
+};
+
+export type FolderContext = {
+  folders: Folder[];
+  isFetching: boolean;
+};

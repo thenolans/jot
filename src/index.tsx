@@ -2,7 +2,6 @@ import "./index.css";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ProtectedRoutes, SSOContextProvider } from "@thenolans/nolan-ui";
-import EditNote from "components/EditNote";
 import LandingPage from "components/LandingPage";
 import { ROUTE_PATHS } from "constants/urls";
 import React from "react";
@@ -40,9 +39,7 @@ root.render(
             <Route
               element={<ProtectedRoutes redirectPath={ROUTE_PATHS.root} />}
             >
-              <Route path={ROUTE_PATHS.notes} element={<App />}>
-                <Route path={ROUTE_PATHS.editNote} element={<EditNote />} />
-              </Route>
+              <Route path={ROUTE_PATHS.notes} element={<App />} />
             </Route>
           </Routes>
         </BrowserRouter>
