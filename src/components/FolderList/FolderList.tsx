@@ -35,7 +35,7 @@ export default function FolderList() {
   };
 
   return (
-    <>
+    <div>
       <div className="block md:hidden p-4 sm:p-8">
         <Select
           value={selectedOption}
@@ -43,7 +43,7 @@ export default function FolderList() {
           options={options}
         />
       </div>
-      <div className="hidden md:grid grid-cols-1 gap-4 p-4 sm:p-8">
+      <div className="hidden md:grid grid-cols-3 gap-4">
         {folders.map((folder) => {
           return (
             <Link
@@ -55,6 +55,6 @@ export default function FolderList() {
           );
         })}
       </div>
-    </>
+    </div>
   );
 }

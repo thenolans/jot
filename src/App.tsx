@@ -16,18 +16,14 @@ function App() {
   return (
     <NotesContextProvider>
       <NavBar />
-      <div className="grid grid-cols-4">
-        <div className="col-span-4 md:col-span-1">
-          <FolderContextProvider>
-            <FolderList />
-          </FolderContextProvider>
-        </div>
-        <div className="col-span-4 md:col-span-3 container py-4 sm:py-8 space-y-4 sm:space-y-8 px-2 sm:px-4">
-          <NoteList />
-          <AddNoteButton />
-        </div>
-        {editingNoteId && <EditNote />}
+      <div className="max-w-5xl mx-auto container py-4 sm:py-8 space-y-4 sm:space-y-8 px-2 sm:px-4">
+        <FolderContextProvider>
+          <FolderList />
+        </FolderContextProvider>
+        <NoteList />
+        <AddNoteButton />
       </div>
+      {editingNoteId && <EditNote />}
       <div className="space-y-1">
         <BuiltByTheNolans />
         {versionNumber && (
