@@ -2,7 +2,7 @@ import Note from "components/Note";
 import { ROUTE_PATHS } from "constants/urls";
 import { reverse } from "named-urls";
 import Masonry from "react-masonry-css";
-import { Link, useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Note as NoteType } from "types";
 
 type Props = {
@@ -11,6 +11,15 @@ type Props = {
 
 export default function NoteGrid({ notes }: Props) {
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+
+  const handleNoteClick = (noteId: number) => {
+    const newSearchParams = new URLSearchParams(searchParams);
+    newSearchParams.set("editing_note_id", String(noteId));
+    navigate(`${reverse(ROUTE_PATHS.notes)}?${newSearchParams.toString()}`, {
+      replace: true,
+    });
+  };
 
   return (
     <Masonry
@@ -22,19 +31,18 @@ export default function NoteGrid({ notes }: Props) {
       columnClassName="pl-2 sm:pl-4 bg-clip-padding"
     >
       {notes.map((note) => {
-        const newSearchParams = new URLSearchParams(searchParams);
-        newSearchParams.set("editing_note_id", String(note.id));
         return (
-          <Link
-            to={`${reverse(ROUTE_PATHS.notes)}?${newSearchParams.toString()}`}
+          <div
             key={note.id}
+            onClick={() => handleNoteClick(note.id)}
+            className="cursor-pointer"
           >
             <Note
               canClick
               className="transition-all hover:border-primary-800 mb-2 sm:mb-4"
               note={note}
             />
-          </Link>
+          </div>
         );
       })}
     </Masonry>

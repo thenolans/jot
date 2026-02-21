@@ -34,6 +34,8 @@ export default function FolderList() {
     navigate(`${reverse(ROUTE_PATHS.notes)}?${newSearchParams.toString()}`);
   };
 
+  if (!folders && !isFetching) return null;
+
   return (
     <div>
       <div className="block md:hidden p-4 sm:p-8">
@@ -43,7 +45,7 @@ export default function FolderList() {
           options={options}
         />
       </div>
-      <div className="hidden md:grid grid-cols-3 gap-4">
+      <div className="hidden md:grid grid-cols-3 gap-4 mb-12">
         {folders.map((folder) => {
           return (
             <Link

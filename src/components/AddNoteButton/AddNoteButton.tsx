@@ -36,7 +36,9 @@ export default function AddNoteButton() {
     if (note) {
       const newSearchParams = new URLSearchParams(searchParams);
       newSearchParams.set("editing_note_id", String(note.id));
-      navigate(`${reverse(ROUTE_PATHS.notes)}?${newSearchParams.toString()}`);
+      navigate(`${reverse(ROUTE_PATHS.notes)}?${newSearchParams.toString()}`, {
+        replace: true,
+      });
     }
   }
 
