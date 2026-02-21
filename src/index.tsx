@@ -4,6 +4,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ProtectedRoutes, SSOContextProvider } from "@thenolans/nolan-ui";
 import LandingPage from "components/LandingPage";
 import { ROUTE_PATHS } from "constants/urls";
+import FolderContextProvider from "contexts/folderContext";
+import NotesContextProvider from "contexts/notesContext";
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
@@ -34,15 +36,22 @@ root.render(
         apiBaseUrl={process.env.REACT_APP_API_BASE_URL!}
       >
         <BrowserRouter>
-          <Routes>
-            <Route path={ROUTE_PATHS.root} element={<LandingPage />} />
-            <Route
-              element={<ProtectedRoutes redirectPath={ROUTE_PATHS.root} />}
-            >
-              <Route path={ROUTE_PATHS.notes} element={<AppBase />} />
-              <Route path={ROUTE_PATHS.search_notes} element={<AppBase />} />
-            </Route>
-          </Routes>
+          <NotesContextProvider>
+            <FolderContextProvider>
+              <Routes>
+                <Route path={ROUTE_PATHS.root} element={<LandingPage />} />
+                <Route
+                  element={<ProtectedRoutes redirectPath={ROUTE_PATHS.root} />}
+                >
+                  <Route path={ROUTE_PATHS.notes} element={<AppBase />} />
+                  <Route
+                    path={ROUTE_PATHS.search_notes}
+                    element={<AppBase />}
+                  />
+                </Route>
+              </Routes>
+            </FolderContextProvider>
+          </NotesContextProvider>
         </BrowserRouter>
       </SSOContextProvider>
     </QueryClientProvider>
