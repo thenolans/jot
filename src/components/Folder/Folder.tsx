@@ -8,12 +8,17 @@ type Props = {
 export default function Folder({ folder }: Props) {
   return (
     <Card canClick>
-      <Card.Body>
-        <div className="flex items-center space-x-4">
-          <Icon className="text-primary-800" icon="Folder" />
-          <span>{folder.name}</span>
+      <div className="flex items-center">
+        <div className="px-4">
+          <div className="flex items-center space-x-4">
+            <Icon className="text-primary-800" icon="Folder" />
+            <div>{folder.name}</div>
+          </div>
         </div>
-      </Card.Body>
+        <div className="ml-auto w-12 h-12 text-sm text-primary-800 font-bold bg-primary-50 flex items-center justify-center">
+          {folder.note_count}
+        </div>
+      </div>
     </Card>
   );
 }

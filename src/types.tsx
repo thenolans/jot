@@ -31,6 +31,7 @@ export enum NotesFilterParams {
 export type Folder = {
   id: number;
   name: string;
+  note_count: number;
 };
 
 export type FolderContext = {
