@@ -30,9 +30,10 @@ export default function NoteSearch() {
   }, [debouncedSearchQuery, navigate, searchParams, setSearchParams]);
 
   return (
-    <div className="w-full">
+    <div className="w-full sm:fixed sm:top-2 sm:z-50 sm:left-1/2 sm:-translate-x-1/2 sm:max-w-md">
       <SearchInput
         name="search"
+        className="sm:border-slate-200 sm:shadow-none sm:border"
         placeholder="Search notes..."
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}

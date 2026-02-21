@@ -32,8 +32,8 @@ function App() {
   return (
     <>
       <NavBar />
-      <div className="max-w-5xl mx-auto container py-4 sm:py-8 space-y-4 sm:space-y-8 px-2 sm:px-4">
-        <div className="flex items-center space-x-2 sm:max-w-96 mx-auto">
+      <div className="max-w-5xl mx-auto container py-4 sm:py-8 space-y-2 sm:space-y-8 px-2 sm:px-4">
+        <div className="flex items-center space-x-2 sm:max-w-96 mx-auto sm:-m-4">
           <NoteSearch />
           {!isSearching && !!folders.length && (
             <div className="block sm:hidden">
@@ -43,7 +43,7 @@ function App() {
             </div>
           )}
         </div>
-        {!isSearching && (
+        {!isSearching && !!folders.length && (
           <div>
             <div className="sm:hidden">
               <AnimateHeight
