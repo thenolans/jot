@@ -21,6 +21,7 @@ const PLACEHOLDER_NOTE = {
   created_at: "",
   updated_at: "",
   is_pinned: false,
+  folder_id: null,
 };
 
 export const NotesContext = createContext<NotesContextType>({

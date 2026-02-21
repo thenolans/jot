@@ -4,9 +4,12 @@ export type Note = {
   created_at: string;
   updated_at: string;
   is_pinned: boolean;
+  folder_id: number | null;
 };
 
-export type NotePATCH = Partial<Pick<Note, "content" | "is_pinned">>;
+export type NotePATCH = Partial<
+  Pick<Note, "content" | "is_pinned" | "folder_id">
+>;
 
 export type NotesContext = {
   notes: Note[];

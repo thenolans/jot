@@ -17,7 +17,16 @@ export default function AddNoteButton() {
     setIsAdding(true);
 
     try {
-      const newNote = await createNote({ content: "" });
+      const folderIdParam = searchParams.get("folder_id");
+      const folderId =
+        folderIdParam && folderIdParam.trim() !== ""
+          ? parseInt(folderIdParam, 10)
+          : null;
+
+      const newNote = await createNote({
+        content: "",
+        folder_id: folderId,
+      });
 
       queryClient.invalidateQueries({
         queryKey: [QueryKeys.NOTES],

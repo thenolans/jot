@@ -33,6 +33,7 @@ const NOTE = {
   created_at: "2025-07-19 13:10:23.499315-04",
   updated_at: "2025-07-19 13:10:23.499315-04",
   is_pinned: false,
+  folder_id: null,
 };
 
 export default function LandingPage() {
