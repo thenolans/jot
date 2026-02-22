@@ -1,6 +1,4 @@
 import Note from "components/Note";
-import { ROUTE_PATHS } from "constants/urls";
-import { reverse } from "named-urls";
 import Masonry from "react-masonry-css";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { Note as NoteType, NotesFilterParams } from "types";
