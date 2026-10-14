@@ -26,8 +26,8 @@ Run `yarn lint:fix`, `yarn format`, `yarn build`, `yarn lint` and `yarn test` be
 
 - Build for scale: clear structure, reusable components, a typed data layer. Reach for an existing `components/ui` primitive before writing one-off markup, and add a primitive (or a variant to one) when the same styling appears in a second place.
 - Authentication lives in this app (`features/auth`); there is no shared UI kit.
-- Jot is a sibling of Avocado (`~/Documents/dev/avocado`), and the two should look and work alike: same toolchain, tokens, auth flow and conventions, with only the accent colors different (`tokens.css`). Avocado is the reference implementation. When Jot needs a primitive, hook or pattern Avocado already has, copy it from there (rewording comments that mention recipes) rather than writing a new one, and keep later changes to shared pieces in step between the two apps.
-- The design comes from the prototype at `~/Downloads/Denali Design System/Jot Prototype.dc.html`; build from its layout and behavior, but with Avocado's components and tokens, not its inline styles.
+- Jot is a sibling of Avocado (https://github.com/thenolans/avocado, checked out at `~/Documents/dev/avocado`), and the two should look and work alike: same toolchain, tokens, auth flow and conventions, with only the accent colors different (`tokens.css`). Avocado is the reference implementation. When Jot needs a primitive, hook or pattern Avocado already has, copy it from there (rewording comments that mention recipes) rather than writing a new one, and keep later changes to shared pieces in step between the two apps.
+- The design comes from the prototypes in `design/` (`design/README.md` says which screens each covers): `Jot Prototype.dc.html` for the app, and `Login and Registration.dc.html` for signing in, which Avocado's auth pages already follow. Build from their layout and behavior, but with Avocado's components and tokens, not their inline styles.
 - There is no runtime config. The only build-time variable is `VITE_APP_VERSION`, set by the deploy workflow from the release tag (`src/app/version.ts`). The app runs on localhost without a custom domain.
 
 ## Conventions
@@ -40,6 +40,7 @@ Run `yarn lint:fix`, `yarn format`, `yarn build`, `yarn lint` and `yarn test` be
   - `src/components/ui/` — shared, feature-agnostic UI primitives; `src/components/icons/` for icons
   - `src/hooks/` — shared hooks not tied to a feature or a single component (`useFormValidation`, `useDebouncedValue`, `useBackTo`), one per file named after the hook (`useBackTo.ts`). A hook that belongs to a feature stays in that feature (`features/notes/useNote.ts`), and one used by a single component or page lives in its folder (`NotesPage/useNoteSearchParams.ts`)
   - `src/lib/` — shared non-UI code (`cx`, the `api` client)
+  - `design/` — the prototypes the app is built from; reference only, not built, linted or formatted
   - `src/styles/` — `tokens.css` (Tailwind `@theme` tokens, light/dark themes) and `global.css` (Tailwind entry, base styles)
 - Dependencies point one way: `pages` → `features` → `components`/`hooks`/`lib`. Features never import from pages.
 - Every component gets its own folder, in `pages/`, `features/` and `components/`:

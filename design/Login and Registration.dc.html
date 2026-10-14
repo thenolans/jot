@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+
+<helmet>
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@600;700;800;900&amp;family=Albert+Sans:wght@400;500;600&amp;display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+    html, body { margin: 0; overflow-x: hidden; }
+    body { background: #EAE8E3; font-family: 'Albert Sans', sans-serif; }
+    a { color: #18577A; } a:hover { color: #0C2E42; }
+    input::placeholder { color: #8A9599; }
+  </style>
+</helmet>
+
+<div style="min-height: 100vh; background: #F5F4F1 url('assets/topo-tile-light.png') repeat; background-size: 460px 460px; display: flex; align-items: center; justify-content: center; padding: 32px;">
+
+  <!-- SPLIT HERO (wide) -->
+  <sc-if value="{{ isWide }}" hint-placeholder-val="{{ true }}">
+<div style="width: 100%; max-width: 640px; display: flex; border-radius: 18px; overflow: hidden; box-shadow: 0 1px 3px rgba(12,46,66,0.06);">
+      <div style="width: 220px; flex: none; background-color: {{ active.bg }}; background-image: url('assets/topo-tile-dark.png'); background-repeat: repeat; background-size: 380px 380px; padding: 28px 22px; display: flex; flex-direction: column;">
+        <div>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <sc-if value="{{ isBrandLeaf }}" hint-placeholder-val="{{ true }}">
+              <svg width="34" height="34" viewBox="0 0 52 52"><path d="M20 10 C14 18 12 26 14 33 a13 11 0 0 0 24 4 C42 28 36 16 20 10 Z" fill="none" stroke="#FFFFFF" stroke-width="3.6" stroke-linejoin="round"></path><circle cx="27" cy="32" r="4.5" fill="{{ active.tint }}"></circle></svg>
+            </sc-if>
+            <sc-if value="{{ isBrandNotebook }}" hint-placeholder-val="{{ false }}">
+              <svg width="34" height="34" viewBox="0 0 52 52"><g transform="rotate(-8 26 26)"><path d="M10 10 h32 v24 l-8 8 h-24 Z" fill="none" stroke="#FFFFFF" stroke-width="3.6" stroke-linejoin="round"></path><path d="M42 34 h-8 v8 Z" fill="#FFFFFF" stroke="#FFFFFF" stroke-width="3.6" stroke-linejoin="round"></path><g stroke="{{ active.tint }}" stroke-width="3.6" stroke-linecap="round"><path d="M17 20 h18"></path><path d="M17 28 h12"></path></g></g></svg>
+            </sc-if>
+            <sc-if value="{{ isBrandFrame }}" hint-placeholder-val="{{ false }}">
+              <svg width="34" height="34" viewBox="0 0 52 52"><g transform="rotate(-8 26 26)"><rect x="8" y="12" width="36" height="28" fill="none" stroke="#FFFFFF" stroke-width="3.6" stroke-linejoin="round"></rect><rect x="15" y="19" width="22" height="14" fill="none" stroke="{{ active.tint }}" stroke-width="2.6"></rect></g></svg>
+            </sc-if>
+            <sc-if value="{{ isBrandMountain }}" hint-placeholder-val="{{ false }}">
+              <svg width="34" height="34" viewBox="0 0 52 52"><path d="M8 38 L20 14 L26.5 25.5 L31 18.5 L44 38" fill="none" stroke="#FFFFFF" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"></path><path d="M4 44 h44" stroke="{{ active.tint }}" stroke-width="3.6" stroke-linecap="round"></path></svg>
+            </sc-if>
+            <div style="font-family: Figtree, sans-serif; font-weight: 800; font-size: 20px; color: #FFFFFF; letter-spacing: -0.015em;">{{ active.wordmark }}<span style="color: {{ active.tint }};">.</span></div>
+          </div>
+          <p style="margin: 10px 0 0; font-size: 12.5px; line-height: 1.5; color: {{ active.tint }};">{{ active.tagline }}</p>
+        </div>
+      </div>
+      <div style="flex: 1; min-width: 0; height: {{ cardHeightWide }}; overflow: hidden; background: #FFFFFF; box-sizing: border-box;">
+        <div ref="{{ attachContentRefWide }}" style="padding: 30px 26px; display: flex; flex-direction: column; gap: 16px; box-sizing: border-box;">
+          <div style="position: relative; display: flex; background: #F0EFEA; border-radius: 12px; padding: 4px;">
+            <div style="position: absolute; top: 4px; left: 4px; width: calc(50% - 4px); height: calc(100% - 8px); background: #FFFFFF; border-radius: 9px; box-shadow: 0 1px 2px rgba(12,46,66,0.1); transform: {{ toggleThumbTransform }}; transition: transform 0.25s cubic-bezier(0.4,0,0.2,1);"></div>
+            <div onClick="{{ selectSignIn }}" style="position: relative; z-index: 1; flex: 1; text-align: center; padding: 9px 12px; border-radius: 9px; cursor: pointer; font-family: Figtree, sans-serif; font-weight: {{ signInTabStyle.fontWeight }}; font-size: 13px; color: {{ signInTabStyle.color }}; transition: color 0.2s ease;">Sign in</div>
+            <div onClick="{{ selectCreate }}" style="position: relative; z-index: 1; flex: 1; text-align: center; padding: 9px 12px; border-radius: 9px; cursor: pointer; font-family: Figtree, sans-serif; font-weight: {{ createTabStyle.fontWeight }}; font-size: 13px; color: {{ createTabStyle.color }}; transition: color 0.2s ease;">Create account</div>
+          </div>
+          <div>
+            <h1 style="margin: 0 0 3px; font-family: Figtree, sans-serif; font-weight: 800; font-size: 19px; color: #0C2E42;">{{ headline }}</h1>
+            <p style="margin: 0; font-size: 13px; color: #56666B; line-height: 1.5;">One account, multiple apps.</p>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 12px;">
+            <input type="text" placeholder="Full name" style="font-family: 'Albert Sans', sans-serif; font-size: 13.5px; padding: {{ nameFieldPadding }}; height: {{ nameFieldHeight }}; border-radius: 10px; border: 1px solid #E3E1DB; color: #1C2528; box-sizing: border-box; width: 100%; opacity: {{ nameFieldOpacity }}; transition: height 0.32s cubic-bezier(0.4,0,0.2,1), padding 0.32s cubic-bezier(0.4,0,0.2,1), opacity 0.22s ease;">
+            <input type="email" placeholder="Email" style="font-family: 'Albert Sans', sans-serif; font-size: 13.5px; padding: 10px 12px; border-radius: 10px; border: 1px solid #E3E1DB; color: #1C2528; box-sizing: border-box;">
+            <input type="password" placeholder="Password" style="font-family: 'Albert Sans', sans-serif; font-size: 13.5px; padding: 10px 12px; border-radius: 10px; border: 1px solid #E3E1DB; color: #1C2528; box-sizing: border-box;">
+          </div>
+          <div onClick="{{ submit }}" style="font-family: Figtree, sans-serif; font-weight: 700; font-size: 13.5px; color: #EFF7F2; background: {{ active.bg }}; border-radius: 11px; padding: 12px; text-align: center; cursor: pointer;">{{ ctaLabel }}</div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- BANNER HEADER (narrow) -->
+  <sc-if value="{{ isNarrow }}" hint-placeholder-val="{{ false }}">
+    <div style="width: 100%; max-width: 340px; background: #FFFFFF; border-radius: 18px; overflow: hidden; box-shadow: 0 1px 3px rgba(12,46,66,0.06); box-sizing: border-box;">
+      <div style="background-color: {{ active.bg }}; background-image: url('assets/topo-tile-dark.png'); background-repeat: repeat; background-size: 380px 380px; padding: 22px 24px; display: flex; align-items: center; justify-content: center; gap: 10px;">
+        <sc-if value="{{ isBrandLeaf }}" hint-placeholder-val="{{ true }}">
+          <svg width="26" height="26" viewBox="0 0 52 52"><path d="M20 10 C14 18 12 26 14 33 a13 11 0 0 0 24 4 C42 28 36 16 20 10 Z" fill="none" stroke="#FFFFFF" stroke-width="3.6" stroke-linejoin="round"></path><circle cx="27" cy="32" r="4.5" fill="{{ active.tint }}"></circle></svg>
+        </sc-if>
+        <sc-if value="{{ isBrandNotebook }}" hint-placeholder-val="{{ false }}">
+          <svg width="26" height="26" viewBox="0 0 52 52"><g transform="rotate(-8 26 26)"><path d="M10 10 h32 v24 l-8 8 h-24 Z" fill="none" stroke="#FFFFFF" stroke-width="3.6" stroke-linejoin="round"></path><path d="M42 34 h-8 v8 Z" fill="#FFFFFF" stroke="#FFFFFF" stroke-width="3.6" stroke-linejoin="round"></path><g stroke="{{ active.tint }}" stroke-width="3.6" stroke-linecap="round"><path d="M17 20 h18"></path><path d="M17 28 h12"></path></g></g></svg>
+        </sc-if>
+        <sc-if value="{{ isBrandFrame }}" hint-placeholder-val="{{ false }}">
+          <svg width="26" height="26" viewBox="0 0 52 52"><g transform="rotate(-8 26 26)"><rect x="8" y="12" width="36" height="28" fill="none" stroke="#FFFFFF" stroke-width="3.6" stroke-linejoin="round"></rect><rect x="15" y="19" width="22" height="14" fill="none" stroke="{{ active.tint }}" stroke-width="2.6"></rect></g></svg>
+        </sc-if>
+        <sc-if value="{{ isBrandMountain }}" hint-placeholder-val="{{ false }}">
+          <svg width="26" height="26" viewBox="0 0 52 52"><path d="M8 38 L20 14 L26.5 25.5 L31 18.5 L44 38" fill="none" stroke="#FFFFFF" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"></path><path d="M4 44 h44" stroke="{{ active.tint }}" stroke-width="3.6" stroke-linecap="round"></path></svg>
+        </sc-if>
+        <div style="font-family: Figtree, sans-serif; font-weight: 800; font-size: 18px; color: #FFFFFF; letter-spacing: -0.015em;">{{ active.wordmark }}<span style="color: {{ active.tint }};">.</span></div>
+      </div>
+      <div style="height: {{ cardHeightNarrow }}; overflow: hidden; box-sizing: border-box;">
+      <div ref="{{ attachContentRefNarrow }}" style="padding: 24px; display: flex; flex-direction: column; gap: 16px; box-sizing: border-box;">
+        <div style="position: relative; display: flex; background: #F0EFEA; border-radius: 12px; padding: 4px;">
+          <div style="position: absolute; top: 4px; left: 4px; width: calc(50% - 4px); height: calc(100% - 8px); background: #FFFFFF; border-radius: 9px; box-shadow: 0 1px 2px rgba(12,46,66,0.1); transform: {{ toggleThumbTransform }}; transition: transform 0.25s cubic-bezier(0.4,0,0.2,1);"></div>
+          <div onClick="{{ selectSignIn }}" style="position: relative; z-index: 1; flex: 1; text-align: center; padding: 9px 12px; border-radius: 9px; cursor: pointer; font-family: Figtree, sans-serif; font-weight: {{ signInTabStyle.fontWeight }}; font-size: 13px; color: {{ signInTabStyle.color }}; transition: color 0.2s ease;">Sign in</div>
+          <div onClick="{{ selectCreate }}" style="position: relative; z-index: 1; flex: 1; text-align: center; padding: 9px 12px; border-radius: 9px; cursor: pointer; font-family: Figtree, sans-serif; font-weight: {{ createTabStyle.fontWeight }}; font-size: 13px; color: {{ createTabStyle.color }}; transition: color 0.2s ease;">Create account</div>
+        </div>
+        <div>
+          <h1 style="margin: 0 0 3px; font-family: Figtree, sans-serif; font-weight: 800; font-size: 19px; color: #0C2E42;">{{ headline }}</h1>
+          <p style="margin: 0; font-size: 13px; color: #56666B; line-height: 1.5;">One account, multiple apps.</p>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <input type="text" placeholder="Full name" style="font-family: 'Albert Sans', sans-serif; font-size: 13.5px; padding: {{ nameFieldPadding }}; height: {{ nameFieldHeight }}; border-radius: 10px; border: 1px solid #E3E1DB; color: #1C2528; box-sizing: border-box; width: 100%; opacity: {{ nameFieldOpacity }}; transition: height 0.32s cubic-bezier(0.4,0,0.2,1), padding 0.32s cubic-bezier(0.4,0,0.2,1), opacity 0.22s ease;">
+          <input type="email" placeholder="Email" style="font-family: 'Albert Sans', sans-serif; font-size: 13.5px; padding: 10px 12px; border-radius: 10px; border: 1px solid #E3E1DB; color: #1C2528; box-sizing: border-box;">
+          <input type="password" placeholder="Password" style="font-family: 'Albert Sans', sans-serif; font-size: 13.5px; padding: 10px 12px; border-radius: 10px; border: 1px solid #E3E1DB; color: #1C2528; box-sizing: border-box;">
+        </div>
+        <div onClick="{{ submit }}" style="font-family: Figtree, sans-serif; font-weight: 700; font-size: 13.5px; color: #EFF7F2; background: {{ active.bg }}; border-radius: 11px; padding: 12px; text-align: center; cursor: pointer;">{{ ctaLabel }}</div>
+      </div>
+      </div>
+    </div>
+  </sc-if>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;appKey&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;avocado&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;options&quot;:[&quot;avocado&quot;,&quot;jot&quot;,&quot;framer&quot;],&quot;section&quot;:&quot;App&quot;}}">
+const APPS = {
+  avocado: { key: 'avocado', glyph: 'leaf', wordmark: 'avocado', tagline: 'Save recipes, plan meals, shop smarter.', bg: '#2C6349', tint: '#DFEEE6', muted: '#8CC0A8' },
+  jot: { key: 'jot', glyph: 'notebook', wordmark: 'jot', tagline: 'Markdown notes, organized into folders and shareable.', bg: '#5C5180', tint: '#E5E1F0', muted: '#B3A8D1' },
+  framer: { key: 'framer', glyph: 'frame', wordmark: 'framer', tagline: 'Custom frame dimensions, visualized before you build.', bg: '#9A6E14', tint: '#F2E7CE', muted: '#D1B26C' },
+};
+
+const ACTIVE_TAB_STYLE = { fontWeight: 700, color: '#0C2E42' };
+const INACTIVE_TAB_STYLE = { fontWeight: 600, color: '#56666B' };
+const BREAKPOINT = 640;
+
+class Component extends DCLogic {
+  state = { tab: 'signin', width: typeof window !== 'undefined' ? window.innerWidth : 900, contentHeight: null };
+  contentNode = null;
+  ro = null;
+
+  componentDidMount() {
+    this.onResize = () => this.setState({ width: window.innerWidth });
+    window.addEventListener('resize', this.onResize);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.onResize);
+    if (this.ro) this.ro.disconnect();
+  }
+
+  attachContentRef = (node) => {
+    if (this.contentNode === node) return;
+    if (this.ro) this.ro.disconnect();
+    this.contentNode = node;
+    if (node && typeof ResizeObserver !== 'undefined') {
+      this.ro = new ResizeObserver(() => {
+        this.setState({ contentHeight: node.scrollHeight });
+      });
+      this.ro.observe(node);
+      this.setState({ contentHeight: node.scrollHeight });
+    }
+  };
+
+  renderVals() {
+    const isCreate = this.state.tab === 'create';
+    const isWide = this.state.width >= BREAKPOINT;
+    const active = APPS[this.props.appKey ?? 'avocado'] ?? APPS.avocado;
+
+    return {
+      isCreate,
+      isWide,
+      isNarrow: !isWide,
+      active,
+      isBrandLeaf: active.glyph === 'leaf',
+      isBrandNotebook: active.glyph === 'notebook',
+      isBrandFrame: active.glyph === 'frame',
+      isBrandMountain: active.glyph === 'mountain',
+      selectSignIn: () => this.setState({ tab: 'signin' }),
+      selectCreate: () => this.setState({ tab: 'create' }),
+      signInTabStyle: isCreate ? INACTIVE_TAB_STYLE : ACTIVE_TAB_STYLE,
+      createTabStyle: isCreate ? ACTIVE_TAB_STYLE : INACTIVE_TAB_STYLE,
+      toggleThumbTransform: isCreate ? 'translateX(100%)' : 'translateX(0)',
+      nameFieldHeight: isCreate ? '40px' : '0px',
+      nameFieldPadding: isCreate ? '10px 12px' : '0px 12px',
+      nameFieldOpacity: isCreate ? 1 : 0,
+      headline: isCreate ? 'Create your account' : 'Welcome back',
+      ctaLabel: isCreate ? 'Create account' : 'Continue',
+      submit: () => {},
+      attachContentRefWide: this.attachContentRef,
+      attachContentRefNarrow: this.attachContentRef,
+      cardHeightWide: this.state.contentHeight != null ? this.state.contentHeight + 'px' : 'auto',
+      cardHeightNarrow: this.state.contentHeight != null ? this.state.contentHeight + 'px' : 'auto',
+    };
+  }
+}
+</script>
+</body>
+</html>

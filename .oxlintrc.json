@@ -19,5 +19,6 @@
       }
     }
   ],
-  "jsPlugins": ["eslint-plugin-simple-import-sort"]
+  "jsPlugins": ["eslint-plugin-simple-import-sort"],
+  "ignorePatterns": ["design/**"]
 }
