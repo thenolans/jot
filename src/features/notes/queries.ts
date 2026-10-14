@@ -1,4 +1,4 @@
-import { queryOptions } from '@tanstack/react-query'
+import { queryOptions, skipToken } from '@tanstack/react-query'
 
 import { keptOffline } from '@/lib/offlineQuery'
 
@@ -24,11 +24,11 @@ export const noteQueries = {
 
   details: () => [...noteQueries.all(), 'detail'] as const,
 
-  /** One of the user's notes. */
-  detail: (id: number) =>
+  /** One of the user's notes, or nothing to load for `null` (a note still being created). */
+  detail: (id: number | null) =>
     queryOptions({
       queryKey: [...noteQueries.details(), id] as const,
-      queryFn: () => fetchNote(id),
+      queryFn: id === null ? skipToken : () => fetchNote(id),
       ...keptOffline,
     }),
 }

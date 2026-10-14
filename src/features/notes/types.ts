@@ -21,3 +21,6 @@ export type NoteFilters = {
 
 /** What can be changed about a note from its editor. */
 export type NoteChanges = Partial<Pick<Note, 'title' | 'content'>>
+
+/** What a new note starts with; anything left out starts empty. */
+export type NewNote = Partial<Pick<Note, 'title' | 'content' | 'folderId'>>

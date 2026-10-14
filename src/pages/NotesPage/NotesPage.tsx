@@ -1,8 +1,10 @@
 import { Outlet } from 'react-router'
 
 import CloseIcon from '@/components/icons/CloseIcon'
+import PlusIcon from '@/components/icons/PlusIcon'
 import Button from '@/components/ui/Button'
 import Eyebrow from '@/components/ui/Eyebrow'
+import FloatingActionLink from '@/components/ui/FloatingActionLink'
 import PageContainer from '@/components/ui/PageContainer'
 import PageTitle from '@/components/ui/PageTitle'
 import { useNotes } from '@/features/notes/useNotes'
@@ -29,7 +31,8 @@ export default function NotesPage() {
   ].filter(Boolean)
 
   return (
-    <PageContainer width="wide">
+    // Bottom spacing on wide screens clears the new-note button.
+    <PageContainer width="wide" className="md:pb-24">
       <PageTitle>Notes</PageTitle>
       <h1 className="sr-only">Notes</h1>
       {/* Holds its height while loading, so the grid doesn't shift down when the count arrives. */}
@@ -61,7 +64,13 @@ export default function NotesPage() {
         page={filters.page}
         pageTo={filters.pageTo}
         noteTo={filters.noteTo}
+        newNoteLink={filters.newNoteLink}
         onClearFilters={filters.clearFilters}
+      />
+      <FloatingActionLink
+        {...filters.newNoteLink}
+        icon={<PlusIcon />}
+        label="New note"
       />
       <Outlet />
     </PageContainer>

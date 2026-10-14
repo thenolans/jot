@@ -38,6 +38,8 @@ type NoteEditorProps = {
   note: Note
   /** Called by the close and Done buttons. */
   onDone: () => void
+  /** Just created: the title takes focus, and closing the note with nothing written deletes it. */
+  isNew?: boolean
   className?: string
 }
 
@@ -48,10 +50,11 @@ type NoteEditorProps = {
 export default function NoteEditor({
   note,
   onDone,
+  isNew = false,
   className,
 }: NoteEditorProps) {
   const [mode, setMode] = useState<Mode>('edit')
-  const [draft, change] = useNoteAutosave(note)
+  const [draft, change] = useNoteAutosave(note, isNew)
   const saveStatus = useNoteSaveStatus(note.id)
   const bodyRef = useRef<HTMLTextAreaElement>(null)
 
@@ -72,6 +75,7 @@ export default function NoteEditor({
           onChange={(event) => change({ title: event.target.value })}
           maxLength={255}
           placeholder="Title"
+          autoFocus={isNew}
           className="min-w-0 flex-1 bg-transparent font-display text-xl font-bold text-ink-strong outline-none placeholder:text-faint focus-visible:shadow-none"
         />
         <SegmentedControl

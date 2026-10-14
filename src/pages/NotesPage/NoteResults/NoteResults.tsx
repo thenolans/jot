@@ -1,7 +1,8 @@
-import type { To } from 'react-router'
+import type { LinkProps, To } from 'react-router'
 
 import type { NotePageState } from '@/app/paths'
 import CloseIcon from '@/components/icons/CloseIcon'
+import PlusIcon from '@/components/icons/PlusIcon'
 import Button from '@/components/ui/Button'
 import ButtonLink from '@/components/ui/ButtonLink'
 import EmptyState from '@/components/ui/EmptyState'
@@ -29,6 +30,8 @@ type NoteResultsProps = {
   pageTo: (page: number) => To
   /** Where a note opens. */
   noteTo: (id: number) => To
+  /** Link props for a new note. */
+  newNoteLink: Omit<LinkProps, 'children'>
   onClearFilters: () => void
 }
 
@@ -47,6 +50,7 @@ export default function NoteResults({
   page,
   pageTo,
   noteTo,
+  newNoteLink,
   onClearFilters,
 }: NoteResultsProps) {
   const {
@@ -121,7 +125,15 @@ export default function NoteResults({
         </EmptyState>
       )
     return (
-      <EmptyState title="Your first jot awaits">
+      <EmptyState
+        title="Your first jot awaits"
+        action={
+          <ButtonLink {...newNoteLink}>
+            <PlusIcon />
+            Write your first note
+          </ButtonLink>
+        }
+      >
         Notes you write show up here, sorted by last edited. Folders keep
         everything tidy.
       </EmptyState>

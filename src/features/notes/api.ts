@@ -1,6 +1,6 @@
 import { api, type Page, withQuery } from '@/lib/api'
 
-import type { Note, NoteChanges, NoteFilters } from './types'
+import type { NewNote, Note, NoteChanges, NoteFilters } from './types'
 
 /** A note as the API sends it. */
 type NoteResponse = {
@@ -56,4 +56,24 @@ export async function updateNote(
   changes: NoteChanges,
 ): Promise<Note> {
   return toNote(await api.patch<NoteResponse>(`/jot/notes/${id}/`, changes))
+}
+
+/** Creates a note for the signed-in user, returning it as saved. */
+export async function createNote({
+  title,
+  content,
+  folderId,
+}: NewNote): Promise<Note> {
+  return toNote(
+    await api.post<NoteResponse>('/jot/notes/', {
+      title,
+      content,
+      folder_id: folderId,
+    }),
+  )
+}
+
+/** Deletes one of the signed-in user's notes. */
+export async function deleteNote(id: number): Promise<void> {
+  await api.delete(`/jot/notes/${id}/`)
 }

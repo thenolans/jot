@@ -1,7 +1,12 @@
 import { useParams } from 'react-router'
 
-/** The `:noteId` route param as a note id, or `undefined` when it isn't a valid one. */
+/**
+ * The `:noteId` route param as a note id, `'new'` for a note to create (`paths.newNote`), or `undefined`
+ * when it's neither.
+ */
 export function useNoteIdParam() {
-  const noteId = Number(useParams().noteId)
+  const param = useParams().noteId
+  if (param === 'new') return 'new'
+  const noteId = Number(param)
   return Number.isInteger(noteId) && noteId > 0 ? noteId : undefined
 }

@@ -24,15 +24,17 @@ function findInLists(queryClient: QueryClient, id: number) {
 }
 
 /**
- * One of the signed-in user's notes. A note opened from the list shows straight away, from the list's
- * data, while it's refreshed.
+ * One of the signed-in user's notes, or none for `null`. A note opened from the list shows straight
+ * away, from the list's data, while it's refreshed.
  */
-export function useNote(id: number) {
+export function useNote(id: number | null) {
   const queryClient = useQueryClient()
   const query = useQuery({
     ...noteQueries.detail(id),
-    initialData: () => findInLists(queryClient, id)?.note,
-    initialDataUpdatedAt: () => findInLists(queryClient, id)?.updatedAt,
+    initialData: () =>
+      id === null ? undefined : findInLists(queryClient, id)?.note,
+    initialDataUpdatedAt: () =>
+      id === null ? undefined : findInLists(queryClient, id)?.updatedAt,
   })
 
   return {

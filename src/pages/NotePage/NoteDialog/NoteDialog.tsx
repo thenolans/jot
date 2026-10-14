@@ -8,10 +8,20 @@ import IconButton from '@/components/ui/IconButton'
 import ModalShell, { closeModal } from '@/components/ui/ModalShell'
 import Skeleton from '@/components/ui/Skeleton'
 import NoteEditor from '@/features/notes/NoteEditor'
+import type { NewNote } from '@/features/notes/types'
 import { useNote } from '@/features/notes/useNote'
 
+import { useCreateOnOpen } from './useCreateOnOpen'
+
 type NoteDialogProps = {
-  noteId: number
+  /** The note to open, or `'new'` to create one. */
+  noteId: number | 'new'
+  /** What a new note starts with. */
+  newNote: NewNote
+  /** Called with a new note's id once it's created, to open it. */
+  onCreated: (id: number) => void
+  /** The note was just created, so closing it with nothing written deletes it. */
+  isNew?: boolean
   /** Called once it has closed, so it can be removed. */
   onClose: () => void
 }
@@ -21,16 +31,29 @@ type NoteDialogProps = {
  * screen below a gap; from `md` it's centered, growing with the note up to a limit, past which the note
  * scrolls.
  */
-export default function NoteDialog({ noteId, onClose }: NoteDialogProps) {
+export default function NoteDialog({
+  noteId,
+  newNote,
+  onCreated,
+  isNew = false,
+  onClose,
+}: NoteDialogProps) {
   const dialogRef = useRef<HTMLDialogElement>(null)
-  const { note, isNotFound, isLoading, error, reload } = useNote(noteId)
+  const isCreating = noteId === 'new'
+  const { note, isNotFound, isLoading, error, reload } = useNote(
+    isCreating ? null : noteId,
+  )
+  const { createError, retryCreate } = useCreateOnOpen(
+    isCreating ? newNote : null,
+    onCreated,
+  )
 
   const close = () => closeModal(dialogRef.current)
 
   return (
     <ModalShell
       dialogRef={dialogRef}
-      aria-label={note?.title || 'Note'}
+      aria-label={note?.title || (isCreating || isNew ? 'New note' : 'Note')}
       onClose={onClose}
       // The gap above the sheet leaves some of the grid in view, and a tap there closes it. Clip, not
       // hidden: hidden still scrolls to show the focused field, which cancels the slide.
@@ -49,7 +72,12 @@ export default function NoteDialog({ noteId, onClose }: NoteDialogProps) {
       </div>
 
       {note ? (
-        <NoteEditor note={note} onDone={close} className="flex-1" />
+        <NoteEditor
+          note={note}
+          onDone={close}
+          isNew={isNew}
+          className="flex-1"
+        />
       ) : (
         <div className="flex flex-1 flex-col gap-4 px-6 pb-6">
           <IconButton
@@ -60,10 +88,12 @@ export default function NoteDialog({ noteId, onClose }: NoteDialogProps) {
           >
             <CloseIcon size={20} />
           </IconButton>
-          {isLoading ? (
+          {createError ? (
+            <ErrorRetry onRetry={retryCreate}>{createError}</ErrorRetry>
+          ) : isLoading ? (
             <>
               <p role="status" className="sr-only">
-                Loading note
+                {isCreating ? 'Creating note' : 'Loading note'}
               </p>
               <div aria-hidden className="flex animate-pulse flex-col gap-4">
                 <Skeleton className="h-6 w-1/2" />
