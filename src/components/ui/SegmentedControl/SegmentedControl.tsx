@@ -1,4 +1,4 @@
-import { useId } from 'react'
+import { type ReactNode, useId } from 'react'
 
 import { cx } from '@/lib/cx'
 
@@ -11,6 +11,8 @@ import SegmentedThumb from './SegmentedThumb'
 type Option<T extends string | number> = {
   value: T
   label: string
+  /** Shown before the label. */
+  icon?: ReactNode
 }
 
 type SegmentedControlProps<T extends string | number> = {
@@ -19,6 +21,8 @@ type SegmentedControlProps<T extends string | number> = {
   options: ReadonlyArray<Option<T>>
   value: T
   onChange: (value: T) => void
+  /** Below `md`, show only the options' icons, keeping their labels for screen readers. */
+  iconsOnlyOnPhones?: boolean
   className?: string
 }
 
@@ -28,6 +32,7 @@ export default function SegmentedControl<T extends string | number>({
   options,
   value,
   onChange,
+  iconsOnlyOnPhones,
   className,
 }: SegmentedControlProps<T>) {
   const name = useId()
@@ -59,10 +64,13 @@ export default function SegmentedControl<T extends string | number>({
                 htmlFor={id}
                 className={segmentedItemClassName(
                   { active: checked },
-                  'peer-focus-visible:shadow-focus',
+                  'gap-1 peer-focus-visible:shadow-focus',
                 )}
               >
-                {option.label}
+                {option.icon}
+                <span className={cx(iconsOnlyOnPhones && 'max-md:sr-only')}>
+                  {option.label}
+                </span>
               </label>
             </div>
           )

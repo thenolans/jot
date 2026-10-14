@@ -1,6 +1,6 @@
 import { api, type Page, withQuery } from '@/lib/api'
 
-import type { Note, NoteFilters } from './types'
+import type { Note, NoteChanges, NoteFilters } from './types'
 
 /** A note as the API sends it. */
 type NoteResponse = {
@@ -43,4 +43,17 @@ export async function fetchNotes(
     }),
   )
   return { ...response, results: response.results.map(toNote) }
+}
+
+/** One of the signed-in user's notes. Fails with a 404 when there's no such note, or it isn't theirs. */
+export async function fetchNote(id: number): Promise<Note> {
+  return toNote(await api.get<NoteResponse>(`/jot/notes/${id}/`))
+}
+
+/** Changes a note's title or text, returning it as saved. */
+export async function updateNote(
+  id: number,
+  changes: NoteChanges,
+): Promise<Note> {
+  return toNote(await api.patch<NoteResponse>(`/jot/notes/${id}/`, changes))
 }

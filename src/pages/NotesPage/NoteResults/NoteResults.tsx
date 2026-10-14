@@ -1,5 +1,6 @@
 import type { To } from 'react-router'
 
+import type { NotePageState } from '@/app/paths'
 import CloseIcon from '@/components/icons/CloseIcon'
 import Button from '@/components/ui/Button'
 import ButtonLink from '@/components/ui/ButtonLink'
@@ -26,6 +27,8 @@ type NoteResultsProps = {
   page: number
   /** Where another page of the same results lives. */
   pageTo: (page: number) => To
+  /** Where a note opens. */
+  noteTo: (id: number) => To
   onClearFilters: () => void
 }
 
@@ -43,6 +46,7 @@ export default function NoteResults({
   inFolder,
   page,
   pageTo,
+  noteTo,
   onClearFilters,
 }: NoteResultsProps) {
   const {
@@ -138,7 +142,15 @@ export default function NoteResults({
         items={notes}
         estimateHeight={estimateHeight}
         getKey={(note) => note.id}
-        renderItem={(note) => <NoteCard note={note} />}
+        renderItem={(note) => (
+          <NoteCard
+            note={note}
+            to={noteTo(note.id)}
+            state={{ fromList: true } satisfies NotePageState}
+            // The note opens over the grid, which stays scrolled where it was.
+            preventScrollReset
+          />
+        )}
       />
       {pageCount > 1 && (
         <div className="mt-8 flex justify-center">

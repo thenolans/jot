@@ -1,5 +1,7 @@
 import { type To, useSearchParams } from 'react-router'
 
+import { notePath } from '@/app/paths'
+
 /**
  * The note filters and page, kept in the URL (`?q=…&folder=…&page=…`) so they survive reloads and can
  * be linked to.
@@ -39,6 +41,11 @@ export function useNoteSearchParams() {
       else next.delete('page')
       return { search: next.toString() }
     },
+    /** A note, open over the list with the same filters and page. */
+    noteTo: (id: number): To => ({
+      pathname: notePath(id),
+      search: searchParams.toString(),
+    }),
     hasFilters: query !== '' || folderId !== null,
     clearFilters: () => updateFilters({ q: null, folder: null }),
   }

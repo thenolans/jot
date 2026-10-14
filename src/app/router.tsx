@@ -63,6 +63,12 @@ export const router = createBrowserRouter([
               {
                 path: paths.notes,
                 lazy: page(() => import('@/pages/NotesPage')),
+                children: [
+                  {
+                    path: paths.note,
+                    lazy: page(() => import('@/pages/NotePage')),
+                  },
+                ],
               },
             ],
           },

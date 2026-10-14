@@ -104,10 +104,12 @@
   --animate-fade-in: fade-in 160ms ease;
   --animate-rise-in: rise-in 160ms ease;
   --animate-sheet-in: sheet-in 240ms var(--ease-out-quint); /* a panel sliding up from the bottom edge */
+  --animate-lift-in: lift-in 220ms ease; /* a centered panel rising into place, like an open note */
   /* Exits hold their last frame, so nothing flashes back before the element goes. */
   --animate-fade-out: fade-out 160ms ease forwards;
   --animate-rise-out: rise-out 160ms ease forwards;
   --animate-sheet-out: sheet-out 200ms ease-in forwards;
+  --animate-lift-out: lift-out 200ms ease forwards;
 
   @keyframes fade-in {
     from {
@@ -128,6 +130,13 @@
     }
   }
 
+  @keyframes lift-in {
+    from {
+      opacity: 0;
+      transform: translateY(40px);
+    }
+  }
+
   @keyframes fade-out {
     to {
       opacity: 0;
@@ -138,6 +147,13 @@
     to {
       opacity: 0;
       transform: translateY(-8px);
+    }
+  }
+
+  @keyframes lift-out {
+    to {
+      opacity: 0;
+      transform: translateY(40px);
     }
   }
 

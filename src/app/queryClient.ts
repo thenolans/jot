@@ -1,5 +1,6 @@
 import { onlineManager, QueryClient } from '@tanstack/react-query'
 
+import { setNoteMutationDefaults } from '@/features/notes/mutations'
 import { ApiError, isNetworkError } from '@/lib/api'
 import { connectivity } from '@/lib/connectivity'
 
@@ -37,3 +38,5 @@ export const queryClient = new QueryClient({
     },
   },
 })
+
+setNoteMutationDefaults(queryClient)

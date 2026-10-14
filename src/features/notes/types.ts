@@ -18,3 +18,6 @@ export type NoteFilters = {
   /** The folder notes must be in (directly or in a folder inside it), or `null` for every note. */
   folderId?: number | null
 }
+
+/** What can be changed about a note from its editor. */
+export type NoteChanges = Partial<Pick<Note, 'title' | 'content'>>

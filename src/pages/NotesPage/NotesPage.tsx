@@ -1,3 +1,5 @@
+import { Outlet } from 'react-router'
+
 import CloseIcon from '@/components/icons/CloseIcon'
 import Button from '@/components/ui/Button'
 import Eyebrow from '@/components/ui/Eyebrow'
@@ -9,7 +11,10 @@ import { plural } from '@/lib/plural'
 import NoteResults from './NoteResults'
 import { useNoteSearchParams } from './useNoteSearchParams'
 
-/** Where signing in lands: the grid of the user's notes, most recently edited first. */
+/**
+ * Where signing in lands: the grid of the user's notes, most recently edited first. A note opens over
+ * it (`NotePage`), keeping the grid behind as it was.
+ */
 export default function NotesPage() {
   const filters = useNoteSearchParams()
   const results = useNotes(
@@ -55,8 +60,10 @@ export default function NotesPage() {
         inFolder={filters.folderId !== null}
         page={filters.page}
         pageTo={filters.pageTo}
+        noteTo={filters.noteTo}
         onClearFilters={filters.clearFilters}
       />
+      <Outlet />
     </PageContainer>
   )
 }
