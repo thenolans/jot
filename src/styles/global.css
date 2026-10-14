@@ -39,6 +39,11 @@
   );
 }
 
+/* Corners from the parent, for a control whose wrapper sets them (a cell in an `InputGroup`). */
+@utility rounded-inherit {
+  border-radius: inherit;
+}
+
 /*
  * Styles a note's rendered markdown (`NoteMarkdown`). The HTML comes from `marked`, so its elements
  * can't take classes; this styles them by tag instead, since preflight strips their default looks

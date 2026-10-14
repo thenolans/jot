@@ -15,6 +15,7 @@ const twMerge = extendTailwindMerge({
       'bg-image': ['bg-topo-brand'],
       duration: ['duration-slide'],
       pb: ['pb-safe-area'],
+      rounded: ['rounded-inherit'],
     },
   },
 })
