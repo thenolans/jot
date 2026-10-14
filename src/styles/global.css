@@ -139,6 +139,24 @@
   }
 }
 
+/*
+ * A tighter `markdown`, for a note's preview on its card: text-sized headings and smaller gaps.
+ * `:is` outweighs `markdown`'s `:where` rules, whatever order they're generated in.
+ */
+@utility markdown-preview {
+  & :is(p, ul, ol, pre, blockquote, table, hr) {
+    @apply mb-2;
+  }
+
+  & :is(h1, h2, h3, h4, h5, h6) {
+    @apply mb-1 text-sm;
+  }
+
+  & > :last-child {
+    @apply mb-0;
+  }
+}
+
 @layer base {
   /*
    * The page holds still behind a modal. The gutter stays when the scrollbar goes, so the page

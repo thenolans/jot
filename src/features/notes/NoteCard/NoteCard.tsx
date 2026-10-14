@@ -10,6 +10,7 @@ import { cx } from '@/lib/cx'
 import { plural } from '@/lib/plural'
 
 import { isSharedByUser, isSharedWithUser } from '../access'
+import NoteMarkdown from '../NoteMarkdown'
 import { notePreview, previewLines } from '../notePreview'
 import type { Note } from '../types'
 
@@ -26,9 +27,9 @@ type NoteCardProps = Omit<LinkProps, 'children'> & {
 }
 
 /**
- * A note in the grid, linking to it: its title, if it has one, and the start of its text, without the
- * markdown. A note shared with the user has the avatar of whoever shared it in its corner, and one the user
- * has shared has an icon of two people there.
+ * A note in the grid, linking to it: its title, if it has one, and the start of its text, rendered from
+ * its markdown. A note shared with the user has the avatar of whoever shared it in its corner, and one
+ * the user has shared has an icon of two people there.
  */
 export default function NoteCard({ note, className, ...props }: NoteCardProps) {
   const preview = notePreview(note.content)
@@ -90,16 +91,16 @@ export default function NoteCard({ note, className, ...props }: NoteCardProps) {
           </Heading>
         )}
         {preview && (
-          <p
+          <NoteMarkdown
             id={previewId}
+            variant="preview"
+            content={note.content}
             className={cx(
-              'text-sm leading-relaxed break-words whitespace-pre-wrap text-ink',
+              'text-sm',
               lineClampClassNames[previewLines(preview)],
               sharing && !note.title && 'pr-8',
             )}
-          >
-            {preview}
-          </p>
+          />
         )}
       </Card>
     </Link>
