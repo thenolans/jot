@@ -8,6 +8,7 @@ import {
   useEffect,
   useRef,
 } from 'react'
+import { UNSAFE_PortalProvider } from 'react-aria'
 
 import { cx } from '@/lib/cx'
 
@@ -20,6 +21,8 @@ type ModalShellProps = Omit<
   /** The dialog element; pass it to `closeModal` to close it. */
   dialogRef: RefObject<HTMLDialogElement | null>
   onClose: () => void
+  /** Called on Esc in place of closing, e.g. to go back to a modal's main view (`useModalView`). */
+  onEscape?: () => void
   children: ReactNode
   /** Classes for the full-screen dialog, e.g. to position the panel. */
   className?: string
@@ -30,11 +33,14 @@ type ModalShellProps = Omit<
 /**
  * A bare modal: a backdrop and an empty panel. Render it to open it; it closes on Esc or a click
  * outside the panel, then calls `onClose` so it can be removed. Close it from inside with
- * `closeModal`, which plays the exit animation first (`in-data-closing:` styles the panel's).
+ * `closeModal`, which plays the exit animation first (`in-data-closing:` styles the panel's). Popovers
+ * opened inside it, like a `Menu`'s actions, render inside the dialog, since everything outside it is
+ * inert.
  */
 export default function ModalShell({
   dialogRef,
   onClose,
+  onEscape,
   children,
   className,
   panelClassName,
@@ -59,7 +65,8 @@ export default function ModalShell({
   // Esc animates out too. The browser may refuse to let a repeated Esc be held back; then it closes at once.
   const handleCancel = (event: SyntheticEvent<HTMLDialogElement>) => {
     event.preventDefault()
-    closeModal(event.currentTarget)
+    if (onEscape) onEscape()
+    else closeModal(event.currentTarget)
   }
 
   return (
@@ -81,7 +88,9 @@ export default function ModalShell({
           panelClassName,
         )}
       >
-        {children}
+        <UNSAFE_PortalProvider getContainer={() => dialogRef.current}>
+          {children}
+        </UNSAFE_PortalProvider>
       </div>
     </dialog>
   )

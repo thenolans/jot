@@ -4,9 +4,11 @@ import { flushSync } from 'react-dom'
 import CloseIcon from '@/components/icons/CloseIcon'
 import EyeIcon from '@/components/icons/EyeIcon'
 import PencilIcon from '@/components/icons/PencilIcon'
+import TrashIcon from '@/components/icons/TrashIcon'
 import Button from '@/components/ui/Button'
 import Eyebrow from '@/components/ui/Eyebrow'
 import IconButton from '@/components/ui/IconButton'
+import Menu, { MenuItem } from '@/components/ui/Menu'
 import SegmentedControl from '@/components/ui/SegmentedControl'
 import { cx } from '@/lib/cx'
 
@@ -38,6 +40,8 @@ type NoteEditorProps = {
   note: Note
   /** Called by the close and Done buttons. */
   onDone: () => void
+  /** Called by Delete in the note's menu, to confirm it. */
+  onDelete: () => void
   /** Just created: the title takes focus, and closing the note with nothing written deletes it. */
   isNew?: boolean
   className?: string
@@ -50,6 +54,7 @@ type NoteEditorProps = {
 export default function NoteEditor({
   note,
   onDone,
+  onDelete,
   isNew = false,
   className,
 }: NoteEditorProps) {
@@ -122,12 +127,20 @@ export default function NoteEditor({
         </div>
       )}
 
-      {/* The status sits beside Done, on the right, leaving the left for the note's actions. */}
-      <div className="flex items-center justify-end gap-4 border-t border-border-soft px-6 py-4">
+      {/* The note's actions sit on the left, the status beside Done on the right. */}
+      <div className="flex items-center gap-4 border-t border-border-soft px-6 py-4">
+        <Menu label="Note actions" placement="top start" className="-ml-2">
+          <MenuItem variant="danger" icon={<TrashIcon />} onAction={onDelete}>
+            Delete note
+          </MenuItem>
+        </Menu>
         <Eyebrow
           as="p"
           role="status"
-          className={cx('text-right', saveStatus === 'failed' && 'text-danger')}
+          className={cx(
+            'flex-1 text-right',
+            saveStatus === 'failed' && 'text-danger',
+          )}
         >
           {saveStatus === 'saving'
             ? 'Saving…'

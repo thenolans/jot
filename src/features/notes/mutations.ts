@@ -1,6 +1,6 @@
 import type { QueryClient } from '@tanstack/react-query'
 
-import { isNetworkError, type Page } from '@/lib/api'
+import { isNetworkError, isNotFoundError, type Page } from '@/lib/api'
 import { refetchAfterLastMutation } from '@/lib/refetchAfterLastMutation'
 
 import { deleteNote, updateNote } from './api'
@@ -63,9 +63,13 @@ export function setNoteMutationDefaults(queryClient: QueryClient) {
   )
 
   // Deleting a note takes it off the list straight away. It runs after the note's saves (they share a
-  // scope) and, like them, waits for the connection when offline.
+  // scope) and, like them, waits for the connection when offline. A note that's already gone counts as
+  // deleted, like an empty new note deleted from its menu, then again as it closes.
   queryClient.setMutationDefaults<void, Error, number>(deleteNoteMutationKey, {
-    mutationFn: deleteNote,
+    mutationFn: (id) =>
+      deleteNote(id).catch((error: unknown) => {
+        if (!isNotFoundError(error)) throw error
+      }),
     scope: { id: 'notes' },
     networkMode: 'online',
     meta: { keepOffline: true },
