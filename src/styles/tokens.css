@@ -102,27 +102,18 @@
   --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
 
   --animate-fade-in: fade-in 160ms ease;
-  --animate-rise-in: rise-in 160ms ease;
   --animate-sheet-in: sheet-in 240ms var(--ease-out-quint); /* a panel sliding up from the bottom edge */
-  --animate-lift-in: lift-in 220ms ease; /* a centered panel rising into place, like an open note */
+  --animate-lift-in: lift-in 220ms ease; /* a centered modal rising into place, like an open note or a dialog */
   --animate-view-in: view-in 240ms ease; /* a modal's content changing in place, like a note to deleting it */
   --animate-view-back: view-back 240ms ease; /* the same, going back */
   /* Exits hold their last frame, so nothing flashes back before the element goes. */
   --animate-fade-out: fade-out 160ms ease forwards;
-  --animate-rise-out: rise-out 160ms ease forwards;
   --animate-sheet-out: sheet-out 200ms ease-in forwards;
   --animate-lift-out: lift-out 200ms ease forwards;
 
   @keyframes fade-in {
     from {
       opacity: 0;
-    }
-  }
-
-  @keyframes rise-in {
-    from {
-      opacity: 0;
-      transform: translateY(-8px);
     }
   }
 
@@ -156,13 +147,6 @@
   @keyframes fade-out {
     to {
       opacity: 0;
-    }
-  }
-
-  @keyframes rise-out {
-    to {
-      opacity: 0;
-      transform: translateY(-8px);
     }
   }
 

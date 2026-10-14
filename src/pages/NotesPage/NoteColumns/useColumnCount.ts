@@ -1,7 +1,7 @@
 import { useSyncExternalStore } from 'react'
 
-// Tailwind's `lg` and `sm` breakpoints.
-const threeColumns = '(min-width: 64rem)'
+// Tailwind's `xl` and `sm` breakpoints. From `md` the folder sidebar takes 240px of the width.
+const threeColumns = '(min-width: 80rem)'
 const twoColumns = '(min-width: 40rem)'
 
 const subscribe = (onChange: () => void) => {
@@ -21,7 +21,7 @@ const columnCount = () =>
       ? 2
       : 1
 
-/** How many columns of notes fit the window: one on phones, two on tablets, three wider. */
+/** How many columns of notes fit the window: one on phones, two on tablets and small laptops, three wider. */
 export function useColumnCount() {
   return useSyncExternalStore(subscribe, columnCount)
 }

@@ -1,5 +1,6 @@
 import type { QueryClient } from '@tanstack/react-query'
 
+import { folderQueries } from '@/features/folders/queries'
 import { isNetworkError, isNotFoundError, type Page } from '@/lib/api'
 import { refetchAfterLastMutation } from '@/lib/refetchAfterLastMutation'
 
@@ -62,7 +63,7 @@ export function setNoteMutationDefaults(queryClient: QueryClient) {
     },
   )
 
-  // Deleting a note takes it off the list straight away. It runs after the note's saves (they share a
+  // Deleting a note takes it off the list straight away, and the folder counts follow once it's done. It runs after the note's saves (they share a
   // scope) and, like them, waits for the connection when offline. A note that's already gone counts as
   // deleted, like an empty new note deleted from its menu, then again as it closes.
   queryClient.setMutationDefaults<void, Error, number>(deleteNoteMutationKey, {
@@ -91,10 +92,17 @@ export function setNoteMutationDefaults(queryClient: QueryClient) {
       )
     },
     onSettled: () =>
-      refetchAfterLastMutation(
-        queryClient,
-        deleteNoteMutationKey,
-        noteQueries.lists(),
-      ),
+      Promise.all([
+        refetchAfterLastMutation(
+          queryClient,
+          deleteNoteMutationKey,
+          noteQueries.lists(),
+        ),
+        refetchAfterLastMutation(
+          queryClient,
+          deleteNoteMutationKey,
+          folderQueries.all(),
+        ),
+      ]),
   })
 }

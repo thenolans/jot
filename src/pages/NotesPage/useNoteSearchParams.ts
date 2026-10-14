@@ -1,6 +1,6 @@
 import { type To, useSearchParams } from 'react-router'
 
-import { type NotePageState, notePath, paths } from '@/app/paths'
+import { folderIdParam, type NotePageState, notePath, paths } from '@/app/paths'
 
 /**
  * The note filters and page, kept in the URL (`?q=…&folder=…&page=…`) so they survive reloads and can
@@ -9,9 +9,7 @@ import { type NotePageState, notePath, paths } from '@/app/paths'
 export function useNoteSearchParams() {
   const [searchParams, setSearchParams] = useSearchParams()
   const query = searchParams.get('q')?.trim() ?? ''
-  const folderParam = Number(searchParams.get('folder'))
-  const folderId =
-    Number.isInteger(folderParam) && folderParam > 0 ? folderParam : null
+  const folderId = folderIdParam(searchParams)
   const pageParam = Number(searchParams.get('page'))
   const page = Number.isInteger(pageParam) && pageParam > 1 ? pageParam : 1
 
@@ -52,7 +50,10 @@ export function useNoteSearchParams() {
       state: { fromList: true, folderId } satisfies NotePageState,
       preventScrollReset: true,
     },
-    hasFilters: query !== '' || folderId !== null,
     clearFilters: () => updateFilters({ q: null, folder: null }),
+    /** Drops the search, staying in the folder shown. */
+    clearQuery: () => updateFilters({ q: null }),
+    /** Shows every folder's notes, keeping the search. */
+    clearFolder: () => updateFilters({ folder: null }),
   }
 }

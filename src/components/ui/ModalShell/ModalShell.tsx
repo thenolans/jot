@@ -46,9 +46,13 @@ export default function ModalShell({
   panelClassName,
   ...props
 }: ModalShellProps) {
+  // Opening it focuses its first control, or the one marked `data-autofocus`. React's `autoFocus` runs
+  // while the dialog is still hidden, so inside one it does nothing.
   useEffect(() => {
     const dialog = dialogRef.current
-    if (dialog && !dialog.open) dialog.showModal()
+    if (!dialog || dialog.open) return
+    dialog.showModal()
+    dialog.querySelector<HTMLElement>('[data-autofocus]')?.focus()
   }, [dialogRef])
 
   // Only the area around the panel is the dialog itself; presses in the panel or a popover land on them.
@@ -63,17 +67,23 @@ export default function ModalShell({
       closeModal(dialogRef.current)
   }
   // Esc animates out too. The browser may refuse to let a repeated Esc be held back; then it closes at once.
+  // React passes a dialog's `cancel` and `close` up to the dialogs around it, so a dialog opened from
+  // inside this one (a folder's, from the folder sheet) mustn't close this one too.
   const handleCancel = (event: SyntheticEvent<HTMLDialogElement>) => {
+    if (event.target !== event.currentTarget) return
     event.preventDefault()
     if (onEscape) onEscape()
     else closeModal(event.currentTarget)
+  }
+  const handleClose = (event: SyntheticEvent<HTMLDialogElement>) => {
+    if (event.target === event.currentTarget) onClose()
   }
 
   return (
     <dialog
       {...props}
       ref={dialogRef}
-      onClose={onClose}
+      onClose={handleClose}
       onCancel={handleCancel}
       onPointerDown={handlePointerDown}
       onClick={handleDialogClick}
@@ -84,7 +94,7 @@ export default function ModalShell({
     >
       <div
         className={cx(
-          'animate-rise-in rounded-md bg-surface shadow-raised motion-safe:in-data-closing:animate-rise-out motion-reduce:animate-none',
+          'animate-lift-in rounded-md bg-surface shadow-raised motion-safe:in-data-closing:animate-lift-out motion-reduce:animate-none',
           panelClassName,
         )}
       >

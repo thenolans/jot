@@ -12,6 +12,12 @@ export const paths = {
 
 export const notePath = (id: number) => `${paths.notes}/${id}`
 
+/** The folder the notes grid is narrowed to, from its `folder` search param, or `null` for every note. */
+export function folderIdParam(searchParams: URLSearchParams) {
+  const folderId = Number(searchParams.get('folder'))
+  return Number.isInteger(folderId) && folderId > 0 ? folderId : null
+}
+
 /** Router state a link to a note can pass. */
 export type NotePageState = {
   /** Opened from the notes grid, so closing the note goes back to it. */

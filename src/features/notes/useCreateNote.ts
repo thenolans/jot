@@ -1,5 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
+import { folderQueries } from '@/features/folders/queries'
+
 import { createNote } from './api'
 import { noteQueries } from './queries'
 import type { NewNote } from './types'
@@ -12,8 +14,9 @@ export function useCreateNote() {
     onSuccess: (note) => {
       // The note opens without loading it again.
       queryClient.setQueryData(noteQueries.detail(note.id).queryKey, note)
-      // Not awaited, so the note opens without waiting for the list.
+      // Not awaited, so the note opens without waiting for the list or the folder counts.
       void queryClient.invalidateQueries({ queryKey: noteQueries.lists() })
+      void queryClient.invalidateQueries({ queryKey: folderQueries.all() })
     },
   })
 }

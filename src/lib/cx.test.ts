@@ -12,7 +12,7 @@ describe('cx', () => {
     ['duration-200', 'duration-slide'],
     ['ease-in', 'ease-out-quint'],
     ['animate-pulse', 'animate-fade-in'],
-    ['animate-none', 'animate-rise-in'],
+    ['animate-none', 'animate-lift-in'],
     ['pb-4', 'pb-safe-area'],
     ['font-sans', 'font-display'],
     ['shadow-sm', 'shadow-card'],

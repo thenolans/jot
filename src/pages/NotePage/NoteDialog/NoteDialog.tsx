@@ -9,6 +9,7 @@ import ModalShell, {
   closeModal,
   useModalView,
 } from '@/components/ui/ModalShell'
+import SheetHandle from '@/components/ui/SheetHandle'
 import Skeleton from '@/components/ui/Skeleton'
 import NoteEditor from '@/features/notes/NoteEditor'
 import type { NewNote } from '@/features/notes/types'
@@ -17,6 +18,7 @@ import { useNote } from '@/features/notes/useNote'
 import { cx } from '@/lib/cx'
 
 import DeleteNoteView from './DeleteNoteView'
+import MoveNoteView from './MoveNoteView'
 import { useCreateOnOpen } from './useCreateOnOpen'
 
 type NoteDialogProps = {
@@ -55,7 +57,7 @@ export default function NoteDialog({
   )
 
   const { view, isMainView, show, back, viewClassName } = useModalView<
-    'note' | 'delete'
+    'note' | 'move' | 'delete'
   >(dialogRef, 'note')
   const { mutate: deleteNote } = useDeleteNote()
 
@@ -73,31 +75,25 @@ export default function NoteDialog({
       aria-label={
         view === 'delete'
           ? 'Delete note'
-          : note?.title || (isCreating || isNew ? 'New note' : 'Note')
+          : view === 'move'
+            ? 'Move note'
+            : note?.title || (isCreating || isNew ? 'New note' : 'Note')
       }
       onClose={onClose}
       onEscape={isMainView ? undefined : back}
       // The gap above the sheet leaves some of the grid in view, and a tap there closes it. Clip, not
       // hidden: hidden still scrolls to show the focused field, which cancels the slide.
       className="flex items-end justify-center overflow-clip pt-12 md:items-center md:p-4"
-      // It rises into place rather than dropping in like a popover. Showing the note, it fills the sheet,
-      // and at `md` and up it's at least tall enough to write in and at most 720px; other views fit their
-      // content.
+      // Showing the note, it fills the sheet, and at `md` and up it's at least tall enough to write in and
+      // at most 720px; other views fit their content.
       panelClassName={cx(
-        'flex max-h-full w-full flex-col max-md:rounded-b-none max-md:pb-safe-area max-md:motion-safe:animate-sheet-in max-md:motion-safe:in-data-closing:animate-sheet-out md:pt-4 md:motion-safe:animate-lift-in md:motion-safe:in-data-closing:animate-lift-out',
+        'flex max-h-full w-full flex-col max-md:rounded-b-none max-md:pb-safe-area max-md:motion-safe:animate-sheet-in max-md:motion-safe:in-data-closing:animate-sheet-out md:pt-4',
         isMainView
           ? 'max-md:h-full md:max-h-180 md:min-h-80 md:max-w-2xl'
           : 'md:max-w-md',
       )}
     >
-      {/* A grab handle marks the sheet; it doesn't drag, so a press on it closes the sheet. */}
-      <div
-        aria-hidden
-        onClick={close}
-        className="flex flex-none cursor-pointer justify-center py-2 md:hidden"
-      >
-        <div className="h-1 w-10 rounded-full bg-border" />
-      </div>
+      <SheetHandle onClick={close} className="flex-none" />
 
       {note ? (
         <>
@@ -105,10 +101,14 @@ export default function NoteDialog({
           <NoteEditor
             note={note}
             onDone={close}
+            onMove={() => show('move')}
             onDelete={() => show('delete')}
             isNew={isNew}
             className={cx('flex-1', viewClassName, !isMainView && 'hidden')}
           />
+          {view === 'move' && (
+            <MoveNoteView note={note} onBack={back} className={viewClassName} />
+          )}
           {view === 'delete' && (
             <DeleteNoteView
               note={note}

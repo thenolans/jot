@@ -24,6 +24,8 @@ type NoteResultsProps = {
   query: string
   /** Whether the notes are narrowed to a folder. */
   inFolder: boolean
+  /** The folder's name, once it's known. */
+  folderName?: string
   /** The page shown, from 1. */
   page: number
   /** Where another page of the same results lives. */
@@ -47,6 +49,7 @@ export default function NoteResults({
   results,
   query,
   inFolder,
+  folderName,
   page,
   pageTo,
   noteTo,
@@ -119,7 +122,10 @@ export default function NoteResults({
       )
     if (inFolder)
       return (
-        <EmptyState title="This folder is empty" action={clearFilters}>
+        <EmptyState
+          title={folderName ? `${folderName} is empty` : 'This folder is empty'}
+          action={clearFilters}
+        >
           Notes you add to this folder will collect here. Notes in folders
           inside it count too.
         </EmptyState>

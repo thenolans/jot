@@ -9,7 +9,16 @@ const twMerge = extendTailwindMerge({
       font: ['display', 'body'],
       shadow: ['card', 'raised', 'lifted', 'focus'],
       ease: ['out-quint'],
-      animate: ['fade-in', 'rise-in'],
+      animate: [
+        'fade-in',
+        'fade-out',
+        'lift-in',
+        'lift-out',
+        'sheet-in',
+        'sheet-out',
+        'view-in',
+        'view-back',
+      ],
     },
     classGroups: {
       'bg-image': ['bg-topo-brand'],

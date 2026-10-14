@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { Outlet } from 'react-router'
 
 import CloseIcon from '@/components/icons/CloseIcon'
@@ -7,6 +8,7 @@ import Eyebrow from '@/components/ui/Eyebrow'
 import FloatingActionLink from '@/components/ui/FloatingActionLink'
 import PageContainer from '@/components/ui/PageContainer'
 import PageTitle from '@/components/ui/PageTitle'
+import { useFolders } from '@/features/folders/useFolders'
 import { useNotes } from '@/features/notes/useNotes'
 import { plural } from '@/lib/plural'
 
@@ -24,9 +26,20 @@ export default function NotesPage() {
     filters.page,
   )
 
+  const { folders } = useFolders()
+  const folder = folders?.find(({ id }) => id === filters.folderId)
+
+  // A folder that's gone (deleted, or from an old link) shows every note instead.
+  const isFolderMissing =
+    folders !== undefined && filters.folderId !== null && !folder
+  const { clearFolder } = filters
+  useEffect(() => {
+    if (isFolderMissing) clearFolder()
+  }, [isFolderMissing, clearFolder])
+
   const showStatus = !results.isLoading && !results.isStale && !results.error
   const scope = [
-    filters.folderId === null && 'All',
+    filters.folderId === null ? 'All' : folder?.name,
     filters.query && `“${filters.query}”`,
   ].filter(Boolean)
 
@@ -42,11 +55,12 @@ export default function NotesPage() {
             <Eyebrow as="p" className="truncate">
               {[plural(results.count, 'note', 'notes'), ...scope].join(' · ')}
             </Eyebrow>
-            {filters.hasFilters && (
+            {/* Leaving a folder is the folder nav's job, so this only drops the search. */}
+            {filters.query && (
               <Button
                 variant="selected"
                 size="sm"
-                onClick={filters.clearFilters}
+                onClick={filters.clearQuery}
                 className="flex-none"
               >
                 Clear
@@ -61,6 +75,7 @@ export default function NotesPage() {
         results={results}
         query={filters.query}
         inFolder={filters.folderId !== null}
+        folderName={folder?.name}
         page={filters.page}
         pageTo={filters.pageTo}
         noteTo={filters.noteTo}

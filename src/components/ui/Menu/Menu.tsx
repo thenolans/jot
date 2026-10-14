@@ -8,7 +8,10 @@ import {
 } from 'react-aria-components'
 
 import MoreVerticalIcon from '@/components/icons/MoreVerticalIcon'
-import { iconButtonClassName } from '@/components/ui/IconButton'
+import {
+  iconButtonClassName,
+  type IconButtonStyleProps,
+} from '@/components/ui/IconButton'
 
 type MenuProps = {
   /** Names the button that opens it, e.g. "Note actions". */
@@ -17,9 +20,13 @@ type MenuProps = {
   children: ReactNode
   /** Where it opens against the button, e.g. `top start` for a button at the foot of a panel. */
   placement?: PopoverProps['placement']
+  /** The button's size, from `IconButton`'s; `lg` by default. */
+  size?: IconButtonStyleProps['size']
   /** Classes for the button. */
   className?: string
 }
+
+const iconSizes = { sm: 16, md: 16, lg: 20 }
 
 /**
  * A button showing three dots, stacked, that opens a list of actions (`MenuItem`s) beside it. The arrow keys move
@@ -29,15 +36,16 @@ export default function Menu({
   label,
   children,
   placement = 'bottom start',
+  size = 'lg',
   className,
 }: MenuProps) {
   return (
     <MenuTrigger>
       <Button
         aria-label={label}
-        className={iconButtonClassName({ size: 'lg' }, className)}
+        className={iconButtonClassName({ size }, className)}
       >
-        <MoreVerticalIcon size={20} />
+        <MoreVerticalIcon size={iconSizes[size]} />
       </Button>
       <Popover
         placement={placement}

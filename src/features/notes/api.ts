@@ -1,4 +1,4 @@
-import { api, type Page, withQuery } from '@/lib/api'
+import { api, type Page, rekeyFieldErrors, withQuery } from '@/lib/api'
 
 import type { NewNote, Note, NoteChanges, NoteFilters } from './types'
 
@@ -56,6 +56,22 @@ export async function updateNote(
   changes: NoteChanges,
 ): Promise<Note> {
   return toNote(await api.patch<NoteResponse>(`/jot/notes/${id}/`, changes))
+}
+
+/** Moves a note into a folder, or out of any for `null`, returning it as saved. */
+export async function moveNote(
+  id: number,
+  folderId: number | null,
+): Promise<Note> {
+  try {
+    return toNote(
+      await api.patch<NoteResponse>(`/jot/notes/${id}/`, {
+        folder_id: folderId,
+      }),
+    )
+  } catch (error) {
+    throw rekeyFieldErrors(error, { folder_id: 'folderId' })
+  }
 }
 
 /** Creates a note for the signed-in user, returning it as saved. */
