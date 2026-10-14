@@ -40,7 +40,7 @@ export default function NotePage() {
     <NoteDialog
       key={state?.isNew ? 'new' : noteId}
       noteId={noteId}
-      newNote={{ folderId: state?.folderId ?? null }}
+      newNote={{ folderId: state?.folderId ?? null, title: state?.title }}
       isNew={state?.isNew}
       onCreated={openCreated}
       onClose={close}

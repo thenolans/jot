@@ -6,19 +6,28 @@ import TopBar from '@/components/ui/TopBar'
 
 import AccountButton from './AccountButton'
 import ConnectionStatus from './ConnectionStatus'
+import SearchButton from './SearchButton'
 
-/** The signed-in app's top bar: logo and whether it's offline, and the account. */
-export default function AppBar() {
+type AppBarProps = {
+  /** The search the notes grid is narrowed to, or `''`. */
+  searchQuery: string
+  onSearch: () => void
+}
+
+/** The signed-in app's top bar: logo and whether it's offline, search, and the account. */
+export default function AppBar({ searchQuery, onSearch }: AppBarProps) {
   return (
-    <TopBar className="justify-between print:hidden">
-      <div className="flex items-center gap-2">
+    <TopBar className="grid grid-cols-[1fr_auto_1fr] gap-4 print:hidden">
+      <div className="flex items-center gap-2 justify-self-start">
         <Link to={paths.notes} className="rounded-sm">
           <Logo />
         </Link>
         <ConnectionStatus />
       </div>
 
-      <AccountButton />
+      <SearchButton query={searchQuery} onClick={onSearch} />
+
+      <AccountButton className="col-start-3 justify-self-end" />
     </TopBar>
   )
 }

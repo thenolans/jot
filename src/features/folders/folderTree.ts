@@ -52,3 +52,11 @@ export function ancestorIds(folders: Folder[], id: number) {
   }
   return ids
 }
+
+/** Where a folder is, as the names of the folders it's inside and then its own, outermost first. */
+export function folderPath(folders: Folder[], id: number) {
+  const byId = new Map(folders.map((folder) => [folder.id, folder]))
+  return [...ancestorIds(folders, id).reverse(), id]
+    .map((folderId) => byId.get(folderId)?.name)
+    .filter((name) => name !== undefined)
+}

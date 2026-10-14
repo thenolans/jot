@@ -1,6 +1,11 @@
 import { describe, expect, it } from 'vitest'
 
-import { ancestorIds, buildFolderTree, withDescendants } from './folderTree'
+import {
+  ancestorIds,
+  buildFolderTree,
+  folderPath,
+  withDescendants,
+} from './folderTree'
 import type { Folder } from './types'
 
 const folder = (id: number, parentId: number | null = null): Folder => ({
@@ -42,5 +47,16 @@ describe('ancestorIds', () => {
 
   it('stops at a cycle', () => {
     expect(ancestorIds([folder(1, 2), folder(2, 1)], 1)).toEqual([2, 1])
+  })
+})
+
+describe('folderPath', () => {
+  it('names the folders above, outermost first, then the folder', () => {
+    expect(folderPath(folders, 3)).toEqual(['Folder 1', 'Folder 2', 'Folder 3'])
+    expect(folderPath(folders, 4)).toEqual(['Folder 4'])
+  })
+
+  it('is empty for a folder that isn’t there', () => {
+    expect(folderPath(folders, 9)).toEqual([])
   })
 })

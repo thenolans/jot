@@ -12,6 +12,14 @@ export const paths = {
 
 export const notePath = (id: number) => `${paths.notes}/${id}`
 
+/** Every note matching `query`. */
+export const noteSearchPath = (query: string) =>
+  `${paths.notes}?${new URLSearchParams({ q: query })}`
+
+/** A folder's notes. */
+export const folderNotesPath = (id: number) =>
+  `${paths.notes}?${new URLSearchParams({ folder: String(id) })}`
+
 /** The folder the notes grid is narrowed to, from its `folder` search param, or `null` for every note. */
 export function folderIdParam(searchParams: URLSearchParams) {
   const folderId = Number(searchParams.get('folder'))
@@ -24,6 +32,8 @@ export type NotePageState = {
   fromList?: boolean
   /** For a new note, the folder to create it in. */
   folderId?: number | null
+  /** For a new note, the title to start it with. */
+  title?: string
   /** Created by opening `paths.newNote`, so closing it while it's still empty deletes it. */
   isNew?: boolean
 }

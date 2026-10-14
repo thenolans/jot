@@ -3,6 +3,7 @@ import { Link } from 'react-router'
 import { paths } from '@/app/paths'
 import FolderIcon from '@/components/icons/FolderIcon'
 import NotesIcon from '@/components/icons/NotesIcon'
+import SearchIcon from '@/components/icons/SearchIcon'
 import { cx } from '@/lib/cx'
 
 type TabBarProps = {
@@ -11,6 +12,7 @@ type TabBarProps = {
   /** A folder is showing, or the folder sheet is open. */
   isFoldersActive: boolean
   onOpenFolders: () => void
+  onSearch: () => void
 }
 
 const itemClassName = (active: boolean) =>
@@ -19,11 +21,15 @@ const itemClassName = (active: boolean) =>
     active ? 'font-bold text-accent' : 'text-faint hover:text-muted',
   )
 
-/** Bottom navigation for narrow screens: every note, or the folder sheet. Wide screens have the sidebar. */
+/**
+ * Bottom navigation for narrow screens: every note, the folder sheet, or search. Wide screens have the
+ * sidebar, and search in the app bar.
+ */
 export default function TabBar({
   isAllNotes,
   isFoldersActive,
   onOpenFolders,
+  onSearch,
 }: TabBarProps) {
   return (
     <nav
@@ -46,6 +52,15 @@ export default function TabBar({
       >
         <FolderIcon size={20} />
         Folders
+      </button>
+      <button
+        type="button"
+        aria-haspopup="dialog"
+        onClick={onSearch}
+        className={itemClassName(false)}
+      >
+        <SearchIcon size={20} />
+        Search
       </button>
     </nav>
   )
