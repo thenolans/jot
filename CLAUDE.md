@@ -1,0 +1,82 @@
+# Jot
+
+Markdown notes app frontend. React 19 + TypeScript + Vite, deployed to Netlify. The API is also ours and can be changed to fit the app (see Backend).
+
+## Commands
+
+- `yarn dev` — dev server at http://localhost:5173; proxies `/api/*` to the local API (prefix stripped)
+- `yarn build` — type-check (`tsc -b`) and build to `dist/`
+- `yarn lint` — oxlint (including `simple-import-sort/imports`: packages, then `@/`, then relative imports, each group sorted; `yarn lint:fix` sorts them), then `scripts/check-arbitrary-values.sh`, which fails on bracketed Tailwind values that belong in tokens (any length in the brackets, like `mt-[13px]` or `w-[calc(100%-2.5rem)]`, or `rounded-[…]`, `border-[…]`, `ease-[…]` and other token-backed utilities); layout-only values (`grid-cols-[…]`, `max-w-[60ch]`, `[&…]` selectors) are allowed; then `scripts/check-grid.sh`, which fails on spacing and sizes off the 8pt grid (see Styling)
+- `yarn format` — Prettier, which also sorts Tailwind classes (in `className` and `cx(…)`); `yarn format:check` checks without writing
+- `yarn test` — Vitest unit tests, configured in `vite.config.ts`. Tests sit next to the file they cover (`continueList.ts` → `continueList.test.ts`)
+
+Run `yarn lint:fix`, `yarn format`, `yarn build`, `yarn lint` and `yarn test` before committing.
+
+## Backend
+
+- The API is `thenolans-api` (Django REST Framework), checked out at `~/Documents/dev/thenolans-api`; it serves several apps. Run it locally with `python manage.py runserver` (setup in its `docs/setup.md`).
+- Production is https://api-v2.thenolans.io; Netlify proxies `/api/*` to it (`public/_redirects`).
+- Locally it's at http://api.thenolans.local:8000 (`/etc/hosts` entry) and rejects any other host name, so the Vite proxy targets that host with `changeOrigin`.
+- The app calls it through `api` in `src/lib/api.ts`, at `/api` + the API path, trailing slash included (`/api/user/me/`).
+- Auth is DRF token auth under `/user/`: `register/` creates a user (returns no token), `login/` returns `{ token }`, `me/` returns the user, `logout/` deletes the token (204). Requests send `Authorization: Token <key>`; the app keeps the token in local storage. Passwords need at least 8 characters on register (older, shorter ones still log in).
+- To see the app signed in (browser checks, screenshots, seeding data), always use the account `tsnolan@outlook.com` on the local API; never register test users. Get its token without the password from the API's Django shell (`Token.objects.get_or_create(user=…)`, run with `~/.pyenv/versions/thenolans/bin/python manage.py shell`) and put it in local storage under `jot.token`. Don't call `logout/` with it: that deletes the token, signing out the user's own browser.
+- Errors use DRF's format (`{ detail }` or `{ <field>: [messages], non_field_errors }`); `api` turns them into an `ApiError` with `message` and `fieldErrors`.
+
+## Principles
+
+- Build for scale: clear structure, reusable components, a typed data layer. Reach for an existing `components/ui` primitive before writing one-off markup, and add a primitive (or a variant to one) when the same styling appears in a second place.
+- Authentication lives in this app (`features/auth`); there is no shared UI kit.
+- Jot is a sibling of Avocado (`~/Documents/dev/avocado`), and the two should look and work alike: same toolchain, tokens, auth flow and conventions, with only the accent colors different (`tokens.css`). Avocado is the reference implementation. When Jot needs a primitive, hook or pattern Avocado already has, copy it from there (rewording comments that mention recipes) rather than writing a new one, and keep later changes to shared pieces in step between the two apps.
+- The design comes from the prototype at `~/Downloads/Denali Design System/Jot Prototype.dc.html`; build from its layout and behavior, but with Avocado's components and tokens, not its inline styles.
+- There is no runtime config. The only build-time variable is `VITE_APP_VERSION`, set by the deploy workflow from the release tag (`src/app/version.ts`). The app runs on localhost without a custom domain.
+
+## Conventions
+
+- Import from `src` using the `@/` alias (e.g. `import { paths } from '@/app/paths'`).
+- Layout:
+  - `src/app/` — app shell: router, route `paths`
+  - `src/pages/` — one component per route; thin, composes features and components. Parts used only by one page live inside its folder (`pages/LandingPage/NoteDemo/`)
+  - `src/features/<domain>/` — a domain (auth, notes, folders, sharing, …): its types (`types.ts`), API calls (`api.ts`), query definitions (`queries.ts`), hooks and domain components
+  - `src/components/ui/` — shared, feature-agnostic UI primitives; `src/components/icons/` for icons
+  - `src/hooks/` — shared hooks not tied to a feature or a single component (`useFormValidation`, `useDebouncedValue`, `useBackTo`), one per file named after the hook (`useBackTo.ts`). A hook that belongs to a feature stays in that feature (`features/notes/useNote.ts`), and one used by a single component or page lives in its folder (`NotesPage/useNoteSearchParams.ts`)
+  - `src/lib/` — shared non-UI code (`cx`, the `api` client)
+  - `src/styles/` — `tokens.css` (Tailwind `@theme` tokens, light/dark themes) and `global.css` (Tailwind entry, base styles)
+- Dependencies point one way: `pages` → `features` → `components`/`hooks`/`lib`. Features never import from pages.
+- Every component gets its own folder, in `pages/`, `features/` and `components/`:
+  ```
+  ComponentName/
+    ComponentName.tsx   # export default function ComponentName
+    index.tsx           # export { default } from './ComponentName'
+                        # plus anything else the folder makes public
+  ```
+  Import components via the folder (`import Button from '@/components/ui/Button'`). Code outside a folder imports only from its `index.tsx`, never from a file inside it. Sub-components used only by one parent live in folders inside the parent's folder and import siblings relatively (`../StepLayout`). Non-component files that belong to one component (hooks, data, style helpers) live in its folder (`Button/buttonClassName.ts`, `NoteBodyInput/continueList.ts`); `index.tsx` re-exports whatever other code needs, after its `export { default }` line (export order isn't linted, so keep the default first by hand). Only files shared across a group sit at the group's root (`components/icons/types.ts`, `features/notes/markdown.ts`).
+- Component props:
+  - A primitive (renders one styled element whose content comes from the caller: `Button`, `Heading`, `Card`) takes that element's props. Type them as `ComponentProps<'button'>`, or for an `as` prop make the component generic over the allowed elements and use `ComponentProps<T>` (see `Card`). Omit the props it sets itself (`Omit<ComponentProps<'p'>, 'role'>`), add its own, and spread the rest onto the element. Don't use `*HTMLAttributes<…>` types or list attributes like `id` or `aria-hidden` by hand.
+  - A field (`TextField`, `Checkbox`) does the same for its control, spreading onto the input, while `className` goes on its wrapper.
+  - A composite (builds its own markup from data props: `Dialog`, `PageHeader`, `SegmentedControl`) lists its props by hand and takes a `className` for its root.
+- Styling: Tailwind CSS v4 utility classes in the markup. Design tokens live in `@theme` in `src/styles/tokens.css` and generate the utilities (`bg-surface`, `text-ink-strong`, `rounded-md`, `shadow-card`, `font-display`); Tailwind's default palette is removed, so use token colors only and add new ones to `tokens.css`. Combine or override classes with `cx` from `@/lib/cx` (tailwind-merge), so a `className` prop wins over a component's defaults. Style native inputs through `peer-*` variants on a `sr-only` input. Dark mode follows the OS unless `data-theme` is set on `<html>`; tokens swap automatically, and the `dark:` variant follows the same rule. The `standalone:` variant applies only in the installed app (`display-mode: standalone`), for hiding or changing things there.
+  - Add a token to `tokens.css` only when at least one of these holds: its value differs between light and dark mode (every color that uses `light-dark()`, the shadows); it's part of a scale used across the app (type sizes, radii, shadows, motion); several unrelated components share the value and must change together; or components position themselves around each other by it (`--tab-bar-height`, `--top-bar-height`, `--top-bar-offset`).
+  - Otherwise write the value in the component with Tailwind's built-in scales. A value used by one component, or by a component and its skeleton, isn't a token.
+  - Widths of 320px or more (`w`, `min-w`, `max-w`, `basis`) take a size from Tailwind's container scale (`max-w-xs`, `max-w-sm`, `basis-md`, `max-w-xl`, `max-w-4xl`, `max-w-6xl`), picking the nearest step rather than an exact pixel width; numeric widths are for component-sized elements below that (`w-56`, `min-w-76`). Heights have no named scale and stay numeric; give a large fixed height a comment saying what it fits (`NoteDemo`). `yarn lint` fails on numeric widths of step 80 and up.
+  - Page bottom spacing comes from `PageContainer` (`pb-16`); override it only for a reason the page states (clearing a floating button).
+  - 8pt grid: spacing and sizes are multiples of 8px. Tailwind's numeric steps are 4px, so use even steps (`p-2`, `gap-4`, `mt-6`, `w-76`, `max-w-48`). The 4px step (`1`) is the one half step, for tight spacing inside small components (`gap-1`, `px-1`, `mt-1`); no `0.5`, `1.5`, `2.5`, `3`, `5`, … steps. Elements up to 24px (icons, dots, checkboxes, skeleton text lines) may size in 4px steps (`size-3`, `h-5`), and icons take sizes in multiples of 4 (`size={12}`, `16`, `20`). Fixed-height controls use grid heights: buttons `h-8`/`h-10`/`h-12`, inputs `min-h-10`, icon buttons `size-6`/`size-8`. Tokens follow it too (radii, shadow offsets and blurs, bar heights, background tile sizes), as do px or rem lengths in brackets (`minmax(256px,1fr)`). Exempt: the type scale, hairlines (`h-px`, `py-px`, borders, 1px shadow offsets, the focus ring), percentages, viewport units, `ch` measures and coordinates inside SVGs. When a value falls off the grid, round to the nearest grid value, and keep paired values in step (a negative margin that cancels a button's padding, a header that lines up with the list below it). `yarn lint` runs `scripts/check-grid.sh`, which fails on Tailwind classes and icon sizes off the grid.
+  - Step spacing at breakpoints (`px-4 sm:px-8 lg:px-16`) rather than making it fluid with `clamp()`; fluid sizes belong only in the type scale.
+  - Before adding a token, check whether an existing token or a Tailwind default already covers it. Don't add a token that only renames another value, such as a second name for a light-mode color or for `env(…)`.
+- Server data goes through TanStack Query (`queryClient` in `src/app/queryClient.ts`). Each feature defines its queries with `queryOptions`/`infiniteQueryOptions` in `queries.ts`, with keys nested under the feature (`['notes', 'list', filters]`) so a prefix invalidates them all; components use them through the feature's hooks. `api.ts` maps API responses (snake_case) to the feature's camelCase types. The cache is cleared on sign-in and sign-out.
+- Offline (it's an installable PWA, via `vite-plugin-pwa` in `vite.config.ts`): the service worker caches the built app, never the API, and only runs in a build (`yarn build && yarn preview`), not `yarn dev`. Data offline comes from TanStack Query: a query spread with `keptOffline` (`@/lib/offlineQuery`) is saved to IndexedDB and restored on launch (`src/app/queryPersister.ts`); bump `CACHE_VERSION` there when a kept query's data changes shape. Whether the API can be reached comes from `connectivity` (`@/lib/connectivity`, read with `useIsOnline`), which drives TanStack's `onlineManager`. Mutations fail straight away offline; a change that should wait for the connection (saving a note's text) sets its options with `setMutationDefaults` under its own key with `networkMode: 'online'` and `meta: { keepOffline: true }`, so it survives the app closing (see Avocado's `features/grocery/mutations.ts`).
+- Forms: pick one of two patterns by shape. Both validate with `useFormValidation` (`@/hooks/useFormValidation`) and save through the feature's mutation hook.
+  - Simple forms (only native inputs read straight from `FormData`, nothing on screen depends on what's typed; e.g. `LoginForm`, `RegisterForm`, `ShareInviteForm`) are form actions: `useFormAction` (`@/hooks/useFormAction`, built on `useActionState`) with uncontrolled inputs. Pass `action={formAction}` plus `validation.formProps`; the state returns the submitted `values` so fields refill through `defaultValue` (React resets the form after an action), and the pending flag disables the submit button.
+  - Anything with lists or rows, non-native inputs (tag pickers, comboboxes), values that depend on each other, or an unsaved-changes guard (Avocado's `RecipeForm`, `GroceryItemDialog`) keeps a controlled draft: `useState` of a `<Name>Draft` type whose fields hold what the inputs hold (strings for numbers), with `toDraft(entity?)` and `toInput(draft)` in a `<name>Draft.ts` beside the form. Submit with `useDraftSubmit` (`@/hooks/useDraftSubmit`): pass it the `validation`, a `save` and an `onSaved` (plus a `check` for rules attributes can't express), spread its `formProps` on the `<form>`, and show its `isSaving` and `saveError`.
+  - `useFormValidation` checks the browser's constraint attributes (`required`, `type`, `minLength`, `min`/`max`, `pattern` with `data-pattern-message`) on submit, shows its own messages instead of the browser's, focuses the first invalid field and re-checks a field as it's edited. Its `errors` are keyed by each input's `name`, so give every input a `name`, including inputs in rows (Avocado's `IngredientFields` names them per row). Put rules on the inputs as attributes; check in code only what attributes can't express.
+  - API errors arrive as an `ApiError` whose `fieldErrors` are keyed by API field. The feature's `api.ts` rekeys them to the camelCase input field with `rekeyFieldErrors(error, { folder_id: 'folderId' })` from `@/lib/api`, so they match the input `name`s. The form shows a field error under its field, preferring the client message (`validation.errors.x ?? apiErrors.x`), and shows the rest in an `Alert`: `error.message` when no field matched, or, for errors on fields that aren't single inputs (lists, like a note's shares), a message naming the list (see Avocado's `RecipeForm/saveErrors.ts`). In a draft form, errors that aren't `ApiError`s show `errorMessage(error)` from `@/lib/api`; `useFormAction` rethrows them to the error boundary.
+- Notes are markdown. Render one with `NoteMarkdown` (`features/notes`), which parses with `marked` and sanitizes with DOMPurify (links open in a new tab); never set note HTML any other way. Its look is the `markdown` utility in `global.css`, styled by tag since the HTML can't take classes. Write one in `NoteBodyInput`, which carries lists on when Enter is pressed.
+- Prefer native, accessible elements (real buttons, radio/checkbox inputs) over clickable divs.
+- Use react-aria-components only for widgets with no native equivalent (combobox, autocomplete), plus selects: every select is `SelectField` (`@/components/ui/SelectField`), which shares one trigger look and option list across its modes (a plain pick list by default, `allowsCustomValue` for free text with suggestions). Add a mode there rather than using a native `<select>` or a new list. Otherwise use native elements.
+- Use yarn, not npm.
+
+## Commits
+
+Use [Conventional Commits](https://www.conventionalcommits.org/): `type(scope): description`, lowercase, imperative.
+
+- Types: `feat`, `fix`, `chore`, `refactor`, `style`, `docs`, `test`, `build`, `ci`
+- Scope is the feature area when one applies (e.g. `feat(notes): …`, `fix(auth): …`); omit it for project-wide changes.

@@ -1,15 +1,14 @@
-<p align="center">
-  <img alt="Jot" src="https://thenolans-apps-prod.s3.amazonaws.com/thenolansio/app_jot" width="124">
-</p>
+# Jot
 
-<div align="center">
-  A dead-simple, markdown note taking application
-</div>
+Markdown notes app — React + TypeScript + Vite.
 
-<br/>
+## Setup
 
-<br/>
+```sh
+yarn install
+yarn dev
+```
 
-|                                           Mobile                                           |                                           Desktop                                           |
-| :----------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------: |
-| ![Mobile](https://github.com/user-attachments/assets/606a81d5-5456-4d49-a6c0-2b041dae552b) | ![Desktop](https://github.com/user-attachments/assets/7793e958-d163-4be5-9233-f28170538c91) |
+The dev server runs at http://localhost:5173 and expects the local `thenolans-api`. See [CLAUDE.md](CLAUDE.md) for the backend, scripts and conventions.
+
+Deployed to Netlify on GitHub release (`.github/workflows/deploy.yml`).

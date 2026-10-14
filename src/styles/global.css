@@ -1,0 +1,165 @@
+@import 'tailwindcss';
+@import '@fontsource-variable/figtree';
+@import '@fontsource-variable/albert-sans';
+@import './tokens.css';
+
+/* `standalone:` applies in the installed app, not in a browser tab. */
+@custom-variant standalone (@media (display-mode: standalone));
+
+/* `dark:` follows the same rules as the tokens: the OS preference, unless `data-theme` overrides it. */
+@custom-variant dark {
+  @media (prefers-color-scheme: dark) {
+    &:where(
+      :root:not([data-theme='light']),
+      :root:not([data-theme='light']) *
+    ) {
+      @slot;
+    }
+  }
+  &:where([data-theme='dark'], [data-theme='dark'] *) {
+    @slot;
+  }
+}
+
+/* The sign-in brand panel's texture: the dark topo tile in both themes. */
+@utility bg-topo-brand {
+  background-image: url('@/assets/images/topo-tile-dark.png');
+  background-size: var(--texture-topo-size);
+}
+
+/* Bottom padding that clears the home indicator on phones without a home button. */
+@utility pb-safe-area {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* Bottom padding of a spacing step plus the home indicator, for a panel at the bottom edge (`pb-safe-area-6`). */
+@utility pb-safe-area-* {
+  padding-bottom: calc(
+    --spacing(--value(integer)) + env(safe-area-inset-bottom)
+  );
+}
+
+/*
+ * Styles a note's rendered markdown (`NoteMarkdown`). The HTML comes from `marked`, so its elements
+ * can't take classes; this styles them by tag instead, since preflight strips their default looks
+ * (heading sizes, list markers). `:where` keeps each rule as weak as a single class.
+ */
+@utility markdown {
+  line-height: var(--leading-relaxed);
+  overflow-wrap: anywhere;
+
+  & :where(p, ul, ol, pre, blockquote, table, hr) {
+    @apply mb-4;
+  }
+
+  & :where(h1, h2, h3, h4, h5, h6) {
+    @apply mb-2 font-display font-extrabold text-ink-strong;
+  }
+
+  & :where(h1) {
+    @apply text-xl;
+  }
+
+  & :where(h2) {
+    @apply text-lg;
+  }
+
+  & :where(h3, h4, h5, h6) {
+    @apply text-base;
+  }
+
+  & :where(ul, ol) {
+    @apply pl-6;
+  }
+
+  & :where(ul) {
+    @apply list-disc;
+  }
+
+  & :where(ol) {
+    @apply list-decimal;
+  }
+
+  & :where(li) {
+    @apply mb-1;
+  }
+
+  & :where(li > ul, li > ol) {
+    @apply mt-1 mb-0;
+  }
+
+  & :where(strong) {
+    @apply font-bold text-ink-strong;
+  }
+
+  & :where(a) {
+    @apply text-accent underline underline-offset-2 hover:text-accent-mid;
+  }
+
+  & :where(code) {
+    @apply rounded-xs bg-accent-soft px-1 text-accent;
+    font-size: 0.9em;
+  }
+
+  & :where(pre) {
+    @apply overflow-x-auto rounded-sm bg-border-soft p-4;
+  }
+
+  & :where(pre code) {
+    @apply bg-transparent p-0 text-ink;
+  }
+
+  & :where(blockquote) {
+    @apply border-l-2 border-accent-soft-border pl-4;
+  }
+
+  & :where(hr) {
+    @apply border-border;
+  }
+
+  & :where(table) {
+    @apply w-full border-collapse;
+  }
+
+  & :where(th, td) {
+    @apply border border-border px-2 py-1 text-left;
+  }
+
+  & :where(th) {
+    @apply font-bold text-ink-strong;
+  }
+
+  & > :last-child {
+    @apply mb-0;
+  }
+}
+
+@layer base {
+  /*
+   * The page holds still behind a modal. The gutter stays when the scrollbar goes, so the page
+   * doesn't shift sideways.
+   */
+  html {
+    scrollbar-gutter: stable;
+
+    &:has(dialog:modal) {
+      overflow: hidden;
+    }
+  }
+
+  body {
+    min-height: 100vh;
+    font-family: var(--font-body);
+    font-size: var(--text-base);
+    line-height: normal;
+    color: var(--color-ink);
+    background: var(--color-paper) var(--texture-topo) repeat;
+    background-size: var(--texture-topo-size);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  :focus-visible {
+    outline: none;
+    box-shadow: var(--shadow-focus);
+  }
+}

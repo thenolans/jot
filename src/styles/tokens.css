@@ -1,0 +1,178 @@
+/*
+ * Design tokens. Declared in `@theme` so each one becomes a Tailwind utility
+ * (`bg-paper`, `text-ink-strong`, `rounded-md`, `shadow-card`, `font-display`)
+ * and a CSS custom property of the same name.
+ *
+ * Tailwind's default color palette is cleared so only these colors exist.
+ *
+ * Colors that change with the theme are written as `light-dark(<light>, <dark>)`,
+ * which follows `color-scheme`: the OS preference, unless the user has chosen a
+ * theme via `data-theme` on <html>.
+ */
+@theme static {
+  /* Typography */
+  --font-display: 'Figtree Variable', system-ui, sans-serif;
+  --font-body: 'Albert Sans Variable', system-ui, sans-serif;
+
+  /*
+   * Type scale: Tailwind's default sizes, with body copy at `base` (16px).
+   * Line-heights sit on the 4px grid; a `leading-*` class overrides them. The
+   * fluid display sizes bring their own line-height and letter-spacing.
+   * Headings use the sizes through `Heading`.
+   */
+  --text-*: initial;
+  --text-xs: 0.75rem; /* 12px: eyebrows, metadata, tab labels, key hints */
+  --text-xs--line-height: 1rem;
+  --text-sm: 0.875rem; /* 14px: buttons, field labels, notes */
+  --text-sm--line-height: 1.25rem;
+  --text-base: 1rem; /* 16px: body copy, inputs */
+  --text-base--line-height: 1.5rem;
+  --text-lg: 1.125rem; /* 18px: large buttons, lead text, card titles */
+  --text-lg--line-height: 1.75rem;
+  --text-xl: 1.25rem; /* 20px: dialog and panel titles */
+  --text-xl--line-height: 1.75rem;
+  --text-2xl: 1.5rem; /* 24px: section headings */
+  --text-2xl--line-height: 2rem;
+  --text-3xl: 1.75rem; /* 28px: page titles */
+  --text-3xl--line-height: 2.25rem;
+  --text-4xl: clamp(1.75rem, 4.5vw, 3rem); /* 28–48px: display headings */
+  --text-4xl--line-height: 1.05;
+  --text-4xl--letter-spacing: -0.01em;
+  --text-5xl: clamp(
+    2.5rem,
+    4vw + 1.5rem,
+    4rem
+  ); /* 40–64px: the landing page headline */
+  --text-5xl--letter-spacing: -0.02em;
+
+  /* Radii (pills use Tailwind's `rounded-full`) */
+  --radius-xs: 4px;
+  --radius-sm: 8px; /* inputs, buttons and cards */
+  --radius-md: 16px;
+  --radius-lg: 24px;
+
+  --color-*: initial;
+
+  /* Surfaces */
+  --color-paper: light-dark(#f5f4f1, #0e1b1f);
+  --color-surface: light-dark(#ffffff, #1d353c);
+  --color-border: light-dark(#e3e1db, #2f525d);
+  --color-border-soft: light-dark(#f0efea, #132a30);
+  --color-bar: light-dark(
+    rgb(255 255 255 / 92%),
+    rgb(14 27 31 / 92%)
+  ); /* app bars, over scrolling content */
+  --color-overlay: light-dark(
+    rgb(12 46 66 / 35%),
+    rgb(0 0 0 / 50%)
+  ); /* behind dialogs */
+
+  /* Text. ink-strong is a navy tint in light mode; in dark mode both are the same near-white */
+  --color-ink-strong: light-dark(#0c2e42, #e8f0f1);
+  --color-ink: light-dark(#1c2528, #e8f0f1);
+  --color-muted: light-dark(#56666b, #9db4ba);
+  --color-faint: light-dark(#8a9599, #7a9299);
+
+  /* Accent */
+  --color-accent: light-dark(#18577a, #85b7d3);
+  --color-accent-mid: #4e88a9;
+  --color-on-accent: light-dark(#eff6fb, #0c2e42);
+  --color-accent-soft: light-dark(#d8e8f2, #124562);
+  --color-accent-soft-border: light-dark(#abcce0, #1e6285);
+
+  /* Status */
+  --color-warning: light-dark(#9a6b1e, #d9b26f);
+  --color-danger: light-dark(#a8402c, #f0a594);
+  --color-danger-soft: light-dark(#f8e7e2, #45231d);
+  --color-danger-soft-border: light-dark(#ecc4b9, #6b3529);
+
+  /* Effects */
+  --shadow-card: 0 1px 4px light-dark(rgb(12 46 66 / 5%), rgb(0 0 0 / 30%));
+  --shadow-raised: 0 24px 48px light-dark(rgb(12 46 66 / 14%), rgb(0 0 0 / 40%));
+  --shadow-lifted: 0 4px 16px light-dark(rgb(12 46 66 / 8%), rgb(0 0 0 / 25%)); /* something picked up, e.g. a card being dragged */
+  --shadow-focus: 0 0 0 3px
+    color-mix(in srgb, var(--color-accent-mid) 45%, transparent);
+
+  /*
+   * Motion. Transitions run at the default duration unless they slide an
+   * indicator between positions (`duration-slide`).
+   */
+  --default-transition-duration: 120ms;
+  --transition-duration-slide: 300ms;
+  --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+
+  --animate-fade-in: fade-in 160ms ease;
+  --animate-rise-in: rise-in 160ms ease;
+  --animate-sheet-in: sheet-in 240ms var(--ease-out-quint); /* a panel sliding up from the bottom edge */
+  /* Exits hold their last frame, so nothing flashes back before the element goes. */
+  --animate-fade-out: fade-out 160ms ease forwards;
+  --animate-rise-out: rise-out 160ms ease forwards;
+  --animate-sheet-out: sheet-out 200ms ease-in forwards;
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+  }
+
+  @keyframes rise-in {
+    from {
+      opacity: 0;
+      transform: translateY(-8px);
+    }
+  }
+
+  @keyframes sheet-in {
+    from {
+      transform: translateY(100%);
+    }
+  }
+
+  @keyframes fade-out {
+    to {
+      opacity: 0;
+    }
+  }
+
+  @keyframes rise-out {
+    to {
+      opacity: 0;
+      transform: translateY(-8px);
+    }
+  }
+
+  @keyframes sheet-out {
+    to {
+      transform: translateY(100%);
+    }
+  }
+}
+
+:root {
+  --texture-topo: url('@/assets/images/topo-tile-light.png');
+  /* The topo tile's size, shared by the page background and the sign-in brand panel */
+  --texture-topo-size: 512px;
+
+  /* The mobile tab bar's height, for content that must clear it; the bar pads its bottom by the inset */
+  --tab-bar-height: calc(4.5rem + env(safe-area-inset-bottom));
+
+  /* The top bar's height, for content that must sit below it */
+  --top-bar-height: 4rem;
+  /* Where content sticks or floats below the top bar, leaving a gap */
+  --top-bar-offset: calc(var(--top-bar-height) + 1.5rem);
+
+  color-scheme: light dark;
+
+  /* `light-dark()` takes only colors, so the texture swaps through `dark:` */
+  @variant dark {
+    --texture-topo: url('@/assets/images/topo-tile-dark.png');
+  }
+}
+
+:root[data-theme='light'] {
+  color-scheme: light;
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+}

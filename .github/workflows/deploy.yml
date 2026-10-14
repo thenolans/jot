@@ -1,4 +1,4 @@
-name: "Deployment Workflow"
+name: 'Deployment Workflow'
 
 on:
   release:
@@ -6,25 +6,24 @@ on:
 
 jobs:
   deploy:
-    name: "Deploy to Netlify"
+    name: 'Deploy to Netlify'
     runs-on: ubuntu-latest
+    env:
+      # The release's tag (e.g. `v1.2.0`), read in code as `import.meta.env.VITE_APP_VERSION`.
+      VITE_APP_VERSION: ${{ github.event.release.tag_name }}
     steps:
-      - uses: actions/checkout@v3
-      - run: |
-          TAG_NAME="${GITHUB_REF_NAME}" 
-          echo "TAG_NAME=$TAG_NAME" >> "$GITHUB_ENV"
-        env:
-          GITHUB_REF_NAME: ${{ github.ref_name }}
-      - uses: jsmrcaga/action-netlify-deploy@v2.4.0
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with:
+          node-version-file: .nvmrc
+          cache: yarn
+      - run: yarn install --frozen-lockfile
+      - run: yarn format:check
+      - run: yarn lint
+      - run: yarn test
+      - run: yarn build
+      - run: scripts/deploy-netlify.sh
+        env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
-          NETLIFY_DEPLOY_TO_PROD: true
-          install_command: yarn install --frozen-lockfile
-          build_command: yarn build
-        env:
-          REACT_APP_API_BASE_URL: https://api-v2.thenolans.io
-          REACT_APP_SSO_URL: https://sso.thenolans.io
-          REACT_APP_TOKEN_COOKIE_DOMAIN: .thenolans.io
-          REACT_APP_VERSION: ${{ env.TAG_NAME }}
-          PACKAGES_TOKEN: ${{ secrets.PACKAGES_TOKEN }}
+          DEPLOY_TITLE: ${{ github.event.release.tag_name }}

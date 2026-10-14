@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="6 6 40 40">
+  <style>
+    .page { stroke: #18577a; }
+    .fold { fill: #18577a; stroke: #18577a; }
+    .lines { stroke: #4e88a9; }
+    @media (prefers-color-scheme: dark) {
+      .page { stroke: #85b7d3; }
+      .fold { fill: #85b7d3; stroke: #85b7d3; }
+    }
+  </style>
+  <g transform="rotate(-8 26 26)" stroke-width="3.4" stroke-linejoin="round">
+    <path class="page" d="M10 10 h32 v24 l-8 8 h-24 Z" fill="none"/>
+    <path class="fold" d="M42 34 h-8 v8 Z"/>
+    <path class="lines" d="M17 20 h18 M17 28 h12" fill="none" stroke-linecap="round"/>
+  </g>
+</svg>
