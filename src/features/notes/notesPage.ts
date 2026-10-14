@@ -2,6 +2,7 @@ import { withDescendants } from '@/features/folders/folderTree'
 import type { Folder } from '@/features/folders/types'
 import type { Page } from '@/lib/api'
 
+import { isSharedWithUser } from './access'
 import { NOTE_PAGE_SIZE } from './api'
 import type { Note, NoteFilters } from './types'
 
@@ -17,7 +18,7 @@ const mentions = (note: Note, query: string) =>
 export function notesPage(
   notes: Note[],
   folders: Folder[],
-  { query = '', folderId = null }: NoteFilters,
+  { query = '', folderId = null, shared = null }: NoteFilters,
   page: number,
 ): Page<Note> | null {
   const lowerQuery = query.trim().toLowerCase()
@@ -27,6 +28,7 @@ export function notesPage(
       (note) =>
         (!inFolder ||
           (note.folderId !== null && inFolder.has(note.folderId))) &&
+        (shared === null || isSharedWithUser(note) === shared) &&
         (!lowerQuery || mentions(note, lowerQuery)),
     )
     .sort(

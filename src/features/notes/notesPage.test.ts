@@ -11,6 +11,9 @@ const note = (id: number, changes: Partial<Note> = {}): Note => ({
   title: '',
   content: '',
   folderId: null,
+  access: 'owner',
+  owner: { name: 'Tom', email: 'tom@example.com' },
+  shareCount: 0,
   createdAt: '2026-10-01T00:00:00Z',
   updatedAt: '2026-10-01T00:00:00Z',
   ...changes,
@@ -45,6 +48,20 @@ describe('notesPage', () => {
     const page = notesPage(notes, folders, { query: ' ramen ' }, 1)
     expect(ids(page)).toEqual([2, 1])
     expect(page?.count).toBe(2)
+  })
+
+  it('narrows to notes shared with the user, or to their own', () => {
+    const sharer = { name: 'Sarah', email: 'sarah@example.com' }
+    const notes = [
+      note(1),
+      note(2, { access: 'view', owner: sharer }),
+      note(3, { access: 'edit', owner: sharer }),
+    ]
+    expect(ids(notesPage(notes, folders, { shared: true }, 1))).toEqual([3, 2])
+    expect(ids(notesPage(notes, folders, { shared: false }, 1))).toEqual([1])
+    expect(ids(notesPage(notes, folders, { shared: null }, 1))).toEqual([
+      3, 2, 1,
+    ])
   })
 
   it('includes the notes in folders inside the folder', () => {

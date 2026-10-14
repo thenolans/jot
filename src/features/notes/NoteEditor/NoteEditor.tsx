@@ -5,14 +5,18 @@ import ArrowRightIcon from '@/components/icons/ArrowRightIcon'
 import CloseIcon from '@/components/icons/CloseIcon'
 import EyeIcon from '@/components/icons/EyeIcon'
 import PencilIcon from '@/components/icons/PencilIcon'
+import ShareIcon from '@/components/icons/ShareIcon'
 import TrashIcon from '@/components/icons/TrashIcon'
 import Button from '@/components/ui/Button'
 import Eyebrow from '@/components/ui/Eyebrow'
 import IconButton from '@/components/ui/IconButton'
 import Menu, { MenuDivider, MenuItem } from '@/components/ui/Menu'
 import SegmentedControl from '@/components/ui/SegmentedControl'
+import { displayName, firstName } from '@/features/auth/displayName'
+import UserAvatar from '@/features/auth/UserAvatar'
 import { cx } from '@/lib/cx'
 
+import { canEditNote, isSharedWithUser } from '../access'
 import NoteBodyInput from '../NoteBodyInput'
 import NoteMarkdown from '../NoteMarkdown'
 import type { Note } from '../types'
@@ -25,6 +29,10 @@ const modeOptions = [
   { value: 'read', label: 'Read', icon: <EyeIcon /> },
   { value: 'edit', label: 'Edit', icon: <PencilIcon /> },
 ] as const
+
+// Shared to view, the title is a heading in place of the input, styled alike.
+const titleClassName =
+  'min-w-0 flex-1 bg-transparent font-display text-xl font-bold text-ink-strong outline-none placeholder:text-faint focus-visible:shadow-none'
 
 /** "Oct 14", or "Oct 14, 2025" when it's not this year. */
 function formatDate(date: string) {
@@ -41,6 +49,8 @@ type NoteEditorProps = {
   note: Note
   /** Called by the close and Done buttons. */
   onDone: () => void
+  /** Called by Share in the note's menu, to pick who to share it with. */
+  onShare: () => void
   /** Called by Move in the note's menu, to pick a folder. */
   onMove: () => void
   /** Called by Delete in the note's menu, to confirm it. */
@@ -53,16 +63,21 @@ type NoteEditorProps = {
 /**
  * A note open to read or edit: its title, editable in either mode, then its text, rendered from its
  * markdown to read or as markdown to edit. Changes save as they're typed, so there's nothing to submit.
+ * A note shared with the user says who shared it, in place of the menu (only its owner can share, move
+ * or delete it), and one they can only view stays in read mode.
  */
 export default function NoteEditor({
   note,
   onDone,
+  onShare,
   onMove,
   onDelete,
   isNew = false,
   className,
 }: NoteEditorProps) {
-  const [mode, setMode] = useState<Mode>('edit')
+  const canEdit = canEditNote(note)
+  const [chosenMode, setMode] = useState<Mode>('edit')
+  const mode = canEdit ? chosenMode : 'read'
   const [draft, change] = useNoteAutosave(note, isNew)
   const saveStatus = useNoteSaveStatus(note.id)
   const bodyRef = useRef<HTMLTextAreaElement>(null)
@@ -77,24 +92,38 @@ export default function NoteEditor({
   return (
     <div className={cx('flex min-h-0 flex-col', className)}>
       <div className="flex items-center gap-4 px-6">
-        <input
-          name="title"
-          aria-label="Title"
-          value={draft.title}
-          onChange={(event) => change({ title: event.target.value })}
-          maxLength={255}
-          placeholder="Title"
-          autoFocus={isNew}
-          className="min-w-0 flex-1 bg-transparent font-display text-xl font-bold text-ink-strong outline-none placeholder:text-faint focus-visible:shadow-none"
-        />
-        <SegmentedControl
-          label="Show the note"
-          options={modeOptions}
-          value={mode}
-          onChange={setMode}
-          iconsOnlyOnPhones
-          className="flex-none"
-        />
+        {canEdit ? (
+          <input
+            name="title"
+            aria-label="Title"
+            value={draft.title}
+            onChange={(event) => change({ title: event.target.value })}
+            maxLength={255}
+            placeholder="Title"
+            autoFocus={isNew}
+            className={titleClassName}
+          />
+        ) : (
+          <h2
+            className={cx(
+              titleClassName,
+              'truncate',
+              !note.title && 'text-faint',
+            )}
+          >
+            {note.title || 'Untitled'}
+          </h2>
+        )}
+        {canEdit && (
+          <SegmentedControl
+            label="Show the note"
+            options={modeOptions}
+            value={mode}
+            onChange={setMode}
+            iconsOnlyOnPhones
+            className="flex-none"
+          />
+        )}
         <IconButton
           size="lg"
           onClick={onDone}
@@ -119,6 +148,8 @@ export default function NoteEditor({
         <div className="min-h-0 flex-1 overflow-y-auto px-6 py-4 text-ink">
           {draft.content.trim() ? (
             <NoteMarkdown content={draft.content} />
+          ) : !canEdit ? (
+            <p className="text-faint italic">Empty note.</p>
           ) : (
             <button
               type="button"
@@ -133,15 +164,33 @@ export default function NoteEditor({
 
       {/* The note's actions sit on the left, the status beside Done on the right. */}
       <div className="flex items-center gap-4 border-t border-border-soft px-6 py-4">
-        <Menu label="Note actions" placement="top start" className="-ml-2">
-          <MenuItem icon={<ArrowRightIcon />} onAction={onMove}>
-            Move to…
-          </MenuItem>
-          <MenuDivider />
-          <MenuItem variant="danger" icon={<TrashIcon />} onAction={onDelete}>
-            Delete note
-          </MenuItem>
-        </Menu>
+        {isSharedWithUser(note) ? (
+          <p
+            title={`Shared by ${displayName(note.owner)}`}
+            className="flex min-w-0 items-center gap-2 text-sm text-muted"
+          >
+            <UserAvatar user={note.owner} className="size-6 text-xs" />
+            <span className="truncate">
+              <span className="sr-only">Shared by </span>
+              <span aria-hidden="true">From </span>
+              {firstName(note.owner)}
+            </span>
+          </p>
+        ) : (
+          <Menu label="Note actions" placement="top start" className="-ml-2">
+            <MenuItem icon={<ShareIcon />} onAction={onShare}>
+              Share…
+            </MenuItem>
+            <MenuDivider />
+            <MenuItem icon={<ArrowRightIcon />} onAction={onMove}>
+              Move to…
+            </MenuItem>
+            <MenuDivider />
+            <MenuItem variant="danger" icon={<TrashIcon />} onAction={onDelete}>
+              Delete note
+            </MenuItem>
+          </Menu>
+        )}
         <Eyebrow
           as="p"
           role="status"
@@ -150,13 +199,15 @@ export default function NoteEditor({
             saveStatus === 'failed' && 'text-danger',
           )}
         >
-          {saveStatus === 'saving'
-            ? 'Saving…'
-            : saveStatus === 'waiting'
-              ? "Saves when you're back online"
-              : saveStatus === 'failed'
-                ? "Couldn't save. Keep typing to try again."
-                : `Edited ${formatDate(note.updatedAt)}`}
+          {!canEdit
+            ? 'View only'
+            : saveStatus === 'saving'
+              ? 'Saving…'
+              : saveStatus === 'waiting'
+                ? "Saves when you're back online"
+                : saveStatus === 'failed'
+                  ? "Couldn't save. Keep typing to try again."
+                  : `Edited ${formatDate(note.updatedAt)}`}
         </Eyebrow>
         <Button onClick={onDone} className="flex-none">
           Done

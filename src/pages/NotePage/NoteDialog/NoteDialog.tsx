@@ -19,6 +19,7 @@ import { cx } from '@/lib/cx'
 
 import DeleteNoteView from './DeleteNoteView'
 import MoveNoteView from './MoveNoteView'
+import ShareNoteView from './ShareNoteView'
 import { useCreateOnOpen } from './useCreateOnOpen'
 
 type NoteDialogProps = {
@@ -54,7 +55,7 @@ export default function NoteDialog({
   useCreateOnOpen(isCreating ? newNote : null, onCreated)
 
   const { view, isMainView, show, back, viewClassName } = useModalView<
-    'note' | 'move' | 'delete'
+    'note' | 'share' | 'move' | 'delete'
   >(dialogRef, 'note')
   const { mutate: deleteNote } = useDeleteNote()
 
@@ -74,7 +75,9 @@ export default function NoteDialog({
           ? 'Delete note'
           : view === 'move'
             ? 'Move note'
-            : note?.title || (isCreating || isNew ? 'New note' : 'Note')
+            : view === 'share'
+              ? 'Share note'
+              : note?.title || (isCreating || isNew ? 'New note' : 'Note')
       }
       onClose={onClose}
       onEscape={isMainView ? undefined : back}
@@ -98,11 +101,19 @@ export default function NoteDialog({
           <NoteEditor
             note={note}
             onDone={close}
+            onShare={() => show('share')}
             onMove={() => show('move')}
             onDelete={() => show('delete')}
             isNew={isNew}
             className={cx('flex-1', viewClassName, !isMainView && 'hidden')}
           />
+          {view === 'share' && (
+            <ShareNoteView
+              note={note}
+              onBack={back}
+              className={viewClassName}
+            />
+          )}
           {view === 'move' && (
             <MoveNoteView note={note} onBack={back} className={viewClassName} />
           )}

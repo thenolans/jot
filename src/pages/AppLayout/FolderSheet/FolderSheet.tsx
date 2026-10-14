@@ -1,5 +1,4 @@
-import { useRef, useState } from 'react'
-import type { To } from 'react-router'
+import { type ComponentProps, useRef, useState } from 'react'
 
 import CloseIcon from '@/components/icons/CloseIcon'
 import Heading from '@/components/ui/Heading'
@@ -19,10 +18,15 @@ import FolderNav from '@/features/folders/FolderNav'
 import { useFolders } from '@/features/folders/useFolders'
 import { cx } from '@/lib/cx'
 
-type FolderSheetProps = {
-  activeFolderId: number | null
-  folderTo: (id: number | null) => To
-  noteCount?: number
+type FolderSheetProps = Pick<
+  ComponentProps<typeof FolderNav>,
+  | 'activeFolderId'
+  | 'folderTo'
+  | 'noteCount'
+  | 'isSharedActive'
+  | 'sharedTo'
+  | 'sharedCount'
+> & {
   onClose: () => void
 }
 
@@ -32,10 +36,8 @@ type FolderSheetProps = {
  * Render it to open it.
  */
 export default function FolderSheet({
-  activeFolderId,
-  folderTo,
-  noteCount,
   onClose,
+  ...navProps
 }: FolderSheetProps) {
   const dialogRef = useRef<HTMLDialogElement>(null)
   const { folders } = useFolders()
@@ -85,9 +87,7 @@ export default function FolderSheet({
         </div>
         <FolderNav
           variant="sheet"
-          activeFolderId={activeFolderId}
-          folderTo={folderTo}
-          noteCount={noteCount}
+          {...navProps}
           onNavigate={close}
           onAction={startAction}
         />

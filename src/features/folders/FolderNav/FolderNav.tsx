@@ -3,6 +3,7 @@ import { Link, type To } from 'react-router'
 
 import NotesIcon from '@/components/icons/NotesIcon'
 import PlusIcon from '@/components/icons/PlusIcon'
+import UserIcon from '@/components/icons/UserIcon'
 import Button from '@/components/ui/Button'
 import ErrorRetry from '@/components/ui/ErrorRetry'
 import Eyebrow from '@/components/ui/Eyebrow'
@@ -23,12 +24,18 @@ import { useOpenFolders } from './useOpenFolders'
 
 type FolderNavProps = {
   variant: FolderNavVariant
-  /** The folder the notes grid shows, or `null` for all notes. */
+  /** The folder the notes grid shows, or `null` for all notes (or those shared with the user). */
   activeFolderId: number | null
   /** Where a folder's notes are listed, or every note for `null`. */
   folderTo: (id: number | null) => To
-  /** How many notes there are in all, once known. */
+  /** How many of their own notes the user has in all, once known. */
   noteCount?: number
+  /** The notes grid shows the notes shared with the user. */
+  isSharedActive: boolean
+  /** Where the notes shared with the user are listed. */
+  sharedTo: To
+  /** How many notes are shared with the user, once known. */
+  sharedCount?: number
   /** Called as a folder is picked, e.g. to close the sheet it's in. */
   onNavigate?: () => void
   /**
@@ -40,14 +47,18 @@ type FolderNavProps = {
 }
 
 /**
- * All notes, then the user's folders as a tree to pick from, each with its note count (including the
- * folders inside it). Folders are made from its button; their menus rename, nest, move and delete them.
+ * All notes, then the notes shared with the user (while there are any), then the user's folders as a tree
+ * to pick from, each with its note count (including the folders inside it). Folders are made from its
+ * button; their menus rename, nest, move and delete them.
  */
 export default function FolderNav({
   variant,
   activeFolderId,
   folderTo,
   noteCount,
+  isSharedActive,
+  sharedTo,
+  sharedCount,
   onNavigate,
   onAction,
   className,
@@ -78,8 +89,12 @@ export default function FolderNav({
   }
 
   const isSidebar = variant === 'sidebar'
-  const isAllActive = activeFolderId === null
-  const { label, iconSize } = folderNavVariants[variant]
+  const isAllActive = activeFolderId === null && !isSharedActive
+  const linkClassName = cx(
+    'flex min-w-0 flex-1 items-center self-stretch rounded-xs font-display font-semibold',
+    folderNavVariants[variant].label,
+  )
+  const { iconSize } = folderNavVariants[variant]
 
   return (
     <nav aria-label="Folders" className={cx('flex flex-col', className)}>
@@ -88,10 +103,7 @@ export default function FolderNav({
           to={folderTo(null)}
           onClick={onNavigate}
           aria-current={isAllActive ? 'page' : undefined}
-          className={cx(
-            'flex min-w-0 flex-1 items-center self-stretch rounded-xs font-display font-semibold',
-            label,
-          )}
+          className={linkClassName}
         >
           <NotesIcon size={iconSize} className="flex-none text-accent" />
           All notes
@@ -104,6 +116,27 @@ export default function FolderNav({
           />
         )}
       </FolderNavRow>
+
+      {(isSharedActive || !!sharedCount) && (
+        <FolderNavRow variant={variant} active={isSharedActive}>
+          <Link
+            to={sharedTo}
+            onClick={onNavigate}
+            aria-current={isSharedActive ? 'page' : undefined}
+            className={linkClassName}
+          >
+            <UserIcon size={iconSize} className="flex-none text-accent" />
+            <span className="truncate">Shared with me</span>
+          </Link>
+          {sharedCount !== undefined && (
+            <FolderCount
+              count={sharedCount}
+              variant={variant}
+              active={isSharedActive}
+            />
+          )}
+        </FolderNavRow>
+      )}
 
       {isSidebar && (
         <div className="mt-2 flex items-center justify-between border-t border-border-soft pt-4 pb-2 pl-2">

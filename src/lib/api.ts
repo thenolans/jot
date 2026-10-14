@@ -178,7 +178,7 @@ export type Page<T> = {
 /** `path` with `params` appended as a query string, leaving out empty values. */
 export function withQuery(
   path: string,
-  params: Record<string, string | number | null | undefined>,
+  params: Record<string, string | number | boolean | null | undefined>,
 ) {
   const query = new URLSearchParams()
   for (const [key, value] of Object.entries(params)) {

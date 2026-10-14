@@ -1,5 +1,6 @@
 import type { QueryClient } from '@tanstack/react-query'
 
+import { authQueries } from '@/features/auth/queries'
 import { adjustNoteCounts } from '@/features/folders/folderTree'
 import { folderQueries } from '@/features/folders/queries'
 import { updateCachedFolders } from '@/features/folders/updateCachedFolders'
@@ -74,11 +75,17 @@ export function setNoteMutationDefaults(queryClient: QueryClient) {
       },
       onMutate: async ({ id, note }) => {
         const now = new Date().toISOString()
+        const user = queryClient.getQueryData(
+          authQueries.currentUser().queryKey,
+        )
         const made: Note = {
           id,
           title: note.title ?? '',
           content: note.content ?? '',
           folderId: note.folderId ? resolveId(note.folderId) : null,
+          access: 'owner',
+          owner: { name: user?.name ?? '', email: user?.email ?? null },
+          shareCount: 0,
           createdAt: now,
           updatedAt: now,
         }

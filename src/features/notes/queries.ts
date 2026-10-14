@@ -50,7 +50,7 @@ export const noteQueries = {
   all: () => ['notes'] as const,
 
   /**
-   * Every one of the user's notes, kept on the device so they can be listed, searched and opened offline.
+   * Every note the user has or has been shared, kept on the device so they can be listed, searched and opened offline.
    * Changes update it as they're made, so it's only refreshed now and then, not with the list.
    */
   offlineCopy: () =>
@@ -63,21 +63,27 @@ export const noteQueries = {
 
   lists: () => [...noteQueries.all(), 'list'] as const,
 
-  /** One page of the user's notes matching `filters`. */
-  list: ({ query = '', folderId = null }: NoteFilters, page: number) =>
+  /** One page of the notes the user has or has been shared, matching `filters`. */
+  list: (
+    { query = '', folderId = null, shared = null }: NoteFilters,
+    page: number,
+  ) =>
     queryOptions({
-      queryKey: [...noteQueries.lists(), { query, folderId, page }] as const,
+      queryKey: [
+        ...noteQueries.lists(),
+        { query, folderId, shared, page },
+      ] as const,
       queryFn: ({ client }) =>
         localOrFetch(
           () => {
-            const found = localList(client, { query, folderId }, page)
+            const found = localList(client, { query, folderId, shared }, page)
             if (found === null)
               throw new ApiError(404, 'There are no notes on this page.')
             return found
           },
           () =>
             fetchNotes(
-              { query, folderId: folderId && resolveId(folderId) },
+              { query, folderId: folderId && resolveId(folderId), shared },
               page,
             ),
         ),
@@ -86,7 +92,7 @@ export const noteQueries = {
 
   details: () => [...noteQueries.all(), 'detail'] as const,
 
-  /** One of the user's notes, or nothing to load for `null` (a note still being created). */
+  /** A note the user has or has been shared, or nothing to load for `null` (a note still being created). */
   detail: (id: number | null) =>
     queryOptions({
       queryKey: [...noteQueries.details(), id] as const,

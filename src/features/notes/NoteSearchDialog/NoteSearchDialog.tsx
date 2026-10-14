@@ -5,10 +5,12 @@ import CloseIcon from '@/components/icons/CloseIcon'
 import SearchIcon from '@/components/icons/SearchIcon'
 import IconButton from '@/components/ui/IconButton'
 import ModalShell, { closeModal } from '@/components/ui/ModalShell'
+import { displayName } from '@/features/auth/displayName'
 import { folderPath } from '@/features/folders/folderTree'
 import { useFolders } from '@/features/folders/useFolders'
 import { useDebouncedValue } from '@/hooks/useDebouncedValue'
 
+import { isSharedWithUser } from '../access'
 import { useNotes } from '../useNotes'
 import SearchResults, { type SearchAction } from './SearchResults'
 import SearchStatus from './SearchStatus'
@@ -135,9 +137,11 @@ export default function NoteSearchDialog({
             notes={notes}
             // Blank until the folders load.
             noteFolderLabel={(note) =>
-              note.folderId === null
-                ? 'No folder'
-                : folderPath(folders, note.folderId).join(' / ')
+              isSharedWithUser(note)
+                ? `Shared by ${displayName(note.owner)}`
+                : note.folderId === null
+                  ? 'No folder'
+                  : folderPath(folders, note.folderId).join(' / ')
             }
             folders={matchingFolders}
             query={query}

@@ -24,6 +24,8 @@ type NoteResultsProps = {
   query: string
   /** Whether the notes are narrowed to a folder. */
   inFolder: boolean
+  /** Whether the notes are those shared with the user. */
+  shared: boolean
   /** The folder's name, once it's known. */
   folderName?: string
   /** The page shown, from 1. */
@@ -49,6 +51,7 @@ export default function NoteResults({
   results,
   query,
   inFolder,
+  shared,
   folderName,
   page,
   pageTo,
@@ -66,7 +69,7 @@ export default function NoteResults({
     error,
     reload,
   } = results
-  const hasFilters = query !== '' || inFolder
+  const hasFilters = query !== '' || inFolder || shared
 
   if (isLoading) {
     return (
@@ -118,6 +121,12 @@ export default function NoteResults({
       return (
         <EmptyState title="Nothing matches that — yet" action={clearFilters}>
           No notes mention “{query}”. Try another search, or clear it.
+        </EmptyState>
+      )
+    if (shared)
+      return (
+        <EmptyState title="Nothing shared with you yet">
+          Notes other people share with you will show up here.
         </EmptyState>
       )
     if (inFolder)

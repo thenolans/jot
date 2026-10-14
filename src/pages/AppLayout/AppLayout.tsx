@@ -14,6 +14,7 @@ import {
   notePath,
   noteSearchPath,
   paths,
+  sharedParam,
 } from '@/app/paths'
 import FolderNav from '@/features/folders/FolderNav'
 import NoteSearchDialog, {
@@ -38,7 +39,9 @@ export default function AppLayout() {
   const location = useLocation()
   const [searchParams] = useSearchParams()
   const activeFolderId = folderIdParam(searchParams)
-  const noteCount = useNoteCount()
+  const isSharedActive = sharedParam(searchParams)
+  const noteCount = useNoteCount({ shared: false })
+  const sharedCount = useNoteCount({ shared: true })
   useKeepNotesOffline()
   useSavedFolderParam()
   const [isSheetOpen, setSheetOpen] = useState(false)
@@ -47,13 +50,23 @@ export default function AppLayout() {
   const openSearch = () => setSearchOpen(true)
   useSearchShortcut(openSearch)
 
-  // A folder's notes, keeping the search shown, from the first page.
-  const folderTo = (id: number | null): To => {
+  // A folder's notes, or those shared with the user, keeping the search shown, from the first page.
+  const notesTo = (changes: { folder?: number; shared?: boolean }): To => {
     const next = new URLSearchParams(searchParams)
     next.delete('page')
-    if (id === null) next.delete('folder')
-    else next.set('folder', String(id))
+    next.delete('folder')
+    next.delete('shared')
+    if (changes.folder !== undefined) next.set('folder', String(changes.folder))
+    if (changes.shared) next.set('shared', '1')
     return { pathname: paths.notes, search: next.toString() }
+  }
+  const navProps = {
+    activeFolderId,
+    folderTo: (id: number | null) => notesTo({ folder: id ?? undefined }),
+    noteCount,
+    isSharedActive,
+    sharedTo: notesTo({ shared: true }),
+    sharedCount,
   }
 
   // A note opens over the grid as it is. In place of a note that's already open, it closes the way that
@@ -87,29 +100,21 @@ export default function AppLayout() {
       <AppBar searchQuery={searchParams.get('q') ?? ''} onSearch={openSearch} />
       {/* The page clears the sidebar by its width. */}
       <aside className="fixed top-(--top-bar-height) bottom-0 left-0 z-10 hidden w-60 overflow-y-auto border-r border-border bg-surface px-2 py-4 md:block print:hidden">
-        <FolderNav
-          variant="sidebar"
-          activeFolderId={activeFolderId}
-          folderTo={folderTo}
-          noteCount={noteCount}
-        />
+        <FolderNav variant="sidebar" {...navProps} />
       </aside>
       <main className="md:pl-60">
         <Outlet />
       </main>
       <TabBar
-        isAllNotes={activeFolderId === null}
-        isFoldersActive={isSheetOpen || activeFolderId !== null}
+        isAllNotes={activeFolderId === null && !isSharedActive}
+        isFoldersActive={
+          isSheetOpen || activeFolderId !== null || isSharedActive
+        }
         onOpenFolders={() => setSheetOpen(true)}
         onSearch={openSearch}
       />
       {isSheetOpen && (
-        <FolderSheet
-          activeFolderId={activeFolderId}
-          folderTo={folderTo}
-          noteCount={noteCount}
-          onClose={() => setSheetOpen(false)}
-        />
+        <FolderSheet {...navProps} onClose={() => setSheetOpen(false)} />
       )}
       {isSearchOpen && (
         <NoteSearchDialog

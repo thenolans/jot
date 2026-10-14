@@ -23,6 +23,13 @@ export const folderNotesPath = (id: number) =>
   `${paths.notes}?${new URLSearchParams({ folder: String(id) })}`
 
 /**
+ * Whether the notes grid shows the notes shared with the user, from its `shared` search param, in place
+ * of a folder's.
+ */
+export const sharedParam = (searchParams: URLSearchParams) =>
+  searchParams.get('shared') === '1'
+
+/**
  * The folder the notes grid is narrowed to, from its `folder` search param, or `null` for every note. A
  * folder made offline is linked to by its local id, which gives way to its saved id once it's saved.
  */

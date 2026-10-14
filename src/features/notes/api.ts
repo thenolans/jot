@@ -1,6 +1,13 @@
+import type { Person } from '@/features/auth/types'
 import { api, type Page, rekeyFieldErrors, withQuery } from '@/lib/api'
 
-import type { NewNote, Note, NoteChanges, NoteFilters } from './types'
+import type {
+  NewNote,
+  Note,
+  NoteAccess,
+  NoteChanges,
+  NoteFilters,
+} from './types'
 
 /** A note as the API sends it. */
 type NoteResponse = {
@@ -8,6 +15,9 @@ type NoteResponse = {
   title: string
   content: string
   folder_id: number | null
+  access: NoteAccess
+  owner: Person
+  share_count: number
   created_at: string
   updated_at: string
 }
@@ -18,6 +28,9 @@ function toNote(response: NoteResponse): Note {
     title: response.title,
     content: response.content,
     folderId: response.folder_id,
+    access: response.access,
+    owner: response.owner,
+    shareCount: response.share_count,
     createdAt: response.created_at,
     updatedAt: response.updated_at,
   }
@@ -27,17 +40,18 @@ function toNote(response: NoteResponse): Note {
 export const NOTE_PAGE_SIZE = 24
 
 /**
- * One page of the signed-in user's notes, most recently edited first. Fails with a 404 past the last
- * page.
+ * One page of the signed-in user's notes and those shared with them, most recently edited first. Fails
+ * with a 404 past the last page.
  */
 export async function fetchNotes(
-  { query, folderId }: NoteFilters,
+  { query, folderId, shared }: NoteFilters,
   page = 1,
 ): Promise<Page<Note>> {
   const response = await api.get<Page<NoteResponse>>(
     withQuery('/jot/notes/', {
       q: query,
       folder_id: folderId,
+      shared,
       page: page > 1 ? page : null,
       page_size: NOTE_PAGE_SIZE,
     }),
@@ -48,7 +62,7 @@ export async function fetchNotes(
 /** Notes per request for every note: the most the API sends at once. */
 const ALL_NOTES_PAGE_SIZE = 1000
 
-/** Every one of the signed-in user's notes, most recently edited first, to keep on the device. */
+/** Every note the signed-in user has or has been shared, most recently edited first, to keep on the device. */
 export async function fetchAllNotes(): Promise<Note[]> {
   const notes: Note[] = []
   for (let page = 1; ; page++) {
@@ -63,7 +77,7 @@ export async function fetchAllNotes(): Promise<Note[]> {
   }
 }
 
-/** One of the signed-in user's notes. Fails with a 404 when there's no such note, or it isn't theirs. */
+/** A note the signed-in user has or has been shared. Fails with a 404 when there's no such note, or they can't see it. */
 export async function fetchNote(id: number): Promise<Note> {
   return toNote(await api.get<NoteResponse>(`/jot/notes/${id}/`))
 }
@@ -107,7 +121,7 @@ export async function createNote({
   )
 }
 
-/** Deletes one of the signed-in user's notes. */
+/** Deletes one of the signed-in user's own notes. */
 export async function deleteNote(id: number): Promise<void> {
   await api.delete(`/jot/notes/${id}/`)
 }
