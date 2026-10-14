@@ -1,9 +1,11 @@
 import { describe, expect, it } from 'vitest'
 
 import {
+  adjustNoteCounts,
   ancestorIds,
   buildFolderTree,
   folderPath,
+  sortFolders,
   withDescendants,
 } from './folderTree'
 import type { Folder } from './types'
@@ -58,5 +60,35 @@ describe('folderPath', () => {
 
   it('is empty for a folder that isn’t there', () => {
     expect(folderPath(folders, 9)).toEqual([])
+  })
+})
+
+describe('adjustNoteCounts', () => {
+  it('changes the folder and every folder it’s inside', () => {
+    const counts = adjustNoteCounts(folders, 3, 2).map(({ id, noteCount }) => [
+      id,
+      noteCount,
+    ])
+    expect(counts).toEqual([
+      [3, 2],
+      [1, 2],
+      [2, 2],
+      [4, 0],
+    ])
+  })
+
+  it('changes nothing for no folder', () => {
+    expect(adjustNoteCounts(folders, null, 1)).toBe(folders)
+  })
+})
+
+describe('sortFolders', () => {
+  it('sorts by name, ignoring case', () => {
+    const named = (id: number, name: string) => ({ ...folder(id), name })
+    expect(
+      sortFolders([named(1, 'beta'), named(2, 'Alpha'), named(3, 'alpha')]).map(
+        ({ id }) => id,
+      ),
+    ).toEqual([2, 3, 1])
   })
 })

@@ -1,17 +1,29 @@
-import { useMutationState } from '@tanstack/react-query'
+import { matchMutation, useMutationState } from '@tanstack/react-query'
 
-import { type UpdateNote, updateNoteMutationKey } from '../mutations'
+import { isSameId } from '@/lib/localIds'
+
+import {
+  type CreateNote,
+  createNoteMutationKey,
+  type UpdateNote,
+  updateNoteMutationKey,
+} from '../mutations'
 
 /**
- * Where the latest save of the note with `id` has got to: `'saving'`, `'waiting'` for the connection,
+ * Where the latest save of the note with `id` (or making it, for a new one) has got to: `'saving'`, `'waiting'` for the connection,
  * `'failed'`, or `'saved'` (also when there's been none).
  */
 export function useNoteSaveStatus(id: number) {
   const states = useMutationState({
     filters: {
-      mutationKey: updateNoteMutationKey,
-      predicate: (mutation) =>
-        (mutation.state.variables as UpdateNote | undefined)?.id === id,
+      predicate: (mutation) => {
+        const isSave =
+          matchMutation({ mutationKey: updateNoteMutationKey }, mutation) ||
+          matchMutation({ mutationKey: createNoteMutationKey }, mutation)
+        const variables = mutation.state.variables as
+          UpdateNote | CreateNote | undefined
+        return isSave && !!variables && isSameId(variables.id, id)
+      },
     },
     select: (mutation) => mutation.state,
   })

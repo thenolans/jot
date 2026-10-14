@@ -19,17 +19,19 @@ import FolderNav from '@/features/folders/FolderNav'
 import NoteSearchDialog, {
   type SearchAction,
 } from '@/features/notes/NoteSearchDialog'
+import { useKeepNotesOffline } from '@/features/notes/useKeepNotesOffline'
 import { useNoteCount } from '@/features/notes/useNoteCount'
 
 import AppBar from './AppBar'
 import FolderSheet from './FolderSheet'
 import TabBar from './TabBar'
+import { useSavedFolderParam } from './useSavedFolderParam'
 import { useSearchShortcut } from './useSearchShortcut'
 
 /**
  * Frame for the signed-in app: the app bar on top and the folders beside the page, down the side on wide
  * screens, or on narrow ones in a sheet opened from the tab bar at the bottom. The app bar or tab bar
- * opens search, as does ⌘K.
+ * opens search, as does ⌘K. While it's open, every note is kept on the device, for use offline.
  */
 export default function AppLayout() {
   const navigate = useNavigate()
@@ -37,6 +39,8 @@ export default function AppLayout() {
   const [searchParams] = useSearchParams()
   const activeFolderId = folderIdParam(searchParams)
   const noteCount = useNoteCount()
+  useKeepNotesOffline()
+  useSavedFolderParam()
   const [isSheetOpen, setSheetOpen] = useState(false)
   const [isSearchOpen, setSearchOpen] = useState(false)
 

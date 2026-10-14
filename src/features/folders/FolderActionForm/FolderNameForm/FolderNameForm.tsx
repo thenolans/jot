@@ -1,4 +1,3 @@
-import Alert from '@/components/ui/Alert'
 import Button from '@/components/ui/Button'
 import { DialogActions } from '@/components/ui/Dialog'
 import TextField from '@/components/ui/TextField'
@@ -26,24 +25,21 @@ export default function FolderNameForm({
   parent,
   onDone,
 }: FolderNameFormProps) {
-  const { mutateAsync: create } = useCreateFolder()
-  const { mutateAsync: update } = useUpdateFolder()
+  const create = useCreateFolder()
+  const { mutate: update } = useUpdateFolder()
   const validation = useFormValidation()
-  const [state, formAction, isPending] = useFormAction(
-    fields,
-    async ({ name }) => {
-      const trimmed = name.trim()
-      if (trimmed !== folder?.name) {
-        if (folder) await update({ id: folder.id, changes: { name: trimmed } })
-        else await create({ name: trimmed, parentId: parent?.id ?? null })
-      }
-      onDone()
-    },
-  )
+  // It's saved straight away, online or off, so there's nothing to wait for.
+  const [, formAction] = useFormAction(fields, async ({ name }) => {
+    const trimmed = name.trim()
+    if (trimmed !== folder?.name) {
+      if (folder) update({ id: folder.id, changes: { name: trimmed } })
+      else create({ name: trimmed, parentId: parent?.id ?? null })
+    }
+    onDone()
+  })
 
   return (
     <form action={formAction} {...validation.formProps}>
-      {state.message && <Alert className="mb-4">{state.message}</Alert>}
       <TextField
         label="Name"
         name="name"
@@ -58,23 +54,15 @@ export default function FolderNameForm({
         // `data-autofocus` as a dialog opens with it, `autoFocus` as it replaces a view in one already open.
         data-autofocus
         autoFocus
-        defaultValue={state.values.name ?? folder?.name}
+        defaultValue={folder?.name}
         onFocus={(event) => event.currentTarget.select()}
-        error={validation.errors.name ?? state.fieldErrors.name}
+        error={validation.errors.name}
       />
       <DialogActions>
         <Button variant="secondary" onClick={onDone}>
           Cancel
         </Button>
-        <Button type="submit" disabled={isPending}>
-          {folder
-            ? isPending
-              ? 'Saving…'
-              : 'Save'
-            : isPending
-              ? 'Making…'
-              : 'Make folder'}
-        </Button>
+        <Button type="submit">{folder ? 'Save' : 'Make folder'}</Button>
       </DialogActions>
     </form>
   )

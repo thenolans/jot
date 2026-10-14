@@ -10,7 +10,7 @@ import { OFFLINE_MAX_AGE } from '@/lib/offlineQuery'
  * Bump when the shape of cached data changes, so data saved by an older version of the app is dropped
  * rather than shown.
  */
-const CACHE_VERSION = '1'
+const CACHE_VERSION = '2'
 
 /**
  * Saves the queries and changes marked `keepOffline` to IndexedDB, and restores them when the app

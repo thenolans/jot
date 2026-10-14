@@ -1,6 +1,8 @@
 import { matchQuery, useQueryClient } from '@tanstack/react-query'
 import { useCallback } from 'react'
 
+import { clearSavedIds } from '@/lib/localIds'
+
 import { authQueries } from './queries'
 import type { User } from './types'
 
@@ -23,6 +25,7 @@ export function useSetSession() {
         predicate: (mutation) => mutation.state.isPaused,
       }))
         mutationCache.remove(mutation)
+      clearSavedIds()
     },
     [queryClient],
   )

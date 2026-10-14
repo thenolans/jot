@@ -1,22 +1,21 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useMutation } from '@tanstack/react-query'
 
-import { folderQueries } from '@/features/folders/queries'
+import { newLocalId } from '@/lib/localIds'
 
-import { createNote } from './api'
-import { noteQueries } from './queries'
-import type { NewNote } from './types'
+import { type CreateNote, createNoteMutationKey } from './mutations'
+import type { NewNote, Note } from './types'
 
-/** Creates a note. It fails straight away offline, since there's no note to open until the API makes one. */
+/**
+ * Makes a note, returning a function that makes one and returns its id. It's there to open straight away,
+ * by a local id, and is saved once the connection allows (see `setNoteMutationDefaults`).
+ */
 export function useCreateNote() {
-  const queryClient = useQueryClient()
-  return useMutation({
-    mutationFn: (note: NewNote) => createNote(note),
-    onSuccess: (note) => {
-      // The note opens without loading it again.
-      queryClient.setQueryData(noteQueries.detail(note.id).queryKey, note)
-      // Not awaited, so the note opens without waiting for the list or the folder counts.
-      void queryClient.invalidateQueries({ queryKey: noteQueries.lists() })
-      void queryClient.invalidateQueries({ queryKey: folderQueries.all() })
-    },
+  const { mutate } = useMutation<Note, Error, CreateNote>({
+    mutationKey: createNoteMutationKey,
   })
+  return (note: NewNote) => {
+    const id = newLocalId()
+    mutate({ id, note })
+    return id
+  }
 }

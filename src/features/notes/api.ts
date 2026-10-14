@@ -45,6 +45,24 @@ export async function fetchNotes(
   return { ...response, results: response.results.map(toNote) }
 }
 
+/** Notes per request for every note: the most the API sends at once. */
+const ALL_NOTES_PAGE_SIZE = 1000
+
+/** Every one of the signed-in user's notes, most recently edited first, to keep on the device. */
+export async function fetchAllNotes(): Promise<Note[]> {
+  const notes: Note[] = []
+  for (let page = 1; ; page++) {
+    const response = await api.get<Page<NoteResponse>>(
+      withQuery('/jot/notes/', {
+        page: page > 1 ? page : null,
+        page_size: ALL_NOTES_PAGE_SIZE,
+      }),
+    )
+    notes.push(...response.results.map(toNote))
+    if (!response.next) return notes
+  }
+}
+
 /** One of the signed-in user's notes. Fails with a 404 when there's no such note, or it isn't theirs. */
 export async function fetchNote(id: number): Promise<Note> {
   return toNote(await api.get<NoteResponse>(`/jot/notes/${id}/`))

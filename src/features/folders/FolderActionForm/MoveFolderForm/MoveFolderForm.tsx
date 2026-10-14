@@ -1,4 +1,3 @@
-import Alert from '@/components/ui/Alert'
 import Button from '@/components/ui/Button'
 import { DialogActions } from '@/components/ui/Dialog'
 import { useFormAction } from '@/hooks/useFormAction'
@@ -23,17 +22,14 @@ export default function MoveFolderForm({
   folders,
   onDone,
 }: MoveFolderFormProps) {
-  const { mutateAsync: update } = useUpdateFolder()
-  const [state, formAction, isPending] = useFormAction(
-    fields,
-    async ({ parentId }) => {
-      const to = parentId ? Number(parentId) : null
-      if (to !== folder.parentId)
-        await update({ id: folder.id, changes: { parentId: to } })
-      onDone()
-    },
-  )
-  const error = state.fieldErrors.parentId ?? state.message
+  const { mutate: update } = useUpdateFolder()
+  // It moves straight away, online or off, so there's nothing to wait for.
+  const [, formAction] = useFormAction(fields, async ({ parentId }) => {
+    const to = parentId ? Number(parentId) : null
+    if (to !== folder.parentId)
+      update({ id: folder.id, changes: { parentId: to } })
+    onDone()
+  })
 
   return (
     <form action={formAction}>
@@ -45,14 +41,11 @@ export default function MoveFolderForm({
         noneLabel="Top level"
         exclude={withDescendants(folders, folder.id)}
       />
-      {error && <Alert className="mt-4">{error}</Alert>}
       <DialogActions>
         <Button variant="secondary" onClick={onDone}>
           Cancel
         </Button>
-        <Button type="submit" disabled={isPending}>
-          {isPending ? 'Moving…' : 'Move'}
-        </Button>
+        <Button type="submit">Move</Button>
       </DialogActions>
     </form>
   )

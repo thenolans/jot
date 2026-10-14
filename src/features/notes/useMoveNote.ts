@@ -1,20 +1,14 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useMutation } from '@tanstack/react-query'
 
-import { folderQueries } from '@/features/folders/queries'
+import { type MoveNote, moveNoteMutationKey } from './mutations'
+import type { Note } from './types'
 
-import { moveNote } from './api'
-import { noteQueries } from './queries'
-
-/** Moves a note into a folder, or out of any for `null`. It fails straight away offline. */
-export function useMoveNote(id: number) {
-  const queryClient = useQueryClient()
-  return useMutation({
-    mutationFn: (folderId: number | null) => moveNote(id, folderId),
-    onSuccess: (note) => {
-      queryClient.setQueryData(noteQueries.detail(note.id).queryKey, note)
-      // It leaves the lists of the folders it was in, and its counts go with it.
-      void queryClient.invalidateQueries({ queryKey: noteQueries.lists() })
-      void queryClient.invalidateQueries({ queryKey: folderQueries.all() })
-    },
+/**
+ * Moves a note into a folder, or out of any for `null`. It shows straight away, and offline it's saved
+ * once the connection is back (see `setNoteMutationDefaults`).
+ */
+export function useMoveNote() {
+  return useMutation<Note, Error, MoveNote>({
+    mutationKey: moveNoteMutationKey,
   })
 }

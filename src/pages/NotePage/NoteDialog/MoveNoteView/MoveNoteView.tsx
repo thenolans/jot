@@ -1,4 +1,3 @@
-import Alert from '@/components/ui/Alert'
 import Button from '@/components/ui/Button'
 import ErrorRetry from '@/components/ui/ErrorRetry'
 import ModalSubview from '@/components/ui/ModalSubview'
@@ -24,16 +23,13 @@ export default function MoveNoteView({
   className,
 }: MoveNoteViewProps) {
   const { folders, isLoading, error, reload } = useFolders()
-  const { mutateAsync: move } = useMoveNote(note.id)
-  const [state, formAction, isPending] = useFormAction(
-    fields,
-    async ({ folderId }) => {
-      const to = folderId ? Number(folderId) : null
-      if (to !== note.folderId) await move(to)
-      onBack()
-    },
-  )
-  const saveError = state.fieldErrors.folderId ?? state.message
+  const { mutate: move } = useMoveNote()
+  // It moves straight away, online or off, so there's nothing to wait for.
+  const [, formAction] = useFormAction(fields, async ({ folderId }) => {
+    const to = folderId ? Number(folderId) : null
+    if (to !== note.folderId) move({ id: note.id, folderId: to })
+    onBack()
+  })
 
   return (
     <ModalSubview
@@ -50,9 +46,8 @@ export default function MoveNoteView({
             current={note.folderId}
             noneLabel="No folder"
           />
-          {saveError && <Alert>{saveError}</Alert>}
-          <Button type="submit" block disabled={isPending}>
-            {isPending ? 'Moving…' : 'Move note'}
+          <Button type="submit" block>
+            Move note
           </Button>
         </form>
       ) : isLoading ? (

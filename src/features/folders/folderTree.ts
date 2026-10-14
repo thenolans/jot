@@ -60,3 +60,30 @@ export function folderPath(folders: Folder[], id: number) {
     .map((folderId) => byId.get(folderId)?.name)
     .filter((name) => name !== undefined)
 }
+
+/**
+ * `folders` with `delta` added to the note count of the folder with `id` and every folder it's inside,
+ * as their counts include it. Nothing changes for `null` (no folder).
+ */
+export function adjustNoteCounts(
+  folders: Folder[],
+  id: number | null,
+  delta: number,
+) {
+  if (id === null || delta === 0) return folders
+  const counted = new Set([id, ...ancestorIds(folders, id)])
+  return folders.map((folder) =>
+    counted.has(folder.id)
+      ? { ...folder, noteCount: folder.noteCount + delta }
+      : folder,
+  )
+}
+
+/** `folders` sorted by name, as the API sends them. */
+export function sortFolders(folders: Folder[]) {
+  return folders.toSorted(
+    (a, b) =>
+      a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }) ||
+      a.id - b.id,
+  )
+}

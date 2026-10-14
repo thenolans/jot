@@ -51,10 +51,7 @@ export default function NoteDialog({
   const { note, isNotFound, isLoading, error, reload } = useNote(
     isCreating ? null : noteId,
   )
-  const { createError, retryCreate } = useCreateOnOpen(
-    isCreating ? newNote : null,
-    onCreated,
-  )
+  useCreateOnOpen(isCreating ? newNote : null, onCreated)
 
   const { view, isMainView, show, back, viewClassName } = useModalView<
     'note' | 'move' | 'delete'
@@ -128,9 +125,7 @@ export default function NoteDialog({
           >
             <CloseIcon size={20} />
           </IconButton>
-          {createError ? (
-            <ErrorRetry onRetry={retryCreate}>{createError}</ErrorRetry>
-          ) : isLoading ? (
+          {isLoading ? (
             <>
               <p role="status" className="sr-only">
                 {isCreating ? 'Creating note' : 'Loading note'}

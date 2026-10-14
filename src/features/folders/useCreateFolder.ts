@@ -1,14 +1,21 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useMutation } from '@tanstack/react-query'
 
-import { createFolder } from './api'
-import type { NewFolder } from './types'
-import { updateCachedFolders } from './updateCachedFolders'
+import { newLocalId } from '@/lib/localIds'
 
-/** Makes a folder. It fails straight away offline. */
+import { type CreateFolder, createFolderMutationKey } from './mutations'
+import type { Folder, NewFolder } from './types'
+
+/**
+ * Makes a folder, returning a function that makes one and returns its id. It shows straight away, by a
+ * local id, and is saved once the connection allows (see `setFolderMutationDefaults`).
+ */
 export function useCreateFolder() {
-  const queryClient = useQueryClient()
-  return useMutation({
-    mutationFn: (folder: NewFolder) => createFolder(folder),
-    onSuccess: (folder) => updateCachedFolders(queryClient, folder),
+  const { mutate } = useMutation<Folder, Error, CreateFolder>({
+    mutationKey: createFolderMutationKey,
   })
+  return (folder: NewFolder) => {
+    const id = newLocalId()
+    mutate({ id, folder })
+    return id
+  }
 }

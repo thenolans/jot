@@ -1,3 +1,5 @@
+import { resolveId } from '@/lib/localIds'
+
 export const paths = {
   landing: '/',
   login: '/login',
@@ -20,10 +22,15 @@ export const noteSearchPath = (query: string) =>
 export const folderNotesPath = (id: number) =>
   `${paths.notes}?${new URLSearchParams({ folder: String(id) })}`
 
-/** The folder the notes grid is narrowed to, from its `folder` search param, or `null` for every note. */
+/**
+ * The folder the notes grid is narrowed to, from its `folder` search param, or `null` for every note. A
+ * folder made offline is linked to by its local id, which gives way to its saved id once it's saved.
+ */
 export function folderIdParam(searchParams: URLSearchParams) {
   const folderId = Number(searchParams.get('folder'))
-  return Number.isInteger(folderId) && folderId > 0 ? folderId : null
+  return Number.isInteger(folderId) && folderId !== 0
+    ? resolveId(folderId)
+    : null
 }
 
 /** Router state a link to a note can pass. */

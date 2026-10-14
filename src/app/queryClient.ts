@@ -1,5 +1,6 @@
 import { onlineManager, QueryClient } from '@tanstack/react-query'
 
+import { setFolderMutationDefaults } from '@/features/folders/mutations'
 import { setNoteMutationDefaults } from '@/features/notes/mutations'
 import { ApiError, isNetworkError } from '@/lib/api'
 import { connectivity } from '@/lib/connectivity'
@@ -33,10 +34,11 @@ export const queryClient = new QueryClient({
     },
     mutations: {
       // Fail straight away when offline, so forms say so instead of waiting. Changes that can wait
-      // for the connection (saving a note's text) opt in with `networkMode: 'online'`.
+      // for the connection (every change to notes and folders) opt in with `offlineChange`.
       networkMode: 'always',
     },
   },
 })
 
 setNoteMutationDefaults(queryClient)
+setFolderMutationDefaults(queryClient)

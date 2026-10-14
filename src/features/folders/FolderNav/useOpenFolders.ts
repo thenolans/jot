@@ -1,5 +1,7 @@
 import { useState } from 'react'
 
+import { resolveId } from '@/lib/localIds'
+
 import { ancestorIds } from '../folderTree'
 import type { Folder } from '../types'
 
@@ -10,7 +12,10 @@ function readStored(): number[] {
     const stored: unknown = JSON.parse(
       localStorage.getItem(STORAGE_KEY) ?? '[]',
     )
-    return Array.isArray(stored) ? stored.filter(Number.isInteger) : []
+    // A folder made offline is stored by its local id; by now it may have been saved.
+    return Array.isArray(stored)
+      ? stored.filter(Number.isInteger).map(resolveId)
+      : []
   } catch {
     return []
   }
@@ -53,7 +58,10 @@ export function useOpenFolders(
   }
 
   return {
-    isOpen: (id: number) => openIds.has(id),
+    // A folder made offline and opened by its local id stays open once it's saved.
+    isOpen: (id: number) =>
+      openIds.has(id) ||
+      [...openIds].some((openId) => resolveId(openId) === id),
     toggle: (id: number) =>
       update((ids) => {
         if (!ids.delete(id)) ids.add(id)

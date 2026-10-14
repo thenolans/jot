@@ -1,19 +1,13 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useMutation } from '@tanstack/react-query'
 
-import { noteQueries } from '@/features/notes/queries'
+import { deleteFolderMutationKey } from './mutations'
 
-import { deleteFolder } from './api'
-import { folderQueries } from './queries'
-
-/** Deletes a folder with the folders and notes inside it, given its id. It fails straight away offline. */
+/**
+ * Deletes a folder with the folders and notes inside it, given its id. It goes straight away, and offline
+ * it's deleted on the API once the connection is back (see `setFolderMutationDefaults`).
+ */
 export function useDeleteFolder() {
-  const queryClient = useQueryClient()
-  return useMutation({
-    mutationFn: (id: number) => deleteFolder(id),
-    onSuccess: () =>
-      Promise.all([
-        queryClient.invalidateQueries({ queryKey: folderQueries.all() }),
-        queryClient.invalidateQueries({ queryKey: noteQueries.all() }),
-      ]),
+  return useMutation<void, Error, number>({
+    mutationKey: deleteFolderMutationKey,
   })
 }

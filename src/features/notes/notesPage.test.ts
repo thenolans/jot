@@ -1,0 +1,71 @@
+import { describe, expect, it } from 'vitest'
+
+import type { Folder } from '@/features/folders/types'
+
+import { NOTE_PAGE_SIZE } from './api'
+import { notesPage } from './notesPage'
+import type { Note } from './types'
+
+const note = (id: number, changes: Partial<Note> = {}): Note => ({
+  id,
+  title: '',
+  content: '',
+  folderId: null,
+  createdAt: '2026-10-01T00:00:00Z',
+  updatedAt: '2026-10-01T00:00:00Z',
+  ...changes,
+})
+
+// 1 holds 2; 3 is on its own.
+const folders: Folder[] = [
+  { id: 1, name: 'Trips', parentId: null, noteCount: 0 },
+  { id: 2, name: 'Japan', parentId: 1, noteCount: 0 },
+  { id: 3, name: 'Work', parentId: null, noteCount: 0 },
+]
+
+const ids = (page: ReturnType<typeof notesPage>) =>
+  page?.results.map(({ id }) => id)
+
+describe('notesPage', () => {
+  it('sorts by last edited, then newest first', () => {
+    const notes = [
+      note(1, { updatedAt: '2026-10-02T00:00:00Z' }),
+      note(2, { updatedAt: '2026-10-03T00:00:00.000Z' }),
+      note(3, { updatedAt: '2026-10-02T00:00:00Z' }),
+    ]
+    expect(ids(notesPage(notes, folders, {}, 1))).toEqual([2, 3, 1])
+  })
+
+  it('matches the search in titles and text, ignoring case', () => {
+    const notes = [
+      note(1, { title: 'Ramen spots' }),
+      note(2, { content: 'Best RAMEN in town' }),
+      note(3, { title: 'Sushi' }),
+    ]
+    const page = notesPage(notes, folders, { query: ' ramen ' }, 1)
+    expect(ids(page)).toEqual([2, 1])
+    expect(page?.count).toBe(2)
+  })
+
+  it('includes the notes in folders inside the folder', () => {
+    const notes = [
+      note(1, { folderId: 1 }),
+      note(2, { folderId: 2 }),
+      note(3, { folderId: 3 }),
+      note(4),
+    ]
+    expect(ids(notesPage(notes, folders, { folderId: 1 }, 1))).toEqual([2, 1])
+  })
+
+  it('pages the results, and has nothing past the last page', () => {
+    const notes = Array.from({ length: NOTE_PAGE_SIZE + 1 }, (_, index) =>
+      note(index + 1),
+    )
+    expect(notesPage(notes, folders, {}, 1)?.results).toHaveLength(
+      NOTE_PAGE_SIZE,
+    )
+    expect(ids(notesPage(notes, folders, {}, 2))).toEqual([1])
+    expect(notesPage(notes, folders, {}, 3)).toBeNull()
+    expect(notesPage([], folders, {}, 1)?.count).toBe(0)
+  })
+})
