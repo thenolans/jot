@@ -97,8 +97,9 @@ export default function NoteSearchDialog({
       dialogRef={dialogRef}
       aria-label="Search notes"
       onClose={onClose}
-      className="px-4"
-      panelClassName="mx-auto mt-(--top-bar-offset) w-full max-w-xl overflow-hidden border border-border"
+      // The panel shrinks to fit above the on-screen keyboard, and its results scroll.
+      className="flex flex-col px-4 pb-4"
+      panelClassName="mx-auto mt-(--top-bar-offset) flex min-h-0 w-full max-w-xl flex-col overflow-hidden border border-border"
     >
       {/* Notes are filtered by the API, so the autocomplete only handles the keyboard and focus. */}
       <Autocomplete
@@ -124,7 +125,7 @@ export default function NoteSearchDialog({
           </IconButton>
         </div>
 
-        <div className="max-h-96 overflow-y-auto p-2">
+        <div className="max-h-96 min-h-0 overflow-y-auto p-2">
           <SearchStatus
             results={results}
             query={searchedQuery}

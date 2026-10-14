@@ -13,6 +13,7 @@ import { UNSAFE_PortalProvider } from 'react-aria'
 import { cx } from '@/lib/cx'
 
 import { closeModal } from './closeModal'
+import { useFitVisibleViewport } from './useFitVisibleViewport'
 
 type ModalShellProps = Omit<
   ComponentProps<'dialog'>,
@@ -54,6 +55,9 @@ export default function ModalShell({
     dialog.showModal()
     dialog.querySelector<HTMLElement>('[data-autofocus]')?.focus()
   }, [dialogRef])
+
+  // It fills the part of the screen above the on-screen keyboard, so panels can fit above it.
+  useFitVisibleViewport(dialogRef)
 
   // Only the area around the panel is the dialog itself; presses in the panel or a popover land on them.
   // A click counts only if it also started there: one that opens a popover ends on the popover's
