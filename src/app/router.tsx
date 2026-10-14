@@ -58,8 +58,17 @@ export const router = createBrowserRouter([
         HydrateFallback: () => null,
         children: [
           {
-            path: paths.notes,
-            lazy: page(() => import('@/pages/NotesPage')),
+            lazy: page(() => import('@/pages/AppLayout')),
+            children: [
+              {
+                path: paths.notes,
+                lazy: page(() => import('@/pages/NotesPage')),
+              },
+            ],
+          },
+          {
+            path: paths.settings,
+            lazy: page(() => import('@/pages/SettingsPage')),
           },
         ],
       },

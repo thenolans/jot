@@ -4,6 +4,12 @@ export type User = {
   email: string
 }
 
+/** Anyone the app shows, such as the signed-in user. `email` is `null` where it's kept private. */
+export type Person = {
+  name: string
+  email: string | null
+}
+
 export type LoginInput = {
   email: string
   password: string

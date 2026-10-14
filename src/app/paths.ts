@@ -3,4 +3,5 @@ export const paths = {
   login: '/login',
   register: '/register',
   notes: '/notes',
+  settings: '/settings',
 } as const
