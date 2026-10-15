@@ -4,7 +4,11 @@ import { continueList } from './continueList'
 
 type NoteBodyInputProps = ComponentProps<'textarea'>
 
-/** A textarea for a note's markdown, which carries a list on to the next line when Enter is pressed. */
+/**
+ * A textarea for a note's markdown, which carries a list on to the next line when Enter is pressed.
+ * Spell check is off: on Android, tapping an underlined word opens a suggestions popup that closes
+ * the keyboard instead of placing the caret. The keyboard's own suggestions still work.
+ */
 export default function NoteBodyInput({
   onKeyDown,
   ...props
@@ -33,5 +37,5 @@ export default function NoteBodyInput({
     textarea.dispatchEvent(new Event('input', { bubbles: true }))
   }
 
-  return <textarea onKeyDown={handleKeyDown} {...props} />
+  return <textarea spellCheck={false} onKeyDown={handleKeyDown} {...props} />
 }
