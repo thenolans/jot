@@ -1,9 +1,15 @@
 import DOMPurify from 'dompurify'
 import { Marked, type MarkedExtension } from 'marked'
 
+import { ratingExtension } from './rating'
+
 // GitHub-flavored, with a single line break kept as one, since notes are typed like plain text
-// (a list of codes on separate lines shouldn't run together).
-const options: MarkedExtension = { gfm: true, breaks: true }
+// (a list of codes on separate lines shouldn't run together). Ratings (`/3`) show as stars.
+const options: MarkedExtension = {
+  gfm: true,
+  breaks: true,
+  extensions: [ratingExtension],
+}
 
 const marked = new Marked(options)
 

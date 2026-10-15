@@ -21,6 +21,10 @@ describe('notePreview', () => {
     )
   })
 
+  it('turns ratings into stars', () => {
+    expect(notePreview('Frushi /3\n1/3 cup')).toBe('Frushi ⭐⭐⭐\n1/3 cup')
+  })
+
   it('takes out task boxes', () => {
     expect(notePreview('- [ ] Lanyard\n- [x] Zip ties')).toBe(
       '- Lanyard\n- Zip ties',

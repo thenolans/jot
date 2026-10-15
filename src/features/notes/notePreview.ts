@@ -1,14 +1,16 @@
+import { replaceRatings } from './rating'
+
 /** The most of a note's text a card shows; the card's line clamp cuts it shorter. */
 const PREVIEW_LENGTH = 600
 
 /**
  * A note's content as plain text for a card: markdown's markup taken out (heading and quote markers,
  * emphasis, code ticks, link and image syntax, task boxes), keeping its lines and list numbers and bullets.
+ * Ratings become stars.
  */
 export function notePreview(content: string) {
   return (
-    content
-      .slice(0, PREVIEW_LENGTH * 2)
+    replaceRatings(content.slice(0, PREVIEW_LENGTH * 2))
       // Images, then links, keep their text.
       .replace(/!\[([^\]]*)\]\([^)]*\)/g, '$1')
       .replace(/\[([^\]]+)\]\([^)]*\)/g, '$1')
