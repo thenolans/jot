@@ -4,6 +4,8 @@ import ArrowRightIcon from '@/components/icons/ArrowRightIcon'
 import ChevronRightIcon from '@/components/icons/ChevronRightIcon'
 import FolderIcon from '@/components/icons/FolderIcon'
 import FolderPlusIcon from '@/components/icons/FolderPlusIcon'
+import LockIcon from '@/components/icons/LockIcon'
+import LockOpenIcon from '@/components/icons/LockOpenIcon'
 import PencilIcon from '@/components/icons/PencilIcon'
 import TrashIcon from '@/components/icons/TrashIcon'
 import IconButton from '@/components/ui/IconButton'
@@ -11,6 +13,7 @@ import Menu, { MenuDivider, MenuItem } from '@/components/ui/Menu'
 import { cx } from '@/lib/cx'
 
 import type { FolderNode } from '../../folderTree'
+import { useUpdateFolder } from '../../useUpdateFolder'
 import FolderCount from '../FolderCount'
 import FolderNavRow from '../FolderNavRow'
 import type { FolderNavState } from '../folderNavState'
@@ -20,6 +23,8 @@ type FolderItemProps = {
   folder: FolderNode
   depth: number
   nav: FolderNavState
+  /** Inside a private folder, which makes this one private too. */
+  inPrivateFolder?: boolean
 }
 
 // In the sidebar, with a mouse, a folder's actions show in place of its count while it's hovered or has
@@ -32,8 +37,19 @@ const hoverOnly = {
   menu: 'pointer-fine:opacity-0 pointer-fine:group-focus-within:opacity-100 pointer-fine:group-hover:opacity-100 pointer-fine:aria-expanded:opacity-100',
 }
 
-/** A folder in a `FolderNav`, then the folders inside it while it's open. */
-export default function FolderItem({ folder, depth, nav }: FolderItemProps) {
+/**
+ * A folder in a `FolderNav`, then the folders inside it while it's open. A private folder has a lock
+ * after its name. Its menu hides it in All or shows it there, unless it's private for being inside a
+ * private folder.
+ */
+export default function FolderItem({
+  folder,
+  depth,
+  nav,
+  inPrivateFolder = false,
+}: FolderItemProps) {
+  const { mutate: updateFolder } = useUpdateFolder()
+  const isPrivate = folder.isPrivate || inPrivateFolder
   const { variant } = nav
   const isActive = nav.activeFolderId === folder.id
   const isOpen = nav.isOpen(folder.id)
@@ -97,6 +113,19 @@ export default function FolderItem({ folder, depth, nav }: FolderItemProps) {
               >
                 Move to…
               </MenuItem>
+              {!inPrivateFolder && (
+                <MenuItem
+                  icon={folder.isPrivate ? <LockOpenIcon /> : <LockIcon />}
+                  onAction={() =>
+                    updateFolder({
+                      id: folder.id,
+                      changes: { isPrivate: !folder.isPrivate },
+                    })
+                  }
+                >
+                  {folder.isPrivate ? 'Show in All' : 'Hide in All'}
+                </MenuItem>
+              )}
               <MenuDivider />
               <MenuItem
                 variant="danger"
@@ -133,6 +162,12 @@ export default function FolderItem({ folder, depth, nav }: FolderItemProps) {
             )}
           />
           <span className="truncate">{folder.name}</span>
+          {isPrivate && (
+            <span title="Hidden in All" className="flex-none text-faint">
+              <LockIcon size={12} />
+              <span className="sr-only">(hidden in All)</span>
+            </span>
+          )}
         </Link>
       </FolderNavRow>
 
@@ -144,6 +179,7 @@ export default function FolderItem({ folder, depth, nav }: FolderItemProps) {
               folder={child}
               depth={depth + 1}
               nav={nav}
+              inPrivateFolder={isPrivate}
             />
           ))}
         </ul>

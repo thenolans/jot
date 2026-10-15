@@ -40,8 +40,8 @@ function toNote(response: NoteResponse): Note {
 export const NOTE_PAGE_SIZE = 24
 
 /**
- * One page of the signed-in user's notes and those shared with them, most recently edited first. Fails
- * with a 404 past the last page.
+ * One page of the signed-in user's notes and those shared with them, most recently edited first. Without
+ * a folder, notes in private folders are left out. Fails with a 404 past the last page.
  */
 export async function fetchNotes(
   { query, folderId, shared }: NoteFilters,
@@ -62,12 +62,16 @@ export async function fetchNotes(
 /** Notes per request for every note: the most the API sends at once. */
 const ALL_NOTES_PAGE_SIZE = 1000
 
-/** Every note the signed-in user has or has been shared, most recently edited first, to keep on the device. */
+/**
+ * Every note the signed-in user has or has been shared, most recently edited first, to keep on the device,
+ * including those in private folders.
+ */
 export async function fetchAllNotes(): Promise<Note[]> {
   const notes: Note[] = []
   for (let page = 1; ; page++) {
     const response = await api.get<Page<NoteResponse>>(
       withQuery('/jot/notes/', {
+        include_private: true,
         page: page > 1 ? page : null,
         page_size: ALL_NOTES_PAGE_SIZE,
       }),

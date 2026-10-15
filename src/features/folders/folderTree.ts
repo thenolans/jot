@@ -41,6 +41,16 @@ export function withDescendants(folders: Folder[], id: number) {
   return ids
 }
 
+/** The ids of the private folders: those marked private and every folder inside them. */
+export function privateFolderIds(folders: Folder[]) {
+  const ids = new Set<number>()
+  for (const folder of folders) {
+    if (folder.isPrivate && !ids.has(folder.id))
+      for (const id of withDescendants(folders, folder.id)) ids.add(id)
+  }
+  return ids
+}
+
 /** The ids of the folders a folder is inside, nearest first. */
 export function ancestorIds(folders: Folder[], id: number) {
   const byId = new Map(folders.map((folder) => [folder.id, folder]))

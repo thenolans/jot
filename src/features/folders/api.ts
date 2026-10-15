@@ -7,6 +7,7 @@ type FolderResponse = {
   id: number
   name: string
   parent_folder_id: number | null
+  is_private: boolean
   note_count: number
 }
 
@@ -15,6 +16,7 @@ function toFolder(response: FolderResponse): Folder {
     id: response.id,
     name: response.name,
     parentId: response.parent_folder_id,
+    isPrivate: response.is_private,
     noteCount: response.note_count,
   }
 }
@@ -43,16 +45,17 @@ export async function createFolder({
   }
 }
 
-/** Renames or moves a folder, returning it as saved. */
+/** Renames or moves a folder, or makes it private or not, returning it as saved. */
 export async function updateFolder(
   id: number,
-  { name, parentId }: FolderChanges,
+  { name, parentId, isPrivate }: FolderChanges,
 ): Promise<Folder> {
   try {
     return toFolder(
       await api.patch<FolderResponse>(`/jot/folders/${id}/`, {
         name,
         parent_folder_id: parentId,
+        is_private: isPrivate,
       }),
     )
   } catch (error) {

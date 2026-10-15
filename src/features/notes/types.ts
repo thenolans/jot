@@ -25,7 +25,10 @@ export type Note = {
 export type NoteFilters = {
   /** Text to match in note titles and content. */
   query?: string
-  /** The folder notes must be in (directly or in a folder inside it), or `null` for every note. */
+  /**
+   * The folder notes must be in (directly or in a folder inside it), or `null` for every note outside the
+   * private folders.
+   */
   folderId?: number | null
   /** Only notes shared with the user (`true`), only their own (`false`), or both (`null`). */
   shared?: boolean | null

@@ -18,7 +18,7 @@ export const createFolderMutationKey = [
   'create',
 ] as const
 
-/** Marks folders renamed or moved. */
+/** Marks folders renamed, moved, or made private or not. */
 export const updateFolderMutationKey = [
   ...folderQueries.all(),
   'update',
@@ -50,7 +50,7 @@ const refetchAll = (queryClient: QueryClient) =>
   ])
 
 /**
- * Sets up every change to folders: making, renaming, moving and deleting them. Each shows straight away,
+ * Sets up every change to folders: making, renaming, moving, making private and deleting them. Each shows straight away,
  * then is sent with the other changes to folders and notes, in order (see `offlineChange`), so they all
  * work offline. Their options live on the client rather than in a hook, so changes kept from before the
  * app was closed can still be sent.
@@ -81,6 +81,7 @@ export function setFolderMutationDefaults(queryClient: QueryClient) {
           id,
           name: folder.name,
           parentId: folder.parentId && resolveId(folder.parentId),
+          isPrivate: false,
           noteCount: 0,
         }
         updateCachedFolders(queryClient, (folders) =>
@@ -105,15 +106,17 @@ export function setFolderMutationDefaults(queryClient: QueryClient) {
     },
   )
 
-  // A folder moved takes its notes with it, out of the folders it was in and into those it's in now.
+  // A folder moved takes its notes with it, out of the folders it was in and into those it's in now. One
+  // made private (or moved into a private one) takes its notes out of every note.
   queryClient.setMutationDefaults<Folder, Error, UpdateFolder>(
     updateFolderMutationKey,
     {
       ...offlineChange,
-      mutationFn: ({ id, changes: { name, parentId } }) =>
+      mutationFn: ({ id, changes: { name, parentId, isPrivate } }) =>
         updateFolder(apiId(id), {
           name,
           parentId: parentId && apiId(parentId),
+          isPrivate,
         }),
       onMutate: async ({ id, changes }) => {
         await cancelRefetches()
@@ -138,13 +141,16 @@ export function setFolderMutationDefaults(queryClient: QueryClient) {
                 ? {
                     ...each,
                     name: changes.name ?? each.name,
+                    isPrivate: changes.isPrivate ?? each.isPrivate,
                     parentId: parentId === undefined ? each.parentId : parentId,
                   }
                 : each,
             ),
           )
         })
-        if (parentId !== undefined) updateCachedNotes(queryClient, {})
+        // Which notes are in which folders, and which are private, decides the pages of the list.
+        if (parentId !== undefined || changes.isPrivate !== undefined)
+          updateCachedNotes(queryClient, {})
       },
       onSettled: () => refetchAll(queryClient),
     },

@@ -5,6 +5,7 @@ import {
   ancestorIds,
   buildFolderTree,
   folderPath,
+  privateFolderIds,
   sortFolders,
   withDescendants,
 } from './folderTree'
@@ -14,6 +15,7 @@ const folder = (id: number, parentId: number | null = null): Folder => ({
   id,
   name: `Folder ${id}`,
   parentId,
+  isPrivate: false,
   noteCount: 0,
 })
 
@@ -38,6 +40,16 @@ describe('withDescendants', () => {
   it('includes the folder and every folder inside it', () => {
     expect(withDescendants(folders, 1)).toEqual(new Set([1, 2, 3]))
     expect(withDescendants(folders, 4)).toEqual(new Set([4]))
+  })
+})
+
+describe('privateFolderIds', () => {
+  it('includes the folders marked private and every folder inside them', () => {
+    const marked = folders.map((each) =>
+      each.id === 2 ? { ...each, isPrivate: true } : each,
+    )
+    expect(privateFolderIds(marked)).toEqual(new Set([2, 3]))
+    expect(privateFolderIds(folders)).toEqual(new Set())
   })
 })
 

@@ -21,9 +21,9 @@ const note = (id: number, changes: Partial<Note> = {}): Note => ({
 
 // 1 holds 2; 3 is on its own.
 const folders: Folder[] = [
-  { id: 1, name: 'Trips', parentId: null, noteCount: 0 },
-  { id: 2, name: 'Japan', parentId: 1, noteCount: 0 },
-  { id: 3, name: 'Work', parentId: null, noteCount: 0 },
+  { id: 1, name: 'Trips', parentId: null, isPrivate: false, noteCount: 0 },
+  { id: 2, name: 'Japan', parentId: 1, isPrivate: false, noteCount: 0 },
+  { id: 3, name: 'Work', parentId: null, isPrivate: false, noteCount: 0 },
 ]
 
 const ids = (page: ReturnType<typeof notesPage>) =>
@@ -72,6 +72,21 @@ describe('notesPage', () => {
       note(4),
     ]
     expect(ids(notesPage(notes, folders, { folderId: 1 }, 1))).toEqual([2, 1])
+  })
+
+  it('leaves notes in private folders out of every note and its search, not the folder', () => {
+    const marked = folders.map((each) =>
+      each.id === 1 ? { ...each, isPrivate: true } : each,
+    )
+    const notes = [
+      note(1, { folderId: 1, title: 'Ramen' }),
+      note(2, { folderId: 2, title: 'Ramen' }),
+      note(3, { folderId: 3, title: 'Ramen' }),
+      note(4, { title: 'Ramen' }),
+    ]
+    expect(ids(notesPage(notes, marked, {}, 1))).toEqual([4, 3])
+    expect(ids(notesPage(notes, marked, { query: 'ramen' }, 1))).toEqual([4, 3])
+    expect(ids(notesPage(notes, marked, { folderId: 1 }, 1))).toEqual([2, 1])
   })
 
   it('pages the results, and has nothing past the last page', () => {
