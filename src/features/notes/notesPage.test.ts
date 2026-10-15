@@ -75,6 +75,20 @@ describe('notesPage', () => {
     expect(ids(notesPage(notes, folders, { folderId: 2 }, 1))).toEqual([2])
   })
 
+  it("narrows to the user's own notes in no folder", () => {
+    const sharer = { name: 'Sarah', email: 'sarah@example.com' }
+    const notes = [
+      note(1, { folderId: 1 }),
+      note(2, { title: 'Packing' }),
+      note(3),
+      note(4, { access: 'view', owner: sharer }),
+    ]
+    expect(ids(notesPage(notes, folders, { unfiled: true }, 1))).toEqual([3, 2])
+    expect(
+      ids(notesPage(notes, folders, { unfiled: true, query: 'packing' }, 1)),
+    ).toEqual([2])
+  })
+
   it('leaves notes in private folders out of every note and its search, not the folder', () => {
     const marked = folders.map((each) =>
       each.id === 1 ? { ...each, isPrivate: true } : each,

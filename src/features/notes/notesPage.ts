@@ -13,13 +13,13 @@ const mentions = (note: Note, query: string) =>
 
 /**
  * One page of `notes` matching `filters`, worked out on the device the way the API would: most recently
- * edited first, with a folder's notes only those filed directly in it, and notes in private folders only
- * in their folders. `null` past the last page.
+ * edited first, with a folder's notes only those filed directly in it, unfiled notes only the user's own
+ * in no folder, and notes in private folders only in their folders. `null` past the last page.
  */
 export function notesPage(
   notes: Note[],
   folders: Folder[],
-  { query = '', folderId = null, shared = null }: NoteFilters,
+  { query = '', folderId = null, unfiled = false, shared = null }: NoteFilters,
   page: number,
 ): Page<Note> | null {
   const lowerQuery = query.trim().toLowerCase()
@@ -28,6 +28,7 @@ export function notesPage(
     .filter(
       (note) =>
         (folderId === null || note.folderId === folderId) &&
+        !(unfiled && (note.folderId !== null || isSharedWithUser(note))) &&
         !(hidden && note.folderId !== null && hidden.has(note.folderId)) &&
         (shared === null || isSharedWithUser(note) === shared) &&
         (!lowerQuery || mentions(note, lowerQuery)),

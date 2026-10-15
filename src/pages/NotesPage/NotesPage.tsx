@@ -18,7 +18,8 @@ import { useNoteSearchParams } from './useNoteSearchParams'
 /**
  * Where signing in lands: the grid of the user's notes, most recently edited first. A note opens over
  * it (`NotePage`), keeping the grid behind as it was. Notes shared with the user have a list of their
- * own, and join the user's notes in a search of them all.
+ * own, and join the user's notes in a search of them all. The notes filed in no folder have a list of
+ * their own too.
  */
 export default function NotesPage() {
   const filters = useNoteSearchParams()
@@ -26,9 +27,10 @@ export default function NotesPage() {
     {
       query: filters.query,
       folderId: filters.folderId,
+      unfiled: filters.unfiled,
       shared: filters.shared
         ? true
-        : filters.folderId === null && !filters.query
+        : filters.folderId === null && !filters.unfiled && !filters.query
           ? false
           : null,
     },
@@ -50,9 +52,11 @@ export default function NotesPage() {
   const scope = [
     filters.shared
       ? 'Shared with me'
-      : filters.folderId === null
-        ? 'All'
-        : folder?.name,
+      : filters.unfiled
+        ? 'Unfiled'
+        : filters.folderId === null
+          ? 'All'
+          : folder?.name,
     filters.query && `“${filters.query}”`,
   ].filter(Boolean)
 
@@ -88,6 +92,7 @@ export default function NotesPage() {
         results={results}
         query={filters.query}
         inFolder={filters.folderId !== null}
+        unfiled={filters.unfiled}
         shared={filters.shared}
         folderName={folder?.name}
         page={filters.page}

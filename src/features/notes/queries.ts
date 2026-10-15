@@ -65,25 +65,39 @@ export const noteQueries = {
 
   /** One page of the notes the user has or has been shared, matching `filters`. */
   list: (
-    { query = '', folderId = null, shared = null }: NoteFilters,
+    {
+      query = '',
+      folderId = null,
+      unfiled = false,
+      shared = null,
+    }: NoteFilters,
     page: number,
   ) =>
     queryOptions({
       queryKey: [
         ...noteQueries.lists(),
-        { query, folderId, shared, page },
+        { query, folderId, unfiled, shared, page },
       ] as const,
       queryFn: ({ client }) =>
         localOrFetch(
           () => {
-            const found = localList(client, { query, folderId, shared }, page)
+            const found = localList(
+              client,
+              { query, folderId, unfiled, shared },
+              page,
+            )
             if (found === null)
               throw new ApiError(404, 'There are no notes on this page.')
             return found
           },
           () =>
             fetchNotes(
-              { query, folderId: folderId && resolveId(folderId), shared },
+              {
+                query,
+                folderId: folderId && resolveId(folderId),
+                unfiled,
+                shared,
+              },
               page,
             ),
         ),

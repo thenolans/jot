@@ -24,6 +24,8 @@ type NoteResultsProps = {
   query: string
   /** Whether the notes are narrowed to a folder. */
   inFolder: boolean
+  /** Whether the notes are the user's filed in no folder. */
+  unfiled: boolean
   /** Whether the notes are those shared with the user. */
   shared: boolean
   /** The folder's name, once it's known. */
@@ -51,6 +53,7 @@ export default function NoteResults({
   results,
   query,
   inFolder,
+  unfiled,
   shared,
   folderName,
   page,
@@ -69,7 +72,7 @@ export default function NoteResults({
     error,
     reload,
   } = results
-  const hasFilters = query !== '' || inFolder || shared
+  const hasFilters = query !== '' || inFolder || unfiled || shared
 
   if (isLoading) {
     return (
@@ -127,6 +130,12 @@ export default function NoteResults({
       return (
         <EmptyState title="Nothing shared with you yet">
           Notes other people share with you will show up here.
+        </EmptyState>
+      )
+    if (unfiled)
+      return (
+        <EmptyState title="Everything's filed" action={clearFilters}>
+          Notes you keep out of folders will collect here.
         </EmptyState>
       )
     if (inFolder)

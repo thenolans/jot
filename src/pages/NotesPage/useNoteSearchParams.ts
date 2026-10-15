@@ -6,16 +6,19 @@ import {
   notePath,
   paths,
   sharedParam,
+  unfiledParam,
 } from '@/app/paths'
 
 /**
- * The note filters and page, kept in the URL (`?q=…&folder=…&page=…`, or `shared=1` in place of a folder)
+ * The note filters and page, kept in the URL (`?q=…&folder=…&page=…`, or `unfiled=1` or `shared=1` in
+ * place of a folder)
  * so they survive reloads and can be linked to.
  */
 export function useNoteSearchParams() {
   const [searchParams, setSearchParams] = useSearchParams()
   const query = searchParams.get('q')?.trim() ?? ''
   const folderId = folderIdParam(searchParams)
+  const unfiled = unfiledParam(searchParams)
   const shared = sharedParam(searchParams)
   const pageParam = Number(searchParams.get('page'))
   const page = Number.isInteger(pageParam) && pageParam > 1 ? pageParam : 1
@@ -38,6 +41,8 @@ export function useNoteSearchParams() {
   return {
     query,
     folderId,
+    /** Showing the user's notes filed in no folder. */
+    unfiled,
     /** Showing the notes shared with the user. */
     shared,
     page,
@@ -59,7 +64,8 @@ export function useNoteSearchParams() {
       state: { fromList: true, folderId } satisfies NotePageState,
       preventScrollReset: true,
     },
-    clearFilters: () => updateFilters({ q: null, folder: null, shared: null }),
+    clearFilters: () =>
+      updateFilters({ q: null, folder: null, unfiled: null, shared: null }),
     /** Drops the search, staying in the folder shown. */
     clearQuery: () => updateFilters({ q: null }),
     /** Shows every folder's notes, keeping the search. */

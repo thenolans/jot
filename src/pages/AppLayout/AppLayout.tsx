@@ -15,6 +15,7 @@ import {
   noteSearchPath,
   paths,
   sharedParam,
+  unfiledParam,
 } from '@/app/paths'
 import FolderNav from '@/features/folders/FolderNav'
 import NoteSearchDialog, {
@@ -39,8 +40,10 @@ export default function AppLayout() {
   const location = useLocation()
   const [searchParams] = useSearchParams()
   const activeFolderId = folderIdParam(searchParams)
+  const isUnfiledActive = unfiledParam(searchParams)
   const isSharedActive = sharedParam(searchParams)
   const noteCount = useNoteCount({ shared: false })
+  const unfiledCount = useNoteCount({ unfiled: true })
   const sharedCount = useNoteCount({ shared: true })
   useKeepNotesOffline()
   useSavedFolderParam()
@@ -50,13 +53,19 @@ export default function AppLayout() {
   const openSearch = () => setSearchOpen(true)
   useSearchShortcut(openSearch)
 
-  // A folder's notes, or those shared with the user, keeping the search shown, from the first page.
-  const notesTo = (changes: { folder?: number; shared?: boolean }): To => {
+  // A folder's notes, the unfiled ones or those shared with the user, keeping the search shown, from the first page.
+  const notesTo = (changes: {
+    folder?: number
+    unfiled?: boolean
+    shared?: boolean
+  }): To => {
     const next = new URLSearchParams(searchParams)
     next.delete('page')
     next.delete('folder')
+    next.delete('unfiled')
     next.delete('shared')
     if (changes.folder !== undefined) next.set('folder', String(changes.folder))
+    if (changes.unfiled) next.set('unfiled', '1')
     if (changes.shared) next.set('shared', '1')
     return { pathname: paths.notes, search: next.toString() }
   }
@@ -64,6 +73,9 @@ export default function AppLayout() {
     activeFolderId,
     folderTo: (id: number | null) => notesTo({ folder: id ?? undefined }),
     noteCount,
+    isUnfiledActive,
+    unfiledTo: notesTo({ unfiled: true }),
+    unfiledCount,
     isSharedActive,
     sharedTo: notesTo({ shared: true }),
     sharedCount,
@@ -106,9 +118,14 @@ export default function AppLayout() {
         <Outlet />
       </main>
       <TabBar
-        isAllNotes={activeFolderId === null && !isSharedActive}
+        isAllNotes={
+          activeFolderId === null && !isUnfiledActive && !isSharedActive
+        }
         isFoldersActive={
-          isSheetOpen || activeFolderId !== null || isSharedActive
+          isSheetOpen ||
+          activeFolderId !== null ||
+          isUnfiledActive ||
+          isSharedActive
         }
         onOpenFolders={() => setSheetOpen(true)}
         onSearch={openSearch}

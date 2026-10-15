@@ -30,6 +30,8 @@ export type NoteFilters = {
    * outside the private folders.
    */
   folderId?: number | null
+  /** Only the user's own notes filed in no folder. */
+  unfiled?: boolean
   /** Only notes shared with the user (`true`), only their own (`false`), or both (`null`). */
   shared?: boolean | null
 }

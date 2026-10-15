@@ -44,13 +44,14 @@ export const NOTE_PAGE_SIZE = 24
  * a folder, notes in private folders are left out. Fails with a 404 past the last page.
  */
 export async function fetchNotes(
-  { query, folderId, shared }: NoteFilters,
+  { query, folderId, unfiled, shared }: NoteFilters,
   page = 1,
 ): Promise<Page<Note>> {
   const response = await api.get<Page<NoteResponse>>(
     withQuery('/jot/notes/', {
       q: query,
       folder_id: folderId,
+      unfiled: unfiled || null,
       shared,
       page: page > 1 ? page : null,
       page_size: NOTE_PAGE_SIZE,
