@@ -7,7 +7,7 @@ import { apiId, isSameId, recordSavedId, resolveId } from '@/lib/localIds'
 import { offlineChange, refetchAfterLastChange } from '@/lib/offlineQuery'
 
 import { createFolder, deleteFolder, updateFolder } from './api'
-import { adjustNoteCounts, sortFolders, withDescendants } from './folderTree'
+import { sortFolders, withDescendants } from './folderTree'
 import { folderQueries } from './queries'
 import type { Folder, FolderChanges, NewFolder } from './types'
 import { updateCachedFolders } from './updateCachedFolders'
@@ -106,8 +106,7 @@ export function setFolderMutationDefaults(queryClient: QueryClient) {
     },
   )
 
-  // A folder moved takes its notes with it, out of the folders it was in and into those it's in now. One
-  // made private (or moved into a private one) takes its notes out of every note.
+  // A folder made private (or moved into a private one) takes its notes out of every note.
   queryClient.setMutationDefaults<Folder, Error, UpdateFolder>(
     updateFolderMutationKey,
     {
@@ -127,16 +126,8 @@ export function setFolderMutationDefaults(queryClient: QueryClient) {
         updateCachedFolders(queryClient, (folders) => {
           const folder = folders.find((folder) => isSameId(folder.id, id))
           if (!folder) return folders
-          const moved =
-            parentId === undefined || parentId === folder.parentId
-              ? folders
-              : adjustNoteCounts(
-                  adjustNoteCounts(folders, folder.parentId, -folder.noteCount),
-                  parentId,
-                  folder.noteCount,
-                )
           return sortFolders(
-            moved.map((each) =>
+            folders.map((each) =>
               each.id === folder.id
                 ? {
                     ...each,
@@ -175,9 +166,7 @@ export function setFolderMutationDefaults(queryClient: QueryClient) {
         if (!folders || !folder) return
         const deleted = withDescendants(folders, folder.id)
         updateCachedFolders(queryClient, () =>
-          adjustNoteCounts(folders, folder.parentId, -folder.noteCount).filter(
-            (each) => !deleted.has(each.id),
-          ),
+          folders.filter((each) => !deleted.has(each.id)),
         )
         updateCachedNotes(queryClient, {
           edit: (note) =>

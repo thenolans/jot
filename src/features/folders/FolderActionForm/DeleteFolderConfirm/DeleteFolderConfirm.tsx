@@ -21,9 +21,14 @@ export default function DeleteFolderConfirm({
 }: DeleteFolderConfirmProps) {
   const { mutate: deleteFolder } = useDeleteFolder()
 
-  const subfolderCount = withDescendants(folders, folder.id).size - 1
+  const deleted = withDescendants(folders, folder.id)
+  const subfolderCount = deleted.size - 1
+  // Each folder counts only its own notes, so the subfolders' are added in.
+  const noteCount = folders
+    .filter((each) => deleted.has(each.id))
+    .reduce((total, each) => total + each.noteCount, 0)
   const contents = [
-    folder.noteCount > 0 && plural(folder.noteCount, 'note'),
+    noteCount > 0 && plural(noteCount, 'note'),
     subfolderCount > 0 && plural(subfolderCount, 'folder'),
   ].filter(Boolean)
 

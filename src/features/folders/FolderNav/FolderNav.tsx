@@ -48,7 +48,7 @@ type FolderNavProps = {
 
 /**
  * All notes, then the notes shared with the user (while there are any), then the user's folders as a tree
- * to pick from, each with its note count (including the folders inside it). Folders are made from its
+ * to pick from, each with the count of notes filed directly in it. Folders are made from its
  * button; their menus rename, nest, move and delete them.
  */
 export default function FolderNav({

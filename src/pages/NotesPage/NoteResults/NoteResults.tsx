@@ -135,8 +135,7 @@ export default function NoteResults({
           title={folderName ? `${folderName} is empty` : 'This folder is empty'}
           action={clearFilters}
         >
-          Notes you add to this folder will collect here. Notes in folders
-          inside it count too.
+          Notes you add to this folder will collect here.
         </EmptyState>
       )
     return (

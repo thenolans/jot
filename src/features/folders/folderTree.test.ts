@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 
 import {
-  adjustNoteCounts,
+  adjustNoteCount,
   ancestorIds,
   buildFolderTree,
   folderPath,
@@ -75,22 +75,22 @@ describe('folderPath', () => {
   })
 })
 
-describe('adjustNoteCounts', () => {
-  it('changes the folder and every folder it’s inside', () => {
-    const counts = adjustNoteCounts(folders, 3, 2).map(({ id, noteCount }) => [
+describe('adjustNoteCount', () => {
+  it('changes only that folder, not the folders it’s inside', () => {
+    const counts = adjustNoteCount(folders, 3, 2).map(({ id, noteCount }) => [
       id,
       noteCount,
     ])
     expect(counts).toEqual([
       [3, 2],
-      [1, 2],
-      [2, 2],
+      [1, 0],
+      [2, 0],
       [4, 0],
     ])
   })
 
   it('changes nothing for no folder', () => {
-    expect(adjustNoteCounts(folders, null, 1)).toBe(folders)
+    expect(adjustNoteCount(folders, null, 1)).toBe(folders)
   })
 })
 

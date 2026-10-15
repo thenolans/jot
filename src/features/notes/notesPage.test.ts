@@ -64,14 +64,15 @@ describe('notesPage', () => {
     ])
   })
 
-  it('includes the notes in folders inside the folder', () => {
+  it('narrows to the notes filed directly in the folder', () => {
     const notes = [
       note(1, { folderId: 1 }),
       note(2, { folderId: 2 }),
       note(3, { folderId: 3 }),
       note(4),
     ]
-    expect(ids(notesPage(notes, folders, { folderId: 1 }, 1))).toEqual([2, 1])
+    expect(ids(notesPage(notes, folders, { folderId: 1 }, 1))).toEqual([1])
+    expect(ids(notesPage(notes, folders, { folderId: 2 }, 1))).toEqual([2])
   })
 
   it('leaves notes in private folders out of every note and its search, not the folder', () => {
@@ -86,7 +87,8 @@ describe('notesPage', () => {
     ]
     expect(ids(notesPage(notes, marked, {}, 1))).toEqual([4, 3])
     expect(ids(notesPage(notes, marked, { query: 'ramen' }, 1))).toEqual([4, 3])
-    expect(ids(notesPage(notes, marked, { folderId: 1 }, 1))).toEqual([2, 1])
+    expect(ids(notesPage(notes, marked, { folderId: 1 }, 1))).toEqual([1])
+    expect(ids(notesPage(notes, marked, { folderId: 2 }, 1))).toEqual([2])
   })
 
   it('pages the results, and has nothing past the last page', () => {

@@ -1,7 +1,7 @@
 import type { QueryClient } from '@tanstack/react-query'
 
 import { authQueries } from '@/features/auth/queries'
-import { adjustNoteCounts } from '@/features/folders/folderTree'
+import { adjustNoteCount } from '@/features/folders/folderTree'
 import { folderQueries } from '@/features/folders/queries'
 import { updateCachedFolders } from '@/features/folders/updateCachedFolders'
 import { isNotFoundError } from '@/lib/api'
@@ -94,7 +94,7 @@ export function setNoteMutationDefaults(queryClient: QueryClient) {
         await cancelRefetches()
         updateCachedNotes(queryClient, { add: made })
         updateCachedFolders(queryClient, (folders) =>
-          adjustNoteCounts(folders, made.folderId, 1),
+          adjustNoteCount(folders, made.folderId, 1),
         )
       },
       onSuccess: (saved, { id }) => {
@@ -141,7 +141,7 @@ export function setNoteMutationDefaults(queryClient: QueryClient) {
         edit: (note) => (isSameId(note.id, id) ? { ...note, folderId } : note),
       })
       updateCachedFolders(queryClient, (folders) =>
-        adjustNoteCounts(adjustNoteCounts(folders, from, -1), folderId, 1),
+        adjustNoteCount(adjustNoteCount(folders, from, -1), folderId, 1),
       )
     },
     onSettled: () => refetchAll(queryClient),
@@ -166,7 +166,7 @@ export function setNoteMutationDefaults(queryClient: QueryClient) {
         edit: (note) => (isSameId(note.id, id) ? null : note),
       })
       updateCachedFolders(queryClient, (folders) =>
-        adjustNoteCounts(folders, folderId, -1),
+        adjustNoteCount(folders, folderId, -1),
       )
     },
     onSettled: () => refetchAll(queryClient),

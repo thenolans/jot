@@ -72,18 +72,17 @@ export function folderPath(folders: Folder[], id: number) {
 }
 
 /**
- * `folders` with `delta` added to the note count of the folder with `id` and every folder it's inside,
- * as their counts include it. Nothing changes for `null` (no folder).
+ * `folders` with `delta` added to the note count of the folder with `id`, and not the folders it's inside.
+ * Nothing changes for `null` (no folder).
  */
-export function adjustNoteCounts(
+export function adjustNoteCount(
   folders: Folder[],
   id: number | null,
   delta: number,
 ) {
   if (id === null || delta === 0) return folders
-  const counted = new Set([id, ...ancestorIds(folders, id)])
   return folders.map((folder) =>
-    counted.has(folder.id)
+    folder.id === id
       ? { ...folder, noteCount: folder.noteCount + delta }
       : folder,
   )

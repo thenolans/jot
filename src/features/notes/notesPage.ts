@@ -1,7 +1,4 @@
-import {
-  privateFolderIds,
-  withDescendants,
-} from '@/features/folders/folderTree'
+import { privateFolderIds } from '@/features/folders/folderTree'
 import type { Folder } from '@/features/folders/types'
 import type { Page } from '@/lib/api'
 
@@ -16,8 +13,8 @@ const mentions = (note: Note, query: string) =>
 
 /**
  * One page of `notes` matching `filters`, worked out on the device the way the API would: most recently
- * edited first, with a folder's notes including those in the folders inside it, and notes in private
- * folders only in their folders. `null` past the last page.
+ * edited first, with a folder's notes only those filed directly in it, and notes in private folders only
+ * in their folders. `null` past the last page.
  */
 export function notesPage(
   notes: Note[],
@@ -26,13 +23,11 @@ export function notesPage(
   page: number,
 ): Page<Note> | null {
   const lowerQuery = query.trim().toLowerCase()
-  const inFolder = folderId === null ? null : withDescendants(folders, folderId)
   const hidden = folderId === null ? privateFolderIds(folders) : null
   const matches = notes
     .filter(
       (note) =>
-        (!inFolder ||
-          (note.folderId !== null && inFolder.has(note.folderId))) &&
+        (folderId === null || note.folderId === folderId) &&
         !(hidden && note.folderId !== null && hidden.has(note.folderId)) &&
         (shared === null || isSharedWithUser(note) === shared) &&
         (!lowerQuery || mentions(note, lowerQuery)),

@@ -8,7 +8,7 @@ export type Folder = {
    * search. A folder inside a private one is private too, whatever this says (see `privateFolderIds`).
    */
   isPrivate: boolean
-  /** Notes in it, including those in the folders inside it. */
+  /** Notes filed directly in it, not those in the folders inside it. */
   noteCount: number
 }
 
