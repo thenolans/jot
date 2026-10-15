@@ -55,7 +55,7 @@ type NoteEditorProps = {
   onMove: () => void
   /** Called by Delete in the note's menu, to confirm it. */
   onDelete: () => void
-  /** Just created: the title takes focus, and closing the note with nothing written deletes it. */
+  /** Just created: the text takes focus, and closing the note with nothing written deletes it. */
   isNew?: boolean
   className?: string
 }
@@ -100,7 +100,6 @@ export default function NoteEditor({
             onChange={(event) => change({ title: event.target.value })}
             maxLength={255}
             placeholder="Title"
-            autoFocus={isNew}
             className={titleClassName}
           />
         ) : (
@@ -137,6 +136,7 @@ export default function NoteEditor({
       {mode === 'edit' ? (
         <NoteBodyInput
           ref={bodyRef}
+          autoFocus={isNew}
           name="content"
           aria-label="Note"
           value={draft.content}
