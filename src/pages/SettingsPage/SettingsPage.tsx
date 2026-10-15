@@ -17,6 +17,7 @@ import AboutRow from './AboutRow'
 import AppSwitcher from './AppSwitcher'
 import SettingsRow from './SettingsRow'
 import SettingsSection from './SettingsSection'
+import UpdateRow from './UpdateRow'
 
 const themeOptions = [
   { value: 'light', label: 'Light' },
@@ -50,6 +51,7 @@ export default function SettingsPage() {
               onChange={setTheme}
             />
           </SettingsRow>
+          <UpdateRow />
         </SettingsSection>
 
         <SettingsSection title="Account">
