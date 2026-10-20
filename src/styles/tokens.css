@@ -89,27 +89,33 @@
   /* Effects */
   --shadow-card: 0 1px 4px light-dark(rgb(12 46 66 / 5%), rgb(0 0 0 / 30%));
   --shadow-raised: 0 24px 48px light-dark(rgb(12 46 66 / 14%), rgb(0 0 0 / 40%));
-  --shadow-lifted: 0 4px 16px light-dark(rgb(12 46 66 / 8%), rgb(0 0 0 / 25%)); /* something picked up, e.g. a card being dragged */
+  --shadow-lifted: 0 4px 16px light-dark(rgb(12 46 66 / 8%), rgb(0 0 0 / 25%)); /* something floating above the page, like the new-note button */
   --shadow-focus: 0 0 0 3px
     color-mix(in srgb, var(--color-accent-mid) 45%, transparent);
 
   /*
    * Motion. Transitions run at the default duration unless they slide an
    * indicator between positions (`duration-slide`).
+   *
+   * Animations take one of two durations: short for fades and exits, long for
+   * entries that travel (`useModalView` reads `--duration-long` to resize along
+   * with the views).
    */
   --default-transition-duration: 120ms;
   --transition-duration-slide: 300ms;
   --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+  --duration-short: 160ms;
+  --duration-long: 240ms;
 
-  --animate-fade-in: fade-in 160ms ease;
-  --animate-sheet-in: sheet-in 240ms var(--ease-out-quint); /* a panel sliding up from the bottom edge */
-  --animate-lift-in: lift-in 220ms ease; /* a centered modal rising into place, like an open note or a dialog */
-  --animate-view-in: view-in 240ms ease; /* a modal's content changing in place, like a note to deleting it */
-  --animate-view-back: view-back 240ms ease; /* the same, going back */
+  --animate-fade-in: fade-in var(--duration-short) ease;
+  --animate-sheet-in: sheet-in var(--duration-long) var(--ease-out-quint); /* a panel sliding up from the bottom edge */
+  --animate-lift-in: lift-in var(--duration-long) ease; /* a centered modal rising into place, like an open note or a dialog */
+  --animate-view-in: view-in var(--duration-long) ease; /* a modal's content changing in place, like a note to deleting it */
+  --animate-view-back: view-back var(--duration-long) ease; /* the same, going back */
   /* Exits hold their last frame, so nothing flashes back before the element goes. */
-  --animate-fade-out: fade-out 160ms ease forwards;
-  --animate-sheet-out: sheet-out 200ms ease-in forwards;
-  --animate-lift-out: lift-out 200ms ease forwards;
+  --animate-fade-out: fade-out var(--duration-short) ease forwards;
+  --animate-sheet-out: sheet-out var(--duration-short) ease-in forwards;
+  --animate-lift-out: lift-out var(--duration-short) ease forwards;
 
   @keyframes fade-in {
     from {

@@ -5,9 +5,6 @@ import { afterMenuCloses } from '@/components/ui/Menu'
 
 type Direction = 'forward' | 'back'
 
-/** Matches the views' slide-in (`animate-view-in`, `animate-view-back`), so they finish together. */
-const RESIZE_MS = 240
-
 const viewClassNames = {
   forward: 'motion-safe:animate-view-in',
   back: 'motion-safe:animate-view-back',
@@ -59,8 +56,11 @@ export function useModalView<View extends string>(
       maxHeight: 'none',
       overflow: 'clip',
     })
+    // It takes as long as the views' slide-in (`animate-view-in`, `animate-view-back`), so they finish together.
     panel.animate([size(from), size(to)], {
-      duration: RESIZE_MS,
+      duration: parseFloat(
+        getComputedStyle(panel).getPropertyValue('--duration-long'),
+      ),
       easing: 'ease',
     })
   }
