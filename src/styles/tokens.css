@@ -109,7 +109,7 @@
 
   --animate-fade-in: fade-in var(--duration-short) ease;
   --animate-sheet-in: sheet-in var(--duration-long) var(--ease-out-quint); /* a panel sliding up from the bottom edge */
-  --animate-lift-in: lift-in var(--duration-long) ease; /* a centered modal rising into place, like an open note or a dialog */
+  --animate-lift-in: lift-in var(--duration-long) ease; /* a modal rising into place, like an open note or a dialog */
   --animate-view-in: view-in var(--duration-long) ease; /* a modal's content changing in place, like a note to deleting it */
   --animate-view-back: view-back var(--duration-long) ease; /* the same, going back */
   /* Exits hold their last frame, so nothing flashes back before the element goes. */

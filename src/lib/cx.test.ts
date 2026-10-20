@@ -15,6 +15,7 @@ describe('cx', () => {
     ['animate-none', 'animate-lift-in'],
     ['pb-4', 'pb-safe-area'],
     ['pb-safe-area', 'pb-safe-area-6'],
+    ['rounded-md', 'rounded-inherit'],
     ['font-sans', 'font-display'],
     ['shadow-sm', 'shadow-card'],
   ])('lets %s and %s override each other', (a, b) => {
