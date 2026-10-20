@@ -10,16 +10,16 @@ import TrashIcon from '@/components/icons/TrashIcon'
 import Button from '@/components/ui/Button'
 import CloseButton from '@/components/ui/CloseButton'
 import Eyebrow from '@/components/ui/Eyebrow'
-import IconButton from '@/components/ui/IconButton'
 import Menu, { MenuDivider, MenuItem } from '@/components/ui/Menu'
 import SegmentedControl from '@/components/ui/SegmentedControl'
-import { displayName, firstName } from '@/features/auth/displayName'
+import { firstName } from '@/features/auth/displayName'
 import UserAvatar from '@/features/auth/UserAvatar'
 import { cx } from '@/lib/cx'
 
-import { canEditNote, isSharedWithUser } from '../access'
+import { canEditNote, isSharedWithUser, sharedByLabel } from '../access'
 import NoteBodyInput from '../NoteBodyInput'
 import NoteMarkdown from '../NoteMarkdown'
+import PinButton from '../PinButton'
 import type { Note } from '../types'
 import { usePinNote } from '../usePinNote'
 import { useNoteAutosave } from './useNoteAutosave'
@@ -135,18 +135,7 @@ export default function NoteEditor({
             className="flex-none"
           />
         )}
-        {!isSharedWithUser(note) && (
-          <IconButton
-            size="lg"
-            aria-label="Pin note"
-            aria-pressed={note.isPinned}
-            title={note.isPinned ? 'Unpin' : 'Pin'}
-            onClick={togglePin}
-            className={cx(note.isPinned && 'text-accent hover:text-accent')}
-          >
-            <PinIcon size={20} filled={note.isPinned} />
-          </IconButton>
-        )}
+        {!isSharedWithUser(note) && <PinButton size="lg" note={note} />}
         <CloseButton onClick={onDone} />
       </div>
 
@@ -184,7 +173,7 @@ export default function NoteEditor({
       <div className="flex items-center gap-4 border-t border-border-soft px-6 py-4">
         {isSharedWithUser(note) ? (
           <p
-            title={`Shared by ${displayName(note.owner)}`}
+            title={sharedByLabel(note)}
             className="flex min-w-0 items-center gap-2 text-sm text-muted"
           >
             <UserAvatar user={note.owner} className="size-6 text-xs" />

@@ -1,21 +1,18 @@
 import { useId } from 'react'
 import { Link, type LinkProps } from 'react-router'
 
-import PinIcon from '@/components/icons/PinIcon'
 import UsersIcon from '@/components/icons/UsersIcon'
 import Card from '@/components/ui/Card'
 import Heading from '@/components/ui/Heading'
-import IconButton from '@/components/ui/IconButton'
-import { displayName } from '@/features/auth/displayName'
 import UserAvatar from '@/features/auth/UserAvatar'
 import { cx } from '@/lib/cx'
 import { plural } from '@/lib/plural'
 
-import { isSharedByUser, isSharedWithUser } from '../access'
+import { isSharedByUser, isSharedWithUser, sharedByLabel } from '../access'
 import NoteMarkdown from '../NoteMarkdown'
 import { notePreview, previewLines } from '../notePreview'
+import PinButton from '../PinButton'
 import type { Note } from '../types'
-import { usePinNote } from '../usePinNote'
 
 // Written out in full so Tailwind generates them.
 const lineClampClassNames = {
@@ -41,14 +38,13 @@ type NoteCardProps = Omit<LinkProps, 'children'> & {
  * card; notes are pinned from their menu instead.
  */
 export default function NoteCard({ note, className, ...props }: NoteCardProps) {
-  const { mutate: pinNote } = usePinNote()
   const canPin = !isSharedWithUser(note)
   const preview = notePreview(note.content)
   const titleId = useId()
   const previewId = useId()
   const sharingId = useId()
   const sharing = isSharedWithUser(note)
-    ? `Shared by ${displayName(note.owner)}`
+    ? sharedByLabel(note)
     : isSharedByUser(note)
       ? `Shared with ${plural(note.shareCount, 'person', 'people')}`
       : null
@@ -120,21 +116,16 @@ export default function NoteCard({ note, className, ...props }: NoteCardProps) {
         </Card>
       </Link>
       {canPin && (
-        <IconButton
+        <PinButton
           size="sm"
-          aria-label="Pin note"
-          aria-pressed={note.isPinned}
-          title={note.isPinned ? 'Unpin' : 'Pin'}
-          onClick={() => pinNote({ id: note.id, isPinned: !note.isPinned })}
+          note={note}
           className={cx(
             'absolute top-6 right-6',
             note.isPinned
-              ? 'text-accent hover:text-accent pointer-coarse:pointer-events-none'
+              ? 'pointer-coarse:pointer-events-none'
               : 'opacity-0 group-focus-within:opacity-100 group-hover:opacity-100 focus-visible:opacity-100 pointer-coarse:hidden',
           )}
-        >
-          <PinIcon filled={note.isPinned} />
-        </IconButton>
+        />
       )}
     </div>
   )
