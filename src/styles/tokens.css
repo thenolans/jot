@@ -177,6 +177,9 @@
   /* Where content sticks or floats below the top bar, leaving a gap */
   --top-bar-offset: calc(var(--top-bar-height) + 1.5rem);
 
+  /* The folder sidebar's width from `md`, for content that must clear it */
+  --sidebar-width: 15rem;
+
   color-scheme: light dark;
 
   /* `light-dark()` takes only colors, so the texture swaps through `dark:` */

@@ -110,10 +110,10 @@ export default function AppLayout() {
     <div className="min-h-screen pb-(--tab-bar-height) md:pb-0">
       <AppBar searchQuery={searchParams.get('q') ?? ''} onSearch={openSearch} />
       {/* The page clears the sidebar by its width. */}
-      <aside className="fixed top-(--top-bar-height) bottom-0 left-0 z-10 hidden w-60 overflow-y-auto border-r border-border bg-surface px-2 py-4 md:block print:hidden">
+      <aside className="fixed top-(--top-bar-height) bottom-0 left-0 z-10 hidden w-(--sidebar-width) overflow-y-auto border-r border-border bg-surface px-2 py-4 md:block print:hidden">
         <FolderNav variant="sidebar" {...navProps} />
       </aside>
-      <main className="md:pl-60">
+      <main className="md:pl-(--sidebar-width)">
         <Outlet />
       </main>
       <TabBar

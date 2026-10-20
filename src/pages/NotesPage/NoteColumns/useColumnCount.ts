@@ -1,6 +1,7 @@
 import { useSyncExternalStore } from 'react'
 
-// Tailwind's `xl` and `sm` breakpoints. From `md` the folder sidebar takes 240px of the width.
+// Tailwind's `xl` and `sm` breakpoints. From `md` the folder sidebar takes
+// `--sidebar-width` (15rem) of the width; media queries can't read the token.
 const threeColumns = '(min-width: 80rem)'
 const twoColumns = '(min-width: 40rem)'
 
