@@ -18,7 +18,7 @@ describe('localIds', () => {
     expect(second).toBeLessThan(first)
   })
 
-  it('resolves a local id to its saved id once it’s saved', () => {
+  it("resolves a local id to its saved id once it's saved", () => {
     const id = newLocalId()
     expect(resolveId(id)).toBe(id)
     expect(() => apiId(id)).toThrow(ApiError)

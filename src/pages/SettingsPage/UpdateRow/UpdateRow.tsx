@@ -14,7 +14,7 @@ const descriptions: Record<Status, string> = {
   checking: 'Checking…',
   updating: 'Updating…',
   current: 'You have the latest version',
-  failed: 'Couldn’t check for updates',
+  failed: "Couldn't check for updates",
 }
 
 /** Checks for a newer version of the app and reloads into it, which refreshing alone doesn't do. */
@@ -40,7 +40,7 @@ export default function UpdateRow() {
       description={
         isOnline || isBusy
           ? descriptions[status]
-          : 'Available when you’re online'
+          : "Available when you're online"
       }
     >
       <Button

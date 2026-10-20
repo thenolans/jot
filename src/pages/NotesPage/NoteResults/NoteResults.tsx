@@ -1,3 +1,4 @@
+import { useId } from 'react'
 import type { LinkProps, To } from 'react-router'
 
 import type { NotePageState } from '@/app/paths'
@@ -68,6 +69,8 @@ export default function NoteResults({
     error,
     reload,
   } = results
+  const pinnedId = useId()
+  const othersId = useId()
   const { query, folderId, unfiled } = filters
   const shared = filters.shared === true
   const hasFilters = query !== '' || folderId !== null || unfiled || shared
@@ -192,21 +195,18 @@ export default function NoteResults({
       )}
       {pinned.length > 0 ? (
         <>
-          <section
-            aria-labelledby="pinned-notes"
-            className="flex flex-col gap-4"
-          >
-            <Eyebrow as="h2" id="pinned-notes">
+          <section aria-labelledby={pinnedId} className="flex flex-col gap-4">
+            <Eyebrow as="h2" id={pinnedId}>
               Pinned
             </Eyebrow>
             {noteColumns(pinned)}
           </section>
           {others.length > 0 && (
             <section
-              aria-labelledby="other-notes"
+              aria-labelledby={othersId}
               className="mt-8 flex flex-col gap-4"
             >
-              <Eyebrow as="h2" id="other-notes">
+              <Eyebrow as="h2" id={othersId}>
                 Others
               </Eyebrow>
               {noteColumns(others)}

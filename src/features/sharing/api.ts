@@ -12,12 +12,15 @@ type ShareResponse = {
   created_at: string
 }
 
-function toShare({
-  note_id: noteId,
-  created_at: createdAt,
-  ...share
-}: ShareResponse): Share {
-  return { ...share, noteId, createdAt }
+function toShare(response: ShareResponse): Share {
+  return {
+    id: response.id,
+    noteId: response.note_id,
+    email: response.email,
+    name: response.name,
+    permission: response.permission,
+    createdAt: response.created_at,
+  }
 }
 
 const sharesPath = '/jot/note-shares/'
@@ -35,13 +38,19 @@ export async function fetchShares(noteId: number): Promise<Share[]> {
  */
 export async function createShare({
   noteId,
-  ...input
+  email,
+  permission,
 }: ShareInput): Promise<Share> {
   return toShare(
-    await api.post<ShareResponse>(sharesPath, { ...input, note_id: noteId }),
+    await api.post<ShareResponse>(sharesPath, {
+      note_id: noteId,
+      email,
+      permission,
+    }),
   )
 }
 
+/** Changes what someone a note is shared with can do with it, returning the share as saved. */
 export async function updateShare(
   id: number,
   permission: SharePermission,
@@ -51,6 +60,7 @@ export async function updateShare(
   )
 }
 
+/** Stops sharing a note with someone. */
 export function deleteShare(id: number) {
   return api.delete(`${sharesPath}${id}/`)
 }

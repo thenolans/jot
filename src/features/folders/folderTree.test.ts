@@ -70,13 +70,13 @@ describe('folderPath', () => {
     expect(folderPath(folders, 4)).toEqual(['Folder 4'])
   })
 
-  it('is empty for a folder that isn’t there', () => {
+  it("is empty for a folder that isn't there", () => {
     expect(folderPath(folders, 9)).toEqual([])
   })
 })
 
 describe('adjustNoteCount', () => {
-  it('changes only that folder, not the folders it’s inside', () => {
+  it("changes only that folder, not the folders it's inside", () => {
     const counts = adjustNoteCount(folders, 3, 2).map(({ id, noteCount }) => [
       id,
       noteCount,
