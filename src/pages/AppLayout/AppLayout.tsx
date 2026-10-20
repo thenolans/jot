@@ -25,6 +25,7 @@ import NoteSearchDialog, {
 } from '@/features/notes/NoteSearchDialog'
 import { useKeepNotesOffline } from '@/features/notes/useKeepNotesOffline'
 import { useNoteCount } from '@/features/notes/useNoteCount'
+import { viewFilters } from '@/features/notes/viewFilters'
 
 import AppBar from './AppBar'
 import FolderSheet from './FolderSheet'
@@ -44,9 +45,9 @@ export default function AppLayout() {
   const activeFolderId = folderIdParam(searchParams)
   const isUnfiledActive = unfiledParam(searchParams)
   const isSharedActive = sharedParam(searchParams)
-  const noteCount = useNoteCount({ shared: false })
-  const unfiledCount = useNoteCount({ unfiled: true })
-  const sharedCount = useNoteCount({ shared: true })
+  const noteCount = useNoteCount(viewFilters({}))
+  const unfiledCount = useNoteCount(viewFilters({ unfiled: true }))
+  const sharedCount = useNoteCount(viewFilters({ shared: true }))
   useKeepNotesOffline()
   useSavedFolderParam()
   const [isSheetOpen, setSheetOpen] = useState(false)

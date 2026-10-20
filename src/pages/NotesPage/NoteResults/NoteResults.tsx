@@ -12,7 +12,7 @@ import Pagination from '@/components/ui/Pagination'
 import NoteCard from '@/features/notes/NoteCard'
 import NoteCardSkeleton from '@/features/notes/NoteCardSkeleton'
 import { notePreview, previewLines } from '@/features/notes/notePreview'
-import type { Note } from '@/features/notes/types'
+import type { Note, NoteFilters } from '@/features/notes/types'
 import type { useNotes } from '@/features/notes/useNotes'
 import { cx } from '@/lib/cx'
 import { plural } from '@/lib/plural'
@@ -21,14 +21,8 @@ import NoteColumns from '../NoteColumns'
 
 type NoteResultsProps = {
   results: ReturnType<typeof useNotes>
-  /** The search the notes are narrowed to, or `''`. */
-  query: string
-  /** Whether the notes are narrowed to a folder. */
-  inFolder: boolean
-  /** Whether the notes are the user's filed in no folder. */
-  unfiled: boolean
-  /** Whether the notes are those shared with the user. */
-  shared: boolean
+  /** What the notes are narrowed to. */
+  filters: Required<NoteFilters>
   /** The folder's name, once it's known. */
   folderName?: string
   /** The page shown, from 1. */
@@ -56,10 +50,7 @@ const estimateHeight = (note: Note) =>
  */
 export default function NoteResults({
   results,
-  query,
-  inFolder,
-  unfiled,
-  shared,
+  filters,
   folderName,
   page,
   pageTo,
@@ -77,7 +68,9 @@ export default function NoteResults({
     error,
     reload,
   } = results
-  const hasFilters = query !== '' || inFolder || unfiled || shared
+  const { query, folderId, unfiled } = filters
+  const shared = filters.shared === true
+  const hasFilters = query !== '' || folderId !== null || unfiled || shared
 
   if (isLoading) {
     return (
@@ -143,7 +136,7 @@ export default function NoteResults({
           Notes you keep out of folders will collect here.
         </EmptyState>
       )
-    if (inFolder)
+    if (folderId !== null)
       return (
         <EmptyState
           title={folderName ? `${folderName} is empty` : 'This folder is empty'}

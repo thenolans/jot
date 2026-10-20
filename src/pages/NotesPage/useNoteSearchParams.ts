@@ -9,18 +9,20 @@ import {
   sharedParam,
   unfiledParam,
 } from '@/app/paths'
+import { viewFilters } from '@/features/notes/viewFilters'
 
 /**
  * The note filters and page, kept in the URL (`?q=…&folder=…&page=…`, or `unfiled=1` or `shared=1` in
- * place of a folder)
- * so they survive reloads and can be linked to.
+ * place of a folder) so they survive reloads and can be linked to.
  */
 export function useNoteSearchParams() {
   const [searchParams, setSearchParams] = useSearchParams()
-  const query = searchParams.get('q')?.trim() ?? ''
-  const folderId = folderIdParam(searchParams)
-  const unfiled = unfiledParam(searchParams)
-  const shared = sharedParam(searchParams)
+  const filters = viewFilters({
+    query: searchParams.get('q')?.trim() ?? '',
+    folderId: folderIdParam(searchParams),
+    unfiled: unfiledParam(searchParams),
+    shared: sharedParam(searchParams),
+  })
   const pageParam = Number(searchParams.get('page'))
   const page = Number.isInteger(pageParam) && pageParam > 1 ? pageParam : 1
 
@@ -29,12 +31,8 @@ export function useNoteSearchParams() {
   ) => setSearchParams(update, { replace: true })
 
   return {
-    query,
-    folderId,
-    /** Showing the user's notes filed in no folder. */
-    unfiled,
-    /** Showing the notes shared with the user. */
-    shared,
+    /** The filters for `useNotes`. */
+    filters,
     page,
     /** The list at `page`, with the same filters. */
     pageTo: (page: number): To => {
@@ -51,7 +49,10 @@ export function useNoteSearchParams() {
     /** Link props for a new note: it opens over the list, in the folder shown. */
     newNoteLink: {
       to: { pathname: paths.newNote, search: searchParams.toString() },
-      state: { fromList: true, folderId } satisfies NotePageState,
+      state: {
+        fromList: true,
+        folderId: filters.folderId,
+      } satisfies NotePageState,
       preventScrollReset: true,
     },
     clearFilters: () =>

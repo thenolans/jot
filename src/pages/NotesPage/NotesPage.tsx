@@ -22,20 +22,9 @@ import { useNoteSearchParams } from './useNoteSearchParams'
  * their own too.
  */
 export default function NotesPage() {
-  const filters = useNoteSearchParams()
-  const results = useNotes(
-    {
-      query: filters.query,
-      folderId: filters.folderId,
-      unfiled: filters.unfiled,
-      shared: filters.shared
-        ? true
-        : filters.folderId === null && !filters.unfiled && !filters.query
-          ? false
-          : null,
-    },
-    filters.page,
-  )
+  const params = useNoteSearchParams()
+  const { filters } = params
+  const results = useNotes(filters, params.page)
 
   const { folders } = useFolders()
   const folder = folders?.find(({ id }) => id === filters.folderId)
@@ -43,14 +32,14 @@ export default function NotesPage() {
   // A folder that's gone (deleted, or from an old link) shows every note instead.
   const isFolderMissing =
     folders !== undefined && filters.folderId !== null && !folder
-  const { clearFolder } = filters
+  const { clearFolder } = params
   useEffect(() => {
     if (isFolderMissing) clearFolder()
   }, [isFolderMissing, clearFolder])
 
   const showStatus = !results.isLoading && !results.isStale && !results.error
   const scope = [
-    filters.shared
+    filters.shared === true
       ? 'Shared with me'
       : filters.unfiled
         ? 'Unfiled'
@@ -77,7 +66,7 @@ export default function NotesPage() {
               <Button
                 variant="selected"
                 size="sm"
-                onClick={filters.clearQuery}
+                onClick={params.clearQuery}
                 className="flex-none"
               >
                 Clear
@@ -90,19 +79,16 @@ export default function NotesPage() {
 
       <NoteResults
         results={results}
-        query={filters.query}
-        inFolder={filters.folderId !== null}
-        unfiled={filters.unfiled}
-        shared={filters.shared}
+        filters={filters}
         folderName={folder?.name}
-        page={filters.page}
-        pageTo={filters.pageTo}
-        noteTo={filters.noteTo}
-        newNoteLink={filters.newNoteLink}
-        onClearFilters={filters.clearFilters}
+        page={params.page}
+        pageTo={params.pageTo}
+        noteTo={params.noteTo}
+        newNoteLink={params.newNoteLink}
+        onClearFilters={params.clearFilters}
       />
       <FloatingActionLink
-        {...filters.newNoteLink}
+        {...params.newNoteLink}
         icon={<PlusIcon />}
         label="New note"
       />
