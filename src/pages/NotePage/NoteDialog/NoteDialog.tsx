@@ -21,6 +21,15 @@ import MoveNoteView from './MoveNoteView'
 import ShareNoteView from './ShareNoteView'
 import { useCreateOnOpen } from './useCreateOnOpen'
 
+type View = 'note' | 'share' | 'move' | 'delete'
+
+// What the panel is called while it shows one of the note's actions.
+const actionLabels: Record<Exclude<View, 'note'>, string> = {
+  share: 'Share note',
+  move: 'Move note',
+  delete: 'Delete note',
+}
+
 type NoteDialogProps = {
   /** The note to open, or `'new'` to create one. */
   noteId: number | 'new'
@@ -53,9 +62,10 @@ export default function NoteDialog({
   )
   useCreateOnOpen(isCreating ? newNote : null, onCreated)
 
-  const { view, isMainView, show, back, viewClassName } = useModalView<
-    'note' | 'share' | 'move' | 'delete'
-  >(dialogRef, 'note')
+  const { view, isMainView, show, back, viewClassName } = useModalView<View>(
+    dialogRef,
+    'note',
+  )
   const { mutate: deleteNote } = useDeleteNote()
 
   const close = () => closeModal(dialogRef.current)
@@ -70,13 +80,9 @@ export default function NoteDialog({
     <ModalShell
       dialogRef={dialogRef}
       aria-label={
-        view === 'delete'
-          ? 'Delete note'
-          : view === 'move'
-            ? 'Move note'
-            : view === 'share'
-              ? 'Share note'
-              : note?.title || (isCreating || isNew ? 'New note' : 'Note')
+        view === 'note'
+          ? note?.title || (isCreating || isNew ? 'New note' : 'Note')
+          : actionLabels[view]
       }
       onClose={onClose}
       onEscape={isMainView ? undefined : back}

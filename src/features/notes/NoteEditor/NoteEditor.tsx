@@ -98,6 +98,16 @@ export default function NoteEditor({
     bodyRef.current?.focus()
   }
 
+  const statusText = () => {
+    if (!canEdit) return 'View only'
+    if (isChecking) return 'Checking for changes…'
+    if (saveStatus === 'saving') return 'Saving…'
+    if (saveStatus === 'waiting') return "Saves when you're back online"
+    if (saveStatus === 'failed')
+      return "Couldn't save. Keep typing to try again."
+    return `${note.isPinned ? 'Pinned · ' : ''}Edited ${formatDate(note.updatedAt)}`
+  }
+
   // The title and text are borderless, like the page they're written on, and their caret marks focus,
   // so they go without the focus ring.
   return (
@@ -188,11 +198,9 @@ export default function NoteEditor({
             <MenuItem icon={<PinIcon />} onAction={togglePin}>
               {note.isPinned ? 'Unpin' : 'Pin to top'}
             </MenuItem>
-            <MenuDivider />
             <MenuItem icon={<ShareIcon />} onAction={onShare}>
               Share…
             </MenuItem>
-            <MenuDivider />
             <MenuItem icon={<ArrowRightIcon />} onAction={onMove}>
               Move to…
             </MenuItem>
@@ -210,17 +218,7 @@ export default function NoteEditor({
             saveStatus === 'failed' && 'text-danger',
           )}
         >
-          {!canEdit
-            ? 'View only'
-            : isChecking
-              ? 'Checking for changes…'
-              : saveStatus === 'saving'
-                ? 'Saving…'
-                : saveStatus === 'waiting'
-                  ? "Saves when you're back online"
-                  : saveStatus === 'failed'
-                    ? "Couldn't save. Keep typing to try again."
-                    : `${note.isPinned ? 'Pinned · ' : ''}Edited ${formatDate(note.updatedAt)}`}
+          {statusText()}
         </Eyebrow>
         <Button onClick={onDone} className="flex-none">
           Done
