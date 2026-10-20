@@ -40,5 +40,11 @@ export const queryClient = new QueryClient({
   },
 })
 
+// While the API can't be reached, notes are answered from the device, and those answers count as fresh,
+// so once it can be reached, everything is asked for again rather than waiting to go stale.
+connectivity.subscribe((isOnline) => {
+  if (isOnline) void queryClient.invalidateQueries()
+})
+
 setNoteMutationDefaults(queryClient)
 setFolderMutationDefaults(queryClient)

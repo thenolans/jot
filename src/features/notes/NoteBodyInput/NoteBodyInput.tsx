@@ -18,6 +18,7 @@ export default function NoteBodyInput({
     const textarea = event.currentTarget
     if (
       event.defaultPrevented ||
+      textarea.readOnly ||
       event.key !== 'Enter' ||
       event.shiftKey ||
       event.metaKey ||

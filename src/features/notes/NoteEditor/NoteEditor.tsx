@@ -57,6 +57,11 @@ type NoteEditorProps = {
   onDelete: () => void
   /** Just created: the text takes focus, and closing the note with nothing written deletes it. */
   isNew?: boolean
+  /**
+   * The note is being refreshed since it was opened, so it may have been edited elsewhere: the title and
+   * text can't be edited until it's back, so nothing typed is based on an older version.
+   */
+  isChecking?: boolean
   className?: string
 }
 
@@ -73,6 +78,7 @@ export default function NoteEditor({
   onMove,
   onDelete,
   isNew = false,
+  isChecking = false,
   className,
 }: NoteEditorProps) {
   const canEdit = canEditNote(note)
@@ -97,6 +103,7 @@ export default function NoteEditor({
             name="title"
             aria-label="Title"
             value={draft.title}
+            readOnly={isChecking}
             onChange={(event) => change({ title: event.target.value })}
             maxLength={255}
             placeholder="Title"
@@ -140,6 +147,7 @@ export default function NoteEditor({
           name="content"
           aria-label="Note"
           value={draft.content}
+          readOnly={isChecking}
           onChange={(event) => change({ content: event.target.value })}
           placeholder="Write in markdown…"
           className="field-sizing-content min-h-0 flex-1 resize-none bg-transparent px-6 py-4 leading-relaxed text-ink outline-none placeholder:text-faint focus-visible:shadow-none"
@@ -201,13 +209,15 @@ export default function NoteEditor({
         >
           {!canEdit
             ? 'View only'
-            : saveStatus === 'saving'
-              ? 'Saving…'
-              : saveStatus === 'waiting'
-                ? "Saves when you're back online"
-                : saveStatus === 'failed'
-                  ? "Couldn't save. Keep typing to try again."
-                  : `Edited ${formatDate(note.updatedAt)}`}
+            : isChecking
+              ? 'Checking for changes…'
+              : saveStatus === 'saving'
+                ? 'Saving…'
+                : saveStatus === 'waiting'
+                  ? "Saves when you're back online"
+                  : saveStatus === 'failed'
+                    ? "Couldn't save. Keep typing to try again."
+                    : `Edited ${formatDate(note.updatedAt)}`}
         </Eyebrow>
         <Button onClick={onDone} className="flex-none">
           Done
