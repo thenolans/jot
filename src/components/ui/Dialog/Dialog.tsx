@@ -1,8 +1,7 @@
 import { type ReactNode, type RefObject, useId, useRef } from 'react'
 
-import CloseIcon from '@/components/icons/CloseIcon'
+import CloseButton from '@/components/ui/CloseButton'
 import Heading from '@/components/ui/Heading'
-import IconButton from '@/components/ui/IconButton'
 import ModalShell, { closeModal } from '@/components/ui/ModalShell'
 import SheetHandle from '@/components/ui/SheetHandle'
 import { cx } from '@/lib/cx'
@@ -54,14 +53,7 @@ export default function Dialog({
         <Heading as="h2" variant="subsection" id={titleId}>
           {title}
         </Heading>
-        <IconButton
-          size="lg"
-          onClick={close}
-          aria-label="Close"
-          className="-mr-2"
-        >
-          <CloseIcon size={20} />
-        </IconButton>
+        <CloseButton onClick={close} />
       </div>
       {children}
     </ModalShell>

@@ -1,8 +1,7 @@
 import { type ComponentProps, useRef, useState } from 'react'
 
-import CloseIcon from '@/components/icons/CloseIcon'
+import CloseButton from '@/components/ui/CloseButton'
 import Heading from '@/components/ui/Heading'
-import IconButton from '@/components/ui/IconButton'
 import ModalShell, {
   closeModal,
   useModalView,
@@ -78,14 +77,7 @@ export default function FolderSheet({
           <Heading as="h2" variant="subsection">
             Folders
           </Heading>
-          <IconButton
-            size="lg"
-            onClick={close}
-            aria-label="Close"
-            className="-mr-2"
-          >
-            <CloseIcon size={20} />
-          </IconButton>
+          <CloseButton onClick={close} />
         </div>
         <FolderNav
           variant="sheet"

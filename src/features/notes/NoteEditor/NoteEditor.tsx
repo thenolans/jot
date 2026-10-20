@@ -2,13 +2,13 @@ import { useRef, useState } from 'react'
 import { flushSync } from 'react-dom'
 
 import ArrowRightIcon from '@/components/icons/ArrowRightIcon'
-import CloseIcon from '@/components/icons/CloseIcon'
 import EyeIcon from '@/components/icons/EyeIcon'
 import PencilIcon from '@/components/icons/PencilIcon'
 import PinIcon from '@/components/icons/PinIcon'
 import ShareIcon from '@/components/icons/ShareIcon'
 import TrashIcon from '@/components/icons/TrashIcon'
 import Button from '@/components/ui/Button'
+import CloseButton from '@/components/ui/CloseButton'
 import Eyebrow from '@/components/ui/Eyebrow'
 import IconButton from '@/components/ui/IconButton'
 import Menu, { MenuDivider, MenuItem } from '@/components/ui/Menu'
@@ -147,14 +147,7 @@ export default function NoteEditor({
             <PinIcon size={20} filled={note.isPinned} />
           </IconButton>
         )}
-        <IconButton
-          size="lg"
-          onClick={onDone}
-          aria-label="Close"
-          className="-mr-2"
-        >
-          <CloseIcon size={20} />
-        </IconButton>
+        <CloseButton onClick={onDone} />
       </div>
 
       {mode === 'edit' ? (

@@ -1,10 +1,9 @@
 import { useRef } from 'react'
 
-import CloseIcon from '@/components/icons/CloseIcon'
 import Button from '@/components/ui/Button'
+import CloseButton from '@/components/ui/CloseButton'
 import ErrorRetry from '@/components/ui/ErrorRetry'
 import Heading from '@/components/ui/Heading'
-import IconButton from '@/components/ui/IconButton'
 import ModalShell, {
   closeModal,
   useModalView,
@@ -127,14 +126,7 @@ export default function NoteDialog({
         </>
       ) : (
         <div className="flex flex-1 flex-col gap-4 px-6 pb-6">
-          <IconButton
-            size="lg"
-            onClick={close}
-            aria-label="Close"
-            className="-mr-2 self-end"
-          >
-            <CloseIcon size={20} />
-          </IconButton>
+          <CloseButton onClick={close} className="self-end" />
           {isLoading ? (
             <>
               <p role="status" className="sr-only">
