@@ -27,6 +27,8 @@ const cornerPaddingClassNames = ['', 'pr-8', 'pr-16']
 
 type NoteCardProps = Omit<LinkProps, 'children'> & {
   note: Note
+  /** Smaller padding and text on phones, to fit two columns. */
+  compact?: boolean
 }
 
 /**
@@ -37,7 +39,12 @@ type NoteCardProps = Omit<LinkProps, 'children'> & {
  * there's no hover, so it shows only once pinned, as a mark that opens the note like the rest of the
  * card; notes are pinned from their menu instead.
  */
-export default function NoteCard({ note, className, ...props }: NoteCardProps) {
+export default function NoteCard({
+  note,
+  compact = false,
+  className,
+  ...props
+}: NoteCardProps) {
   const canPin = !isSharedWithUser(note)
   const preview = notePreview(note.content)
   const titleId = useId()
@@ -68,12 +75,22 @@ export default function NoteCard({ note, className, ...props }: NoteCardProps) {
       >
         <Card
           as="article"
-          className="relative p-6 transition-colors group-hover:border-accent-mid"
+          className={cx(
+            'relative p-6 transition-colors group-hover:border-accent-mid',
+            compact && 'max-sm:p-4',
+          )}
         >
           {sharing && (
             <span
               title={sharing}
-              className={cx('absolute top-6', canPin ? 'right-14' : 'right-6')}
+              className={cx(
+                'absolute top-6',
+                canPin ? 'right-14' : 'right-6',
+                compact &&
+                  (canPin
+                    ? 'max-sm:top-4 max-sm:right-12'
+                    : 'max-sm:top-4 max-sm:right-4'),
+              )}
             >
               {isSharedWithUser(note) ? (
                 <UserAvatar user={note.owner} className="size-6 text-xs" />
@@ -96,7 +113,11 @@ export default function NoteCard({ note, className, ...props }: NoteCardProps) {
               variant="card"
               id={titleId}
               // Clears the icons in the corner.
-              className={cx('mb-2 break-words', cornerPadding)}
+              className={cx(
+                'mb-2 break-words',
+                compact && 'max-sm:mb-1 max-sm:text-sm',
+                cornerPadding,
+              )}
             >
               {note.title}
             </Heading>
@@ -108,6 +129,7 @@ export default function NoteCard({ note, className, ...props }: NoteCardProps) {
               content={note.content}
               className={cx(
                 'text-sm',
+                compact && 'max-sm:text-xs',
                 lineClampClassNames[previewLines(preview)],
                 !note.title && cornerPadding,
               )}
@@ -121,6 +143,7 @@ export default function NoteCard({ note, className, ...props }: NoteCardProps) {
           note={note}
           className={cx(
             'absolute top-6 right-6',
+            compact && 'max-sm:top-4 max-sm:right-4',
             note.isPinned
               ? 'pointer-coarse:pointer-events-none'
               : 'opacity-0 group-focus-within:opacity-100 group-hover:opacity-100 focus-visible:opacity-100 pointer-coarse:hidden',

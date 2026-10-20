@@ -148,8 +148,11 @@
     @apply mb-2;
   }
 
+  /* Headings take the preview's own size, which a compact card makes smaller. */
   & :is(h1, h2, h3, h4, h5, h6) {
-    @apply mb-1 text-sm;
+    @apply mb-1;
+    font-size: inherit;
+    line-height: inherit;
   }
 
   & > :last-child {

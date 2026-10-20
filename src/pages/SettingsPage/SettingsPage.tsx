@@ -1,4 +1,5 @@
 import { paths } from '@/app/paths'
+import ColumnsIcon from '@/components/icons/ColumnsIcon'
 import LogOutIcon from '@/components/icons/LogOutIcon'
 import ThemeIcon from '@/components/icons/ThemeIcon'
 import UserIcon from '@/components/icons/UserIcon'
@@ -10,6 +11,8 @@ import SubpageTopBar from '@/components/ui/SubpageTopBar'
 import { displayDetails } from '@/features/auth/displayName'
 import { useCurrentUser } from '@/features/auth/useCurrentUser'
 import { useLogout } from '@/features/auth/useLogout'
+import type { NoteLayout } from '@/features/notes/noteLayout'
+import { useNoteLayout } from '@/features/notes/useNoteLayout'
 import type { Theme } from '@/features/theme/theme'
 import { useTheme } from '@/features/theme/useTheme'
 
@@ -25,10 +28,16 @@ const themeOptions = [
   { value: 'auto', label: 'Auto' },
 ] satisfies { value: Theme; label: string }[]
 
+const noteLayoutOptions = [
+  { value: 'full', label: 'Full' },
+  { value: 'compact', label: 'Compact' },
+] satisfies { value: NoteLayout; label: string }[]
+
 export default function SettingsPage() {
   const { user } = useCurrentUser()
   const logout = useLogout()
   const [theme, setTheme] = useTheme()
+  const [noteLayout, setNoteLayout] = useNoteLayout()
   const account = user ? displayDetails(user) : undefined
 
   // Signing out leaves the app through `RequireAuth`. It happens locally even if the API can't be
@@ -49,6 +58,18 @@ export default function SettingsPage() {
               options={themeOptions}
               value={theme}
               onChange={setTheme}
+            />
+          </SettingsRow>
+          <SettingsRow
+            Icon={ColumnsIcon}
+            title="Note layout"
+            description="On phones"
+          >
+            <SegmentedControl
+              label="Note layout"
+              options={noteLayoutOptions}
+              value={noteLayout}
+              onChange={setNoteLayout}
             />
           </SettingsRow>
           <UpdateRow />

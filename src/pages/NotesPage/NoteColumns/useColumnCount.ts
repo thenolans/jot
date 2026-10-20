@@ -22,7 +22,11 @@ const columnCount = () =>
       ? 2
       : 1
 
-/** How many columns of notes fit the window: one on phones, two on tablets and small laptops, three wider. */
-export function useColumnCount() {
-  return useSyncExternalStore(subscribe, columnCount)
+/**
+ * How many columns of notes fit the window: one on phones, two on tablets and small laptops, three wider.
+ * `compact` fits two on phones too.
+ */
+export function useColumnCount(compact: boolean) {
+  const count = useSyncExternalStore(subscribe, columnCount)
+  return compact ? Math.max(count, 2) : count
 }

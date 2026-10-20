@@ -14,6 +14,7 @@ import NoteCard from '@/features/notes/NoteCard'
 import NoteCardSkeleton from '@/features/notes/NoteCardSkeleton'
 import { notePreview, previewLines } from '@/features/notes/notePreview'
 import type { Note, NoteFilters } from '@/features/notes/types'
+import { useNoteLayout } from '@/features/notes/useNoteLayout'
 import type { useNotes } from '@/features/notes/useNotes'
 import { cx } from '@/lib/cx'
 import { plural } from '@/lib/plural'
@@ -69,6 +70,8 @@ export default function NoteResults({
     error,
     reload,
   } = results
+  const [layout] = useNoteLayout()
+  const compact = layout === 'compact'
   const pinnedId = useId()
   const othersId = useId()
   const { query, folderId, unfiled } = filters
@@ -85,7 +88,10 @@ export default function NoteResults({
           items={SKELETON_LINES.map((lines, index) => ({ lines, index }))}
           estimateHeight={({ lines }) => 3 + lines}
           getKey={({ index }) => index}
-          renderItem={({ lines }) => <NoteCardSkeleton lines={lines} />}
+          renderItem={({ lines }) => (
+            <NoteCardSkeleton lines={lines} compact={compact} />
+          )}
+          compact={compact}
         />
       </>
     )
@@ -169,9 +175,11 @@ export default function NoteResults({
       items={notes}
       estimateHeight={estimateHeight}
       getKey={(note) => note.id}
+      compact={compact}
       renderItem={(note) => (
         <NoteCard
           note={note}
+          compact={compact}
           to={noteTo(note.id)}
           state={{ fromList: true } satisfies NotePageState}
           // The note opens over the grid, which stays scrolled where it was.

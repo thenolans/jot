@@ -11,6 +11,8 @@ type NoteColumnsProps<T> = {
   estimateHeight: (item: T) => number
   getKey: (item: T) => string | number
   renderItem: (item: T) => ReactNode
+  /** Two columns on phones, closer together, for compact cards. */
+  compact?: boolean
   className?: string
 }
 
@@ -23,14 +25,32 @@ export default function NoteColumns<T>({
   estimateHeight,
   getKey,
   renderItem,
+  compact = false,
   className,
 }: NoteColumnsProps<T>) {
-  const columns = distributeColumns(items, useColumnCount(), estimateHeight)
+  const columns = distributeColumns(
+    items,
+    useColumnCount(compact),
+    estimateHeight,
+  )
 
   return (
-    <div role="list" className={cx('flex items-start gap-4', className)}>
+    <div
+      role="list"
+      className={cx(
+        'flex items-start gap-4',
+        compact && 'max-sm:gap-2',
+        className,
+      )}
+    >
       {columns.map((column, index) => (
-        <div key={index} className="flex min-w-0 flex-1 flex-col gap-4">
+        <div
+          key={index}
+          className={cx(
+            'flex min-w-0 flex-1 flex-col gap-4',
+            compact && 'max-sm:gap-2',
+          )}
+        >
           {column.map((item) => (
             <div key={getKey(item)} role="listitem">
               {renderItem(item)}
