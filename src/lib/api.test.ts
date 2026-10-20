@@ -140,20 +140,20 @@ describe('API errors', () => {
 describe('rekeyFieldErrors', () => {
   it('renames the given fields and keeps the rest', () => {
     const error = rekeyFieldErrors(
-      new ApiError(400, 'Bad.', { source_url: 'Not a URL.', name: 'Taken.' }),
-      { source_url: 'sourceUrl' },
+      new ApiError(400, 'Bad.', { folder_id: 'Not found.', name: 'Taken.' }),
+      { folder_id: 'folderId' },
     )
     expect(error).toBeInstanceOf(ApiError)
     expect(error).toMatchObject({
       status: 400,
       message: 'Bad.',
-      fieldErrors: { sourceUrl: 'Not a URL.', name: 'Taken.' },
+      fieldErrors: { folderId: 'Not found.', name: 'Taken.' },
     })
   })
 
   it('returns anything other than an ApiError as it is', () => {
     const error = new Error('boom')
-    expect(rekeyFieldErrors(error, { source_url: 'sourceUrl' })).toBe(error)
+    expect(rekeyFieldErrors(error, { folder_id: 'folderId' })).toBe(error)
   })
 })
 

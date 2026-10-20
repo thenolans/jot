@@ -144,7 +144,7 @@ export function isNotFoundError(error: unknown) {
 
 /**
  * `error` with its `fieldErrors` keyed by input field rather than request field, renaming those in
- * `inputNames` (`{ source_url: 'sourceUrl' }`) so they match the form's input `name`s. Anything that
+ * `inputNames` (`{ folder_id: 'folderId' }`) so they match the form's input `name`s. Anything that
  * isn't an `ApiError` comes back as it is.
  */
 export function rekeyFieldErrors(

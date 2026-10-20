@@ -1,6 +1,6 @@
 /**
- * A count with its noun, e.g. "1 serving" or "3 servings". Pass `pluralForm` when adding "s" isn't
- * right: `plural(n, 'recipe matches', 'recipes match')`.
+ * A count with its noun, e.g. "1 note" or "3 notes". Pass `pluralForm` when adding "s" isn't
+ * right: `plural(n, 'note matches', 'notes match')`.
  */
 export function plural(
   count: number,
