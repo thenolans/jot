@@ -81,13 +81,11 @@ export default function NoteDialog({
       }
       onClose={onClose}
       onEscape={isMainView ? undefined : back}
-      // The gap above the sheet leaves some of the grid in view, and a tap there closes it. Clip, not
-      // hidden: hidden still scrolls to show the focused field, which cancels the slide.
-      className="flex items-end justify-center overflow-clip pt-12 md:items-center md:p-4"
+      sheet
       // Showing the note, it fills the sheet, and at `md` and up it's at least tall enough to write in and
       // at most 720px; other views fit their content.
       panelClassName={cx(
-        'flex max-h-full w-full flex-col max-md:rounded-b-none max-md:pb-safe-area max-md:motion-safe:animate-sheet-in max-md:motion-safe:in-data-closing:animate-sheet-out md:pt-4',
+        'flex flex-col md:pt-4',
         isMainView
           ? 'max-md:h-full md:max-h-180 md:min-h-80 md:max-w-2xl'
           : 'md:max-w-md',

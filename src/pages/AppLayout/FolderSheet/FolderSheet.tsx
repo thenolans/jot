@@ -61,9 +61,8 @@ export default function FolderSheet({
       aria-label={!isMainView && action ? folderActionTitle(action) : 'Folders'}
       onClose={onClose}
       onEscape={isMainView ? undefined : back}
-      // As `Dialog`'s sheet: a gap above it leaves the page in view, and the sheet clips as it slides.
-      className="flex items-end justify-center overflow-clip pt-12 md:items-center md:p-4"
-      panelClassName="flex max-h-full w-full flex-col max-md:rounded-b-none max-md:pb-safe-area max-md:motion-safe:animate-sheet-in max-md:motion-safe:in-data-closing:animate-sheet-out md:max-w-sm md:pt-4"
+      sheet
+      panelClassName="flex flex-col md:max-w-sm md:pt-4"
     >
       <SheetHandle onClick={close} className="flex-none" />
 
