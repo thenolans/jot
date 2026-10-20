@@ -7,7 +7,7 @@ import type { FolderNavVariant } from './folderNavVariants'
 export type FolderNavState = {
   variant: FolderNavVariant
   activeFolderId: number | null
-  folderTo: (id: number | null) => To
+  folderTo: (id: number) => To
   onNavigate?: () => void
   isOpen: (id: number) => boolean
   toggle: (id: number) => void

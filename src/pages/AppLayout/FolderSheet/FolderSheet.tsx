@@ -19,15 +19,7 @@ import { cx } from '@/lib/cx'
 
 type FolderSheetProps = Pick<
   ComponentProps<typeof FolderNav>,
-  | 'activeFolderId'
-  | 'folderTo'
-  | 'noteCount'
-  | 'isUnfiledActive'
-  | 'unfiledTo'
-  | 'unfiledCount'
-  | 'isSharedActive'
-  | 'sharedTo'
-  | 'sharedCount'
+  'activeFolderId' | 'folderTo' | 'views'
 > & {
   onClose: () => void
 }

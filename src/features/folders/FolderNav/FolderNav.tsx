@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { Link, type To } from 'react-router'
+import type { To } from 'react-router'
 
 import NotesIcon from '@/components/icons/NotesIcon'
 import PageIcon from '@/components/icons/PageIcon'
@@ -16,33 +16,23 @@ import FolderActionDialog from '../FolderActionDialog'
 import type { FolderAction } from '../folderActions'
 import { buildFolderTree } from '../folderTree'
 import { useFolders } from '../useFolders'
-import FolderCount from './FolderCount'
 import FolderItem from './FolderItem'
-import FolderNavRow from './FolderNavRow'
+import FolderNavLink, { type FolderNavView } from './FolderNavLink'
 import type { FolderNavState } from './folderNavState'
-import { type FolderNavVariant, folderNavVariants } from './folderNavVariants'
+import type { FolderNavVariant } from './folderNavVariants'
 import { useOpenFolders } from './useOpenFolders'
 
 type FolderNavProps = {
   variant: FolderNavVariant
-  /** The folder the notes grid shows, or `null` for all notes (or the unfiled ones, or those shared with the user). */
+  /** The folder the notes grid shows, or `null` for one of the `views`. */
   activeFolderId: number | null
-  /** Where a folder's notes are listed, or every note for `null`. */
-  folderTo: (id: number | null) => To
-  /** How many of their own notes the user has in all, once known. */
-  noteCount?: number
-  /** The notes grid shows the user's notes filed in no folder. */
-  isUnfiledActive: boolean
-  /** Where the user's notes filed in no folder are listed. */
-  unfiledTo: To
-  /** How many of their notes the user has filed in no folder, once known. */
-  unfiledCount?: number
-  /** The notes grid shows the notes shared with the user. */
-  isSharedActive: boolean
-  /** Where the notes shared with the user are listed. */
-  sharedTo: To
-  /** How many notes are shared with the user, once known. */
-  sharedCount?: number
+  /** Where a folder's notes are listed. */
+  folderTo: (id: number) => To
+  /**
+   * The rows above the folders: all of the user's own notes, those filed in no folder, and those shared
+   * with the user.
+   */
+  views: Record<'all' | 'unfiled' | 'shared', FolderNavView>
   /** Called as a folder is picked, e.g. to close the sheet it's in. */
   onNavigate?: () => void
   /**
@@ -63,13 +53,7 @@ export default function FolderNav({
   variant,
   activeFolderId,
   folderTo,
-  noteCount,
-  isUnfiledActive,
-  unfiledTo,
-  unfiledCount,
-  isSharedActive,
-  sharedTo,
-  sharedCount,
+  views,
   onNavigate,
   onAction,
   className,
@@ -100,76 +84,39 @@ export default function FolderNav({
   }
 
   const isSidebar = variant === 'sidebar'
-  const isAllActive =
-    activeFolderId === null && !isUnfiledActive && !isSharedActive
-  const linkClassName = cx(
-    'flex min-w-0 flex-1 items-center self-stretch rounded-xs font-display font-semibold',
-    folderNavVariants[variant].label,
-  )
-  const { iconSize } = folderNavVariants[variant]
 
   return (
     <nav aria-label="Folders" className={cx('flex flex-col', className)}>
-      <FolderNavRow variant={variant} active={isAllActive}>
-        <Link
-          to={folderTo(null)}
-          onClick={onNavigate}
-          aria-current={isAllActive ? 'page' : undefined}
-          className={linkClassName}
-        >
-          <NotesIcon size={iconSize} className="flex-none text-accent" />
-          All notes
-        </Link>
-        {noteCount !== undefined && (
-          <FolderCount
-            count={noteCount}
-            variant={variant}
-            active={isAllActive}
-          />
-        )}
-      </FolderNavRow>
+      <FolderNavLink
+        variant={variant}
+        view={views.all}
+        Icon={NotesIcon}
+        onNavigate={onNavigate}
+      >
+        All notes
+      </FolderNavLink>
 
       {/* Without folders, every note is unfiled. */}
-      {(isUnfiledActive || tree.length > 0) && (
-        <FolderNavRow variant={variant} active={isUnfiledActive}>
-          <Link
-            to={unfiledTo}
-            onClick={onNavigate}
-            aria-current={isUnfiledActive ? 'page' : undefined}
-            className={linkClassName}
-          >
-            <PageIcon size={iconSize} className="flex-none text-accent" />
-            Unfiled
-          </Link>
-          {unfiledCount !== undefined && (
-            <FolderCount
-              count={unfiledCount}
-              variant={variant}
-              active={isUnfiledActive}
-            />
-          )}
-        </FolderNavRow>
+      {(views.unfiled.isActive || tree.length > 0) && (
+        <FolderNavLink
+          variant={variant}
+          view={views.unfiled}
+          Icon={PageIcon}
+          onNavigate={onNavigate}
+        >
+          Unfiled
+        </FolderNavLink>
       )}
 
-      {(isSharedActive || !!sharedCount) && (
-        <FolderNavRow variant={variant} active={isSharedActive}>
-          <Link
-            to={sharedTo}
-            onClick={onNavigate}
-            aria-current={isSharedActive ? 'page' : undefined}
-            className={linkClassName}
-          >
-            <UserIcon size={iconSize} className="flex-none text-accent" />
-            <span className="truncate">Shared with me</span>
-          </Link>
-          {sharedCount !== undefined && (
-            <FolderCount
-              count={sharedCount}
-              variant={variant}
-              active={isSharedActive}
-            />
-          )}
-        </FolderNavRow>
+      {(views.shared.isActive || !!views.shared.count) && (
+        <FolderNavLink
+          variant={variant}
+          view={views.shared}
+          Icon={UserIcon}
+          onNavigate={onNavigate}
+        >
+          Shared with me
+        </FolderNavLink>
       )}
 
       {isSidebar && (

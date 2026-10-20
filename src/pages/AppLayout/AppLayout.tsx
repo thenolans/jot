@@ -69,16 +69,24 @@ export default function AppLayout() {
     if (changes.shared) next.set('shared', '1')
     return { pathname: paths.notes, search: next.toString() }
   }
+  const isAllActive =
+    activeFolderId === null && !isUnfiledActive && !isSharedActive
   const navProps = {
     activeFolderId,
-    folderTo: (id: number | null) => notesTo({ folder: id ?? undefined }),
-    noteCount,
-    isUnfiledActive,
-    unfiledTo: notesTo({ unfiled: true }),
-    unfiledCount,
-    isSharedActive,
-    sharedTo: notesTo({ shared: true }),
-    sharedCount,
+    folderTo: (id: number) => notesTo({ folder: id }),
+    views: {
+      all: { to: notesTo({}), isActive: isAllActive, count: noteCount },
+      unfiled: {
+        to: notesTo({ unfiled: true }),
+        isActive: isUnfiledActive,
+        count: unfiledCount,
+      },
+      shared: {
+        to: notesTo({ shared: true }),
+        isActive: isSharedActive,
+        count: sharedCount,
+      },
+    },
   }
 
   // A note opens over the grid as it is. In place of a note that's already open, it closes the way that
@@ -118,15 +126,8 @@ export default function AppLayout() {
         <Outlet />
       </main>
       <TabBar
-        isAllNotes={
-          activeFolderId === null && !isUnfiledActive && !isSharedActive
-        }
-        isFoldersActive={
-          isSheetOpen ||
-          activeFolderId !== null ||
-          isUnfiledActive ||
-          isSharedActive
-        }
+        isAllNotes={isAllActive}
+        isFoldersActive={isSheetOpen || !isAllActive}
         onOpenFolders={() => setSheetOpen(true)}
         onSearch={openSearch}
       />
