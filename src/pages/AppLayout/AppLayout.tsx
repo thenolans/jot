@@ -13,6 +13,8 @@ import {
   type NotePageState,
   notePath,
   noteSearchPath,
+  type NotesView,
+  notesViewParams,
   paths,
   sharedParam,
   unfiledParam,
@@ -54,21 +56,10 @@ export default function AppLayout() {
   useSearchShortcut(openSearch)
 
   // A folder's notes, the unfiled ones or those shared with the user, keeping the search shown, from the first page.
-  const notesTo = (changes: {
-    folder?: number
-    unfiled?: boolean
-    shared?: boolean
-  }): To => {
-    const next = new URLSearchParams(searchParams)
-    next.delete('page')
-    next.delete('folder')
-    next.delete('unfiled')
-    next.delete('shared')
-    if (changes.folder !== undefined) next.set('folder', String(changes.folder))
-    if (changes.unfiled) next.set('unfiled', '1')
-    if (changes.shared) next.set('shared', '1')
-    return { pathname: paths.notes, search: next.toString() }
-  }
+  const notesTo = (view: NotesView): To => ({
+    pathname: paths.notes,
+    search: notesViewParams(searchParams, view).toString(),
+  })
   const isAllActive =
     activeFolderId === null && !isUnfiledActive && !isSharedActive
   const navProps = {

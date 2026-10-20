@@ -4,6 +4,7 @@ import {
   folderIdParam,
   type NotePageState,
   notePath,
+  notesViewParams,
   paths,
   sharedParam,
   unfiledParam,
@@ -23,20 +24,9 @@ export function useNoteSearchParams() {
   const pageParam = Number(searchParams.get('page'))
   const page = Number.isInteger(pageParam) && pageParam > 1 ? pageParam : 1
 
-  // Changing the filters starts again from the first page.
-  const updateFilters = (changes: Record<string, string | null>) =>
-    setSearchParams(
-      (current) => {
-        const next = new URLSearchParams(current)
-        next.delete('page')
-        for (const [key, value] of Object.entries(changes)) {
-          if (value) next.set(key, value)
-          else next.delete(key)
-        }
-        return next
-      },
-      { replace: true },
-    )
+  const updateParams = (
+    update: (current: URLSearchParams) => URLSearchParams,
+  ) => setSearchParams(update, { replace: true })
 
   return {
     query,
@@ -65,10 +55,20 @@ export function useNoteSearchParams() {
       preventScrollReset: true,
     },
     clearFilters: () =>
-      updateFilters({ q: null, folder: null, unfiled: null, shared: null }),
+      updateParams((current) => {
+        const next = notesViewParams(current)
+        next.delete('q')
+        return next
+      }),
     /** Drops the search, staying in the folder shown. */
-    clearQuery: () => updateFilters({ q: null }),
+    clearQuery: () =>
+      updateParams((current) => {
+        const next = new URLSearchParams(current)
+        next.delete('q')
+        next.delete('page')
+        return next
+      }),
     /** Shows every folder's notes, keeping the search. */
-    clearFolder: () => updateFilters({ folder: null }),
+    clearFolder: () => updateParams((current) => notesViewParams(current)),
   }
 }

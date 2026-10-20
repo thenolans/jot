@@ -47,6 +47,28 @@ export function folderIdParam(searchParams: URLSearchParams) {
     : null
 }
 
+/**
+ * Which notes the grid shows: a folder's, the user's notes filed in no folder, or those shared with the
+ * user. With none set, it shows every note.
+ */
+export type NotesView = { folder?: number; unfiled?: boolean; shared?: boolean }
+
+/**
+ * The notes grid's search params switched to `view`, keeping the search and starting again from the
+ * first page.
+ */
+export function notesViewParams(
+  searchParams: URLSearchParams,
+  view: NotesView = {},
+) {
+  const next = new URLSearchParams(searchParams)
+  for (const key of ['page', 'folder', 'unfiled', 'shared']) next.delete(key)
+  if (view.folder !== undefined) next.set('folder', String(view.folder))
+  if (view.unfiled) next.set('unfiled', '1')
+  if (view.shared) next.set('shared', '1')
+  return next
+}
+
 /** Router state a link to a note can pass. */
 export type NotePageState = {
   /** Opened from the notes grid, so closing the note goes back to it. */
