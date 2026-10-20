@@ -1,5 +1,6 @@
 import Alert from '@/components/ui/Alert'
 import Button from '@/components/ui/Button'
+import PasswordField from '@/components/ui/PasswordField'
 import TextField from '@/components/ui/TextField'
 import { useFormAction } from '@/hooks/useFormAction'
 import { useFormValidation } from '@/hooks/useFormValidation'
@@ -32,10 +33,9 @@ export default function LoginForm() {
         defaultValue={state.values.email}
         error={validation.errors.email ?? state.fieldErrors.email}
       />
-      <TextField
+      <PasswordField
         label="Password"
         name="password"
-        type="password"
         autoComplete="current-password"
         required
         error={validation.errors.password ?? state.fieldErrors.password}
