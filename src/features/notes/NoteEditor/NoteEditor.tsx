@@ -5,6 +5,7 @@ import ArrowRightIcon from '@/components/icons/ArrowRightIcon'
 import CloseIcon from '@/components/icons/CloseIcon'
 import EyeIcon from '@/components/icons/EyeIcon'
 import PencilIcon from '@/components/icons/PencilIcon'
+import PinIcon from '@/components/icons/PinIcon'
 import ShareIcon from '@/components/icons/ShareIcon'
 import TrashIcon from '@/components/icons/TrashIcon'
 import Button from '@/components/ui/Button'
@@ -20,6 +21,7 @@ import { canEditNote, isSharedWithUser } from '../access'
 import NoteBodyInput from '../NoteBodyInput'
 import NoteMarkdown from '../NoteMarkdown'
 import type { Note } from '../types'
+import { usePinNote } from '../usePinNote'
 import { useNoteAutosave } from './useNoteAutosave'
 import { useNoteSaveStatus } from './useNoteSaveStatus'
 
@@ -68,8 +70,9 @@ type NoteEditorProps = {
 /**
  * A note open to read or edit: its title, editable in either mode, then its text, rendered from its
  * markdown to read or as markdown to edit. Changes save as they're typed, so there's nothing to submit.
- * A note shared with the user says who shared it, in place of the menu (only its owner can share, move
- * or delete it), and one they can only view stays in read mode.
+ * Its owner can pin it from the button beside the title or from its menu. A note shared with the user
+ * says who shared it, in place of the menu (only its owner can pin, share, move or delete it), and one
+ * they can only view stays in read mode.
  */
 export default function NoteEditor({
   note,
@@ -86,6 +89,8 @@ export default function NoteEditor({
   const mode = canEdit ? chosenMode : 'read'
   const [draft, change] = useNoteAutosave(note, isNew)
   const saveStatus = useNoteSaveStatus(note.id)
+  const { mutate: pinNote } = usePinNote()
+  const togglePin = () => pinNote({ id: note.id, isPinned: !note.isPinned })
   const bodyRef = useRef<HTMLTextAreaElement>(null)
 
   const startWriting = () => {
@@ -129,6 +134,18 @@ export default function NoteEditor({
             iconsOnlyOnPhones
             className="flex-none"
           />
+        )}
+        {!isSharedWithUser(note) && (
+          <IconButton
+            size="lg"
+            aria-label="Pin note"
+            aria-pressed={note.isPinned}
+            title={note.isPinned ? 'Unpin' : 'Pin'}
+            onClick={togglePin}
+            className={cx(note.isPinned && 'text-accent hover:text-accent')}
+          >
+            <PinIcon size={20} filled={note.isPinned} />
+          </IconButton>
         )}
         <IconButton
           size="lg"
@@ -186,6 +203,10 @@ export default function NoteEditor({
           </p>
         ) : (
           <Menu label="Note actions" placement="top start" className="-ml-2">
+            <MenuItem icon={<PinIcon />} onAction={togglePin}>
+              {note.isPinned ? 'Unpin' : 'Pin to top'}
+            </MenuItem>
+            <MenuDivider />
             <MenuItem icon={<ShareIcon />} onAction={onShare}>
               Share…
             </MenuItem>
@@ -217,7 +238,7 @@ export default function NoteEditor({
                   ? "Saves when you're back online"
                   : saveStatus === 'failed'
                     ? "Couldn't save. Keep typing to try again."
-                    : `Edited ${formatDate(note.updatedAt)}`}
+                    : `${note.isPinned ? 'Pinned · ' : ''}Edited ${formatDate(note.updatedAt)}`}
         </Eyebrow>
         <Button onClick={onDone} className="flex-none">
           Done

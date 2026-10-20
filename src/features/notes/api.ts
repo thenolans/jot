@@ -18,6 +18,7 @@ type NoteResponse = {
   access: NoteAccess
   owner: Person
   share_count: number
+  is_pinned: boolean
   created_at: string
   updated_at: string
 }
@@ -31,6 +32,7 @@ function toNote(response: NoteResponse): Note {
     access: response.access,
     owner: response.owner,
     shareCount: response.share_count,
+    isPinned: response.is_pinned,
     createdAt: response.created_at,
     updatedAt: response.updated_at,
   }
@@ -40,8 +42,9 @@ function toNote(response: NoteResponse): Note {
 export const NOTE_PAGE_SIZE = 24
 
 /**
- * One page of the signed-in user's notes and those shared with them, most recently edited first. Without
- * a folder, notes in private folders are left out. Fails with a 404 past the last page.
+ * One page of the signed-in user's notes and those shared with them, most recently edited first, with
+ * their pinned notes ahead of the rest (except in a search). Without a folder, notes in private folders
+ * are left out. Fails with a 404 past the last page.
  */
 export async function fetchNotes(
   { query, folderId, unfiled, shared }: NoteFilters,
@@ -109,6 +112,15 @@ export async function moveNote(
   } catch (error) {
     throw rekeyFieldErrors(error, { folder_id: 'folderId' })
   }
+}
+
+/** Pins one of the signed-in user's own notes ahead of the rest, or unpins it, returning it as saved. */
+export async function pinNote(id: number, isPinned: boolean): Promise<Note> {
+  return toNote(
+    await api.patch<NoteResponse>(`/jot/notes/${id}/`, {
+      is_pinned: isPinned,
+    }),
+  )
 }
 
 /** Creates a note for the signed-in user, returning it as saved. */

@@ -14,6 +14,7 @@ const note = (id: number, changes: Partial<Note> = {}): Note => ({
   access: 'owner',
   owner: { name: 'Tom', email: 'tom@example.com' },
   shareCount: 0,
+  isPinned: false,
   createdAt: '2026-10-01T00:00:00Z',
   updatedAt: '2026-10-01T00:00:00Z',
   ...changes,
@@ -37,6 +38,20 @@ describe('notesPage', () => {
       note(3, { updatedAt: '2026-10-02T00:00:00Z' }),
     ]
     expect(ids(notesPage(notes, folders, {}, 1))).toEqual([2, 3, 1])
+  })
+
+  it('puts pinned notes first, except in a search', () => {
+    const notes = [
+      note(1, { updatedAt: '2026-10-03T00:00:00Z', title: 'Gate' }),
+      note(2, { updatedAt: '2026-10-01T00:00:00Z', isPinned: true }),
+      note(3, {
+        updatedAt: '2026-10-02T00:00:00Z',
+        isPinned: true,
+        title: 'Gate',
+      }),
+    ]
+    expect(ids(notesPage(notes, folders, {}, 1))).toEqual([3, 2, 1])
+    expect(ids(notesPage(notes, folders, { query: 'gate' }, 1))).toEqual([1, 3])
   })
 
   it('matches the search in titles and text, ignoring case', () => {

@@ -8,7 +8,7 @@ import { isNotFoundError } from '@/lib/api'
 import { apiId, isSameId, recordSavedId, resolveId } from '@/lib/localIds'
 import { offlineChange, refetchAfterLastChange } from '@/lib/offlineQuery'
 
-import { createNote, deleteNote, moveNote, updateNote } from './api'
+import { createNote, deleteNote, moveNote, pinNote, updateNote } from './api'
 import { findCachedNote, updateCachedNotes } from './noteCache'
 import { noteQueries } from './queries'
 import type { NewNote, Note, NoteChanges } from './types'
@@ -21,6 +21,9 @@ export const createNoteMutationKey = [...noteQueries.all(), 'create'] as const
 
 /** Marks notes moved to another folder. */
 export const moveNoteMutationKey = [...noteQueries.all(), 'move'] as const
+
+/** Marks notes pinned or unpinned. */
+export const pinNoteMutationKey = [...noteQueries.all(), 'pin'] as const
 
 /** Marks deletes of notes. */
 export const deleteNoteMutationKey = [...noteQueries.all(), 'delete'] as const
@@ -42,6 +45,11 @@ export type MoveNote = {
   folderId: number | null
 }
 
+export type PinNote = {
+  id: number
+  isPinned: boolean
+}
+
 /** Once every change has been sent, the notes and folders are refetched, which also undoes any that failed. */
 const refetchAll = (queryClient: QueryClient) =>
   refetchAfterLastChange(queryClient, [
@@ -51,8 +59,8 @@ const refetchAll = (queryClient: QueryClient) =>
   ])
 
 /**
- * Sets up every change to notes: making one, saving its title and text as it's typed, moving it and
- * deleting it. Each shows straight away, then is sent with the other changes, in order (see
+ * Sets up every change to notes: making one, saving its title and text as it's typed, moving it, pinning
+ * it and deleting it. Each shows straight away, then is sent with the other changes, in order (see
  * `offlineChange`), so they all work offline. Their options live on the client rather than in a hook, so
  * changes kept from before the app was closed can still be sent.
  */
@@ -86,6 +94,7 @@ export function setNoteMutationDefaults(queryClient: QueryClient) {
           access: 'owner',
           owner: { name: user?.name ?? '', email: user?.email ?? null },
           shareCount: 0,
+          isPinned: false,
           createdAt: now,
           updatedAt: now,
         }
@@ -143,6 +152,19 @@ export function setNoteMutationDefaults(queryClient: QueryClient) {
       updateCachedFolders(queryClient, (folders) =>
         adjustNoteCount(adjustNoteCount(folders, from, -1), folderId, 1),
       )
+    },
+    onSettled: () => refetchAll(queryClient),
+  })
+
+  // Pinning isn't an edit, so the note keeps when it was last edited.
+  queryClient.setMutationDefaults<Note, Error, PinNote>(pinNoteMutationKey, {
+    ...offlineChange,
+    mutationFn: ({ id, isPinned }) => pinNote(apiId(id), isPinned),
+    onMutate: async ({ id, isPinned }) => {
+      await cancelRefetches()
+      updateCachedNotes(queryClient, {
+        edit: (note) => (isSameId(note.id, id) ? { ...note, isPinned } : note),
+      })
     },
     onSettled: () => refetchAll(queryClient),
   })

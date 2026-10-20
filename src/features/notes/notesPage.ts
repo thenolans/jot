@@ -13,7 +13,7 @@ const mentions = (note: Note, query: string) =>
 
 /**
  * One page of `notes` matching `filters`, worked out on the device the way the API would: most recently
- * edited first, with a folder's notes only those filed directly in it, unfiled notes only the user's own
+ * edited first, pinned notes ahead of the rest (except in a search), with a folder's notes only those filed directly in it, unfiled notes only the user's own
  * in no folder, and notes in private folders only in their folders. `null` past the last page.
  */
 export function notesPage(
@@ -35,7 +35,9 @@ export function notesPage(
     )
     .sort(
       (a, b) =>
-        Date.parse(b.updatedAt) - Date.parse(a.updatedAt) || b.id - a.id,
+        (lowerQuery ? 0 : Number(b.isPinned) - Number(a.isPinned)) ||
+        Date.parse(b.updatedAt) - Date.parse(a.updatedAt) ||
+        b.id - a.id,
     )
 
   const start = (page - 1) * NOTE_PAGE_SIZE

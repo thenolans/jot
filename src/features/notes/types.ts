@@ -16,6 +16,8 @@ export type Note = {
   owner: Person
   /** How many people the user has shared their note with; 0 for a note shared with them. */
   shareCount: number
+  /** Whether the user has pinned it ahead of their other notes; always `false` for a note shared with them. */
+  isPinned: boolean
   createdAt: string
   /** When it was last edited. */
   updatedAt: string

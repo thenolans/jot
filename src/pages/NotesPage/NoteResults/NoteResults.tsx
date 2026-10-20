@@ -7,6 +7,7 @@ import Button from '@/components/ui/Button'
 import ButtonLink from '@/components/ui/ButtonLink'
 import EmptyState from '@/components/ui/EmptyState'
 import ErrorRetry from '@/components/ui/ErrorRetry'
+import Eyebrow from '@/components/ui/Eyebrow'
 import Pagination from '@/components/ui/Pagination'
 import NoteCard from '@/features/notes/NoteCard'
 import NoteCardSkeleton from '@/features/notes/NoteCardSkeleton'
@@ -48,7 +49,11 @@ const SKELETON_LINES = [5, 3, 9, 3, 7, 5, 3, 7, 5]
 const estimateHeight = (note: Note) =>
   (note.title ? 3 : 1) + previewLines(notePreview(note.content))
 
-/** The grid of notes, or what to show instead while it loads, fails or comes up empty. */
+/**
+ * The grid of notes, or what to show instead while it loads, fails or comes up empty. Pinned notes come
+ * first from the API, and get a section of their own above the rest; a search lists them in with the
+ * others, by when they were edited.
+ */
 export default function NoteResults({
   results,
   query,
@@ -163,6 +168,25 @@ export default function NoteResults({
     )
   }
 
+  const noteColumns = (notes: Note[]) => (
+    <NoteColumns
+      items={notes}
+      estimateHeight={estimateHeight}
+      getKey={(note) => note.id}
+      renderItem={(note) => (
+        <NoteCard
+          note={note}
+          to={noteTo(note.id)}
+          state={{ fromList: true } satisfies NotePageState}
+          // The note opens over the grid, which stays scrolled where it was.
+          preventScrollReset
+        />
+      )}
+    />
+  )
+  const pinned = query ? [] : notes.filter((note) => note.isPinned)
+  const others = query ? notes : notes.filter((note) => !note.isPinned)
+
   return (
     <div
       aria-busy={isStale}
@@ -173,20 +197,32 @@ export default function NoteResults({
           {plural(count, 'note matches', 'notes match')}
         </p>
       )}
-      <NoteColumns
-        items={notes}
-        estimateHeight={estimateHeight}
-        getKey={(note) => note.id}
-        renderItem={(note) => (
-          <NoteCard
-            note={note}
-            to={noteTo(note.id)}
-            state={{ fromList: true } satisfies NotePageState}
-            // The note opens over the grid, which stays scrolled where it was.
-            preventScrollReset
-          />
-        )}
-      />
+      {pinned.length > 0 ? (
+        <>
+          <section
+            aria-labelledby="pinned-notes"
+            className="flex flex-col gap-4"
+          >
+            <Eyebrow as="h2" id="pinned-notes">
+              Pinned
+            </Eyebrow>
+            {noteColumns(pinned)}
+          </section>
+          {others.length > 0 && (
+            <section
+              aria-labelledby="other-notes"
+              className="mt-8 flex flex-col gap-4"
+            >
+              <Eyebrow as="h2" id="other-notes">
+                Others
+              </Eyebrow>
+              {noteColumns(others)}
+            </section>
+          )}
+        </>
+      ) : (
+        noteColumns(others)
+      )}
       {pageCount > 1 && (
         <div className="mt-8 flex justify-center">
           <Pagination
