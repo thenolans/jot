@@ -59,7 +59,7 @@ export default function NotesPage() {
         {showStatus && (
           <>
             <Eyebrow as="p" className="truncate">
-              {[plural(results.count, 'note', 'notes'), ...scope].join(' · ')}
+              {[plural(results.count, 'note'), ...scope].join(' · ')}
             </Eyebrow>
             {/* Leaving a folder is the folder nav's job, so this only drops the search. */}
             {filters.query && (

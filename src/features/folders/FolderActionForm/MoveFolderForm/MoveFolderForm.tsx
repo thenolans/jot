@@ -2,7 +2,7 @@ import Button from '@/components/ui/Button'
 import { DialogActions } from '@/components/ui/Dialog'
 import { useFormAction } from '@/hooks/useFormAction'
 
-import FolderPicker from '../../FolderPicker'
+import FolderPicker, { pickedFolderId } from '../../FolderPicker'
 import { withDescendants } from '../../folderTree'
 import type { Folder } from '../../types'
 import { useUpdateFolder } from '../../useUpdateFolder'
@@ -25,7 +25,7 @@ export default function MoveFolderForm({
   const { mutate: update } = useUpdateFolder()
   // It moves straight away, online or off, so there's nothing to wait for.
   const [, formAction] = useFormAction(fields, async ({ parentId }) => {
-    const to = parentId ? Number(parentId) : null
+    const to = pickedFolderId(parentId)
     if (to !== folder.parentId)
       update({ id: folder.id, changes: { parentId: to } })
     onDone()

@@ -4,6 +4,7 @@ import TextField from '@/components/ui/TextField'
 import { useFormAction } from '@/hooks/useFormAction'
 import { useFormValidation } from '@/hooks/useFormValidation'
 
+import { FOLDER_NAME_MAX_LENGTH } from '../../api'
 import type { Folder } from '../../types'
 import { useCreateFolder } from '../../useCreateFolder'
 import { useUpdateFolder } from '../../useUpdateFolder'
@@ -47,7 +48,7 @@ export default function FolderNameForm({
         // Spaces alone aren't a name.
         pattern=".*\S.*"
         data-pattern-message="Name is required."
-        maxLength={255}
+        maxLength={FOLDER_NAME_MAX_LENGTH}
         autoComplete="off"
         // Password managers take a field called "Name" for the user's own and offer to fill it.
         data-1p-ignore

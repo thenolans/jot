@@ -38,6 +38,9 @@ function toNote(response: NoteResponse): Note {
   }
 }
 
+/** The longest title the API takes. */
+export const NOTE_TITLE_MAX_LENGTH = 255
+
 /** Notes per page of the list. Divides evenly into 2 or 3 columns. */
 export const NOTE_PAGE_SIZE = 24
 
@@ -90,12 +93,14 @@ export async function fetchNote(id: number): Promise<Note> {
   return toNote(await api.get<NoteResponse>(`/jot/notes/${id}/`))
 }
 
+/** Changes the given fields of a note, returning it as saved. */
+async function patchNote(id: number, body: object): Promise<Note> {
+  return toNote(await api.patch<NoteResponse>(`/jot/notes/${id}/`, body))
+}
+
 /** Changes a note's title or text, returning it as saved. */
-export async function updateNote(
-  id: number,
-  changes: NoteChanges,
-): Promise<Note> {
-  return toNote(await api.patch<NoteResponse>(`/jot/notes/${id}/`, changes))
+export function updateNote(id: number, changes: NoteChanges): Promise<Note> {
+  return patchNote(id, changes)
 }
 
 /** Moves a note into a folder, or out of any for `null`, returning it as saved. */
@@ -104,23 +109,15 @@ export async function moveNote(
   folderId: number | null,
 ): Promise<Note> {
   try {
-    return toNote(
-      await api.patch<NoteResponse>(`/jot/notes/${id}/`, {
-        folder_id: folderId,
-      }),
-    )
+    return await patchNote(id, { folder_id: folderId })
   } catch (error) {
     throw rekeyFieldErrors(error, { folder_id: 'folderId' })
   }
 }
 
 /** Pins one of the signed-in user's own notes ahead of the rest, or unpins it, returning it as saved. */
-export async function pinNote(id: number, isPinned: boolean): Promise<Note> {
-  return toNote(
-    await api.patch<NoteResponse>(`/jot/notes/${id}/`, {
-      is_pinned: isPinned,
-    }),
-  )
+export function pinNote(id: number, isPinned: boolean): Promise<Note> {
+  return patchNote(id, { is_pinned: isPinned })
 }
 
 /** Creates a note for the signed-in user, returning it as saved. */

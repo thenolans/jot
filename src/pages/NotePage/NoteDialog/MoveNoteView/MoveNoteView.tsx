@@ -1,7 +1,7 @@
 import Button from '@/components/ui/Button'
 import ErrorRetry from '@/components/ui/ErrorRetry'
 import ModalSubview from '@/components/ui/ModalSubview'
-import FolderPicker from '@/features/folders/FolderPicker'
+import FolderPicker, { pickedFolderId } from '@/features/folders/FolderPicker'
 import { useFolders } from '@/features/folders/useFolders'
 import type { Note } from '@/features/notes/types'
 import { useMoveNote } from '@/features/notes/useMoveNote'
@@ -26,7 +26,7 @@ export default function MoveNoteView({
   const { mutate: move } = useMoveNote()
   // It moves straight away, online or off, so there's nothing to wait for.
   const [, formAction] = useFormAction(fields, async ({ folderId }) => {
-    const to = folderId ? Number(folderId) : null
+    const to = pickedFolderId(folderId)
     if (to !== note.folderId) move({ id: note.id, folderId: to })
     onBack()
   })

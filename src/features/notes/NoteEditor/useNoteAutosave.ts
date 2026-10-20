@@ -1,6 +1,8 @@
 import { useIsMutating } from '@tanstack/react-query'
 import { useEffect, useEffectEvent, useRef, useState } from 'react'
 
+import { isOfflineChange } from '@/lib/offlineQuery'
+
 import type { Note, NoteChanges } from '../types'
 import { useDeleteNote } from '../useDeleteNote'
 import { useUpdateNote } from '../useUpdateNote'
@@ -44,10 +46,7 @@ export function useNoteAutosave(note: Note, discardIfEmpty: boolean) {
   // from this editor's own save.
   const savedAt = useRef(note.updatedAt)
   // While a change is on its way, the cached note may be older than what's been sent.
-  const isSending =
-    useIsMutating({
-      predicate: (mutation) => !!mutation.options.meta?.keepOffline,
-    }) > 0
+  const isSending = useIsMutating({ predicate: isOfflineChange }) > 0
 
   const save = useEffectEvent((toSave: NoteDraft) => {
     const changes = changesFrom(toSave, sent.current)

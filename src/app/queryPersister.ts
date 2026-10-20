@@ -4,7 +4,7 @@ import type { PersistQueryClientProviderProps } from '@tanstack/react-query-pers
 import { del, get, set } from 'idb-keyval'
 
 import { queryClient } from '@/app/queryClient'
-import { OFFLINE_MAX_AGE } from '@/lib/offlineQuery'
+import { isOfflineChange, OFFLINE_MAX_AGE } from '@/lib/offlineQuery'
 
 /**
  * Bump when the shape of cached data changes, so data saved by an older version of the app is dropped
@@ -29,8 +29,7 @@ export const persistOptions: PersistQueryClientProviderProps['persistOptions'] =
       shouldDehydrateQuery: (query) =>
         query.state.data !== undefined && !!query.meta?.keepOffline,
       shouldDehydrateMutation: (mutation) =>
-        defaultShouldDehydrateMutation(mutation) &&
-        !!mutation.meta?.keepOffline,
+        defaultShouldDehydrateMutation(mutation) && isOfflineChange(mutation),
     },
   }
 

@@ -17,6 +17,7 @@ import UserAvatar from '@/features/auth/UserAvatar'
 import { cx } from '@/lib/cx'
 
 import { canEditNote, isSharedWithUser, sharedByLabel } from '../access'
+import { NOTE_TITLE_MAX_LENGTH } from '../api'
 import NoteBodyInput from '../NoteBodyInput'
 import NoteMarkdown from '../NoteMarkdown'
 import PinButton from '../PinButton'
@@ -120,7 +121,7 @@ export default function NoteEditor({
             value={draft.title}
             readOnly={isChecking}
             onChange={(event) => change({ title: event.target.value })}
-            maxLength={255}
+            maxLength={NOTE_TITLE_MAX_LENGTH}
             placeholder="Title"
             className={titleClassName}
           />

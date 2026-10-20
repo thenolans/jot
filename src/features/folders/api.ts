@@ -23,6 +23,9 @@ function toFolder(response: FolderResponse): Folder {
 
 const inputNames = { parent_folder_id: 'parentId' }
 
+/** The longest folder name the API takes. */
+export const FOLDER_NAME_MAX_LENGTH = 255
+
 /** Every one of the signed-in user's folders, at every level, sorted by name. */
 export async function fetchFolders(): Promise<Folder[]> {
   return (await api.get<FolderResponse[]>('/jot/folders/')).map(toFolder)

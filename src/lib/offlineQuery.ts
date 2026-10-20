@@ -1,4 +1,4 @@
-import type { QueryClient, QueryKey } from '@tanstack/react-query'
+import type { Mutation, QueryClient, QueryKey } from '@tanstack/react-query'
 
 import { isNetworkError } from './api'
 
@@ -42,6 +42,13 @@ export const offlineChange = {
   retryDelay: 0,
 } as const
 
+/** Whether `mutation` is an `offlineChange`. */
+export function isOfflineChange(
+  mutation: Mutation<unknown, Error, unknown, unknown>,
+) {
+  return !!mutation.options.meta?.keepOffline
+}
+
 /**
  * For an `offlineChange`'s `onSettled`: refetches `queryKeys` once no other change is still waiting, so a
  * run of quick changes refetches once, after the last, which also undoes any that failed.
@@ -51,9 +58,7 @@ export function refetchAfterLastChange(
   queryKeys: QueryKey[],
 ) {
   // The settling change is still counted.
-  const waiting = queryClient.isMutating({
-    predicate: (mutation) => !!mutation.options.meta?.keepOffline,
-  })
+  const waiting = queryClient.isMutating({ predicate: isOfflineChange })
   if (waiting === 1)
     return Promise.all(
       queryKeys.map((queryKey) => queryClient.invalidateQueries({ queryKey })),
