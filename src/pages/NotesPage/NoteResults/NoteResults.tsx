@@ -9,7 +9,6 @@ import ButtonLink from '@/components/ui/ButtonLink'
 import EmptyState from '@/components/ui/EmptyState'
 import ErrorRetry from '@/components/ui/ErrorRetry'
 import Eyebrow from '@/components/ui/Eyebrow'
-import Pagination from '@/components/ui/Pagination'
 import NoteCard from '@/features/notes/NoteCard'
 import NoteCardSkeleton from '@/features/notes/NoteCardSkeleton'
 import { notePreview, previewLines } from '@/features/notes/notePreview'
@@ -20,6 +19,7 @@ import { cx } from '@/lib/cx'
 import { plural } from '@/lib/plural'
 
 import NoteColumns from '../NoteColumns'
+import { useLoadMoreSentinel } from './useLoadMoreSentinel'
 
 type NoteResultsProps = {
   results: ReturnType<typeof useNotes>
@@ -27,10 +27,6 @@ type NoteResultsProps = {
   filters: Required<NoteFilters>
   /** The folder's name, once it's known. */
   folderName?: string
-  /** The page shown, from 1. */
-  page: number
-  /** Where another page of the same results lives. */
-  pageTo: (page: number) => To
   /** Where a note opens. */
   noteTo: (id: number) => To
   /** Link props for a new note. */
@@ -46,16 +42,14 @@ const estimateHeight = (note: Note) =>
   (note.title ? 3 : 1) + previewLines(notePreview(note.content))
 
 /**
- * The grid of notes, or what to show instead while it loads, fails or comes up empty. Pinned notes come
- * first from the API, and get a section of their own above the rest; a search lists them in with the
- * others, by when they were edited.
+ * The grid of notes, or what to show instead while it loads, fails or comes up empty. More load as it's
+ * scrolled to the end. Pinned notes come first from the API, and get a section of their own above the
+ * rest; a search lists them in with the others, by when they were edited.
  */
 export default function NoteResults({
   results,
   filters,
   folderName,
-  page,
-  pageTo,
   noteTo,
   newNoteLink,
   onClearFilters,
@@ -63,10 +57,12 @@ export default function NoteResults({
   const {
     notes,
     count,
-    pageCount,
     isLoading,
     isStale,
-    isPageNotFound,
+    hasMore,
+    isLoadingMore,
+    loadMoreError,
+    loadMore,
     error,
     reload,
   } = results
@@ -77,6 +73,11 @@ export default function NoteResults({
   const { query, folderId, unfiled } = filters
   const shared = filters.shared === true
   const hasFilters = query !== '' || folderId !== null || unfiled || shared
+  const sentinelRef = useLoadMoreSentinel(
+    loadMore,
+    hasMore && !loadMoreError,
+    notes.length,
+  )
 
   if (isLoading) {
     return (
@@ -94,21 +95,6 @@ export default function NoteResults({
           compact={compact}
         />
       </>
-    )
-  }
-
-  if (isPageNotFound) {
-    return (
-      <EmptyState
-        title="No notes on this page"
-        action={
-          <ButtonLink to={pageTo(1)} replace>
-            Go to the first page
-          </ButtonLink>
-        }
-      >
-        The list is shorter than it was.
-      </EmptyState>
     )
   }
 
@@ -224,14 +210,17 @@ export default function NoteResults({
       ) : (
         noteColumns(others)
       )}
-      {pageCount > 1 && (
-        <div className="mt-8 flex justify-center">
-          <Pagination
-            label="Note pages"
-            page={page}
-            pageCount={pageCount}
-            to={pageTo}
-          />
+      {hasMore && (
+        <div ref={sentinelRef} className="mt-8 flex justify-center">
+          {loadMoreError ? (
+            <ErrorRetry onRetry={loadMore}>{loadMoreError}</ErrorRetry>
+          ) : (
+            isLoadingMore && (
+              <p role="status" className="text-sm text-muted">
+                Loading more notes…
+              </p>
+            )
+          )}
         </div>
       )}
     </div>

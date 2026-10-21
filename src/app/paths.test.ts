@@ -3,9 +3,9 @@ import { describe, expect, it } from 'vitest'
 import { notesViewParams } from './paths'
 
 describe('notesViewParams', () => {
-  const current = new URLSearchParams('q=soup&folder=3&page=2')
+  const current = new URLSearchParams('q=soup&folder=3')
 
-  it('switches the view, keeping the search and dropping the page', () => {
+  it('switches the view, keeping the search', () => {
     expect(notesViewParams(current, { shared: true }).toString()).toBe(
       'q=soup&shared=1',
     )
@@ -20,6 +20,6 @@ describe('notesViewParams', () => {
 
   it('leaves the params it was given alone', () => {
     notesViewParams(current, { unfiled: true })
-    expect(current.toString()).toBe('q=soup&folder=3&page=2')
+    expect(current.toString()).toBe('q=soup&folder=3')
   })
 })

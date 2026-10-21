@@ -54,15 +54,14 @@ export function folderIdParam(searchParams: URLSearchParams) {
 export type NotesView = { folder?: number; unfiled?: boolean; shared?: boolean }
 
 /**
- * The notes grid's search params switched to `view`, keeping the search and starting again from the
- * first page.
+ * The notes grid's search params switched to `view`, keeping the search.
  */
 export function notesViewParams(
   searchParams: URLSearchParams,
   view: NotesView = {},
 ) {
   const next = new URLSearchParams(searchParams)
-  for (const key of ['page', 'folder', 'unfiled', 'shared']) next.delete(key)
+  for (const key of ['folder', 'unfiled', 'shared']) next.delete(key)
   if (view.folder !== undefined) next.set('folder', String(view.folder))
   if (view.unfiled) next.set('unfiled', '1')
   if (view.shared) next.set('shared', '1')

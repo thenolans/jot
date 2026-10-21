@@ -24,7 +24,7 @@ import { useNoteSearchParams } from './useNoteSearchParams'
 export default function NotesPage() {
   const params = useNoteSearchParams()
   const { filters } = params
-  const results = useNotes(filters, params.page)
+  const results = useNotes(filters)
 
   const { folders } = useFolders()
   const folder = folders?.find(({ id }) => id === filters.folderId)
@@ -81,8 +81,6 @@ export default function NotesPage() {
         results={results}
         filters={filters}
         folderName={folder?.name}
-        page={params.page}
-        pageTo={params.pageTo}
         noteTo={params.noteTo}
         newNoteLink={params.newNoteLink}
         onClearFilters={params.clearFilters}

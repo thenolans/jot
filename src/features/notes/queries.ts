@@ -1,18 +1,27 @@
 import {
+  infiniteQueryOptions,
   type QueryClient,
   queryOptions,
   skipToken,
 } from '@tanstack/react-query'
 
 import { folderQueries } from '@/features/folders/queries'
-import { ApiError, isNetworkError } from '@/lib/api'
+import { isNetworkError, isNotFoundError, type Page } from '@/lib/api'
 import { connectivity } from '@/lib/connectivity'
 import { apiId, isLocalId, isSameId, resolveId } from '@/lib/localIds'
 import { keptOffline } from '@/lib/offlineQuery'
 
-import { fetchAllNotes, fetchNote, fetchNotes } from './api'
+import { fetchAllNotes, fetchNote, fetchNotes, NOTE_PAGE_SIZE } from './api'
 import { notesPage } from './notesPage'
 import type { Note, NoteFilters } from './types'
+
+/** A page of the list past its end. */
+const END_OF_LIST: Page<Note> = {
+  count: 0,
+  next: null,
+  previous: null,
+  results: [],
+}
 
 /** How long the copy of every note goes before it's refreshed, when the app is opened or comes back into view. */
 const OFFLINE_COPY_STALE_TIME = 5 * 60 * 1000
@@ -63,44 +72,53 @@ export const noteQueries = {
 
   lists: () => [...noteQueries.all(), 'list'] as const,
 
-  /** One page of the notes the user has or has been shared, matching `filters`. */
-  list: (
-    {
-      query = '',
-      folderId = null,
-      unfiled = false,
-      shared = null,
-    }: NoteFilters,
-    page: number,
-  ) =>
-    queryOptions({
+  /**
+   * The notes the user has or has been shared, matching `filters`, a page at a time as the list is
+   * scrolled. A page past the end (the list got shorter since the last one loaded) comes back empty.
+   */
+  list: ({
+    query = '',
+    folderId = null,
+    unfiled = false,
+    shared = null,
+  }: NoteFilters) =>
+    infiniteQueryOptions({
       queryKey: [
         ...noteQueries.lists(),
-        { query, folderId, unfiled, shared, page },
+        { query, folderId, unfiled, shared },
       ] as const,
-      queryFn: ({ client }) =>
-        localOrFetch(
-          () => {
-            const found = localList(
-              client,
-              { query, folderId, unfiled, shared },
-              page,
-            )
-            if (found === null)
-              throw new ApiError(404, 'There are no notes on this page.')
-            return found
-          },
-          () =>
-            fetchNotes(
-              {
-                query,
-                folderId: folderId && resolveId(folderId),
-                unfiled,
-                shared,
-              },
-              page,
-            ),
-        ),
+      queryFn: async ({ client, pageParam: page }): Promise<Page<Note>> => {
+        try {
+          return await localOrFetch(
+            () => {
+              const found = localList(
+                client,
+                { query, folderId, unfiled, shared },
+                page,
+              )
+              return found === null ? END_OF_LIST : found
+            },
+            () =>
+              fetchNotes(
+                {
+                  query,
+                  folderId: folderId && resolveId(folderId),
+                  unfiled,
+                  shared,
+                },
+                page,
+              ),
+          )
+        } catch (error) {
+          if (page > 1 && isNotFoundError(error)) return END_OF_LIST
+          throw error
+        }
+      },
+      initialPageParam: 1,
+      getNextPageParam: (lastPage, _, lastPageParam) =>
+        lastPageParam * NOTE_PAGE_SIZE < lastPage.count
+          ? lastPageParam + 1
+          : undefined,
       ...keptOffline,
     }),
 
