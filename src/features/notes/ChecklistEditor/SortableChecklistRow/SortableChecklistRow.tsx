@@ -24,7 +24,11 @@ export default function SortableChecklistRow({
   index,
   ...props
 }: SortableChecklistRowProps) {
-  const { ref, handleRef, isDragging } = useSortable({ id, index })
+  const { ref, handleRef, isDragging } = useSortable({
+    id,
+    index,
+    disabled: props.disabled,
+  })
 
   return (
     <ChecklistRow

@@ -168,7 +168,8 @@ export default function NoteEditor({
         <ChecklistEditor
           content={draft.content}
           onChange={(content) => change({ content })}
-          readOnly={!canEdit || isChecking}
+          readOnly={!canEdit}
+          disabled={isChecking}
           className="min-h-0 flex-1 overflow-y-auto px-6 py-4"
         />
       ) : mode === 'edit' ? (

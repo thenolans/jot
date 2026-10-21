@@ -43,6 +43,11 @@ type ChecklistEditorProps = {
   onChange: (content: string) => void
   /** Items can't be checked off, changed, added or removed. */
   readOnly?: boolean
+  /**
+   * Items can't be changed for now, but show as they will once they can (handles and all), so nothing
+   * moves when they're enabled.
+   */
+  disabled?: boolean
   className?: string
 }
 
@@ -58,6 +63,7 @@ export default function ChecklistEditor({
   content,
   onChange,
   readOnly = false,
+  disabled = false,
   className,
 }: ChecklistEditorProps) {
   const [items, setItems] = useState(() => checklistItems(content).map(withKey))
@@ -103,7 +109,9 @@ export default function ChecklistEditor({
     if (caret) placeCaret(caret)
   }, [caret])
 
+  // Every change goes through here, so while disabled, the buttons that make one do nothing.
   function save(next: Item[], caretAfter?: Caret) {
+    if (disabled) return
     const written = checklistContent(next)
     setItems(next)
     setRead(written)
@@ -231,6 +239,7 @@ export default function ChecklistEditor({
   const rowProps = (item: Item) => ({
     item,
     readOnly,
+    disabled,
     isSettling: isSettling(item),
     inputRef: (input: HTMLInputElement | null) => {
       if (input) inputs.current.set(item.key, input)

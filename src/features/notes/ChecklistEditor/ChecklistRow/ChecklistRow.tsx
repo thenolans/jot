@@ -21,6 +21,8 @@ export type ChecklistRowProps = {
   item: ChecklistItem
   /** Can't be checked off, changed or removed. */
   readOnly: boolean
+  /** Can't be checked off or changed for now, though it looks as it will when it can. */
+  disabled?: boolean
   /** Checked off a moment ago, so it's fading out before it folds away. */
   isSettling: boolean
   /** The drag handle, or a space its size for a row that can't be dragged; none when read only. */
@@ -39,6 +41,7 @@ export type ChecklistRowProps = {
 export default function ChecklistRow({
   item,
   readOnly,
+  disabled = false,
   isSettling,
   handle,
   isDragging = false,
@@ -68,7 +71,7 @@ export default function ChecklistRow({
       <Checkbox
         aria-label={item.text ? `Check off ${item.text}` : 'Check off'}
         checked={item.done}
-        disabled={readOnly}
+        disabled={readOnly || disabled}
         onChange={onToggle}
       />
       {/* Borderless like the rest of the note, with the caret marking focus. */}
@@ -78,7 +81,7 @@ export default function ChecklistRow({
         aria-label="List item"
         placeholder="List item"
         value={item.text}
-        readOnly={readOnly}
+        readOnly={readOnly || disabled}
         spellCheck={false}
         enterKeyHint="next"
         onChange={(event) => onTextChange(event.target.value)}
