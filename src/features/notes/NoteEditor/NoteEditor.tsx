@@ -2,6 +2,7 @@ import { useRef, useState } from 'react'
 import { flushSync } from 'react-dom'
 
 import ArrowRightIcon from '@/components/icons/ArrowRightIcon'
+import ChecklistIcon from '@/components/icons/ChecklistIcon'
 import EyeIcon from '@/components/icons/EyeIcon'
 import PencilIcon from '@/components/icons/PencilIcon'
 import PinIcon from '@/components/icons/PinIcon'
@@ -18,6 +19,8 @@ import { cx } from '@/lib/cx'
 
 import { canEditNote, isSharedWithUser, sharedByLabel } from '../access'
 import { NOTE_TITLE_MAX_LENGTH } from '../api'
+import { fromChecklist, toChecklist } from '../checklist'
+import ChecklistEditor from '../ChecklistEditor'
 import NoteBodyInput from '../NoteBodyInput'
 import NoteMarkdown from '../NoteMarkdown'
 import PinButton from '../PinButton'
@@ -74,6 +77,10 @@ type NoteEditorProps = {
  * Its owner can pin it from the button beside the title or from its menu. A note shared with the user
  * says who shared it, in place of the menu (only its owner can pin, share, move or delete it), and one
  * they can only view stays in read mode.
+ *
+ * Its owner can turn it into a checklist from its menu ("Show checkboxes"), and back. A checklist has no
+ * read and edit modes: its items are checked off and typed in where they are, unless it's only shared
+ * to view.
  */
 export default function NoteEditor({
   note,
@@ -92,6 +99,13 @@ export default function NoteEditor({
   const saveStatus = useNoteSaveStatus(note.id)
   const { mutate: pinNote } = usePinNote()
   const togglePin = () => pinNote({ id: note.id, isPinned: !note.isPinned })
+  const toggleChecklist = () =>
+    change({
+      isChecklist: !draft.isChecklist,
+      content: draft.isChecklist
+        ? fromChecklist(draft.content)
+        : toChecklist(draft.content),
+    })
   const bodyRef = useRef<HTMLTextAreaElement>(null)
 
   const startWriting = () => {
@@ -136,7 +150,7 @@ export default function NoteEditor({
             {note.title || 'Untitled'}
           </h2>
         )}
-        {canEdit && (
+        {canEdit && !draft.isChecklist && (
           <SegmentedControl
             label="Show the note"
             options={modeOptions}
@@ -150,7 +164,14 @@ export default function NoteEditor({
         <CloseButton onClick={onDone} />
       </div>
 
-      {mode === 'edit' ? (
+      {draft.isChecklist ? (
+        <ChecklistEditor
+          content={draft.content}
+          onChange={(content) => change({ content })}
+          readOnly={!canEdit || isChecking}
+          className="min-h-0 flex-1 overflow-y-auto px-6 py-4"
+        />
+      ) : mode === 'edit' ? (
         <NoteBodyInput
           ref={bodyRef}
           autoFocus={isNew}
@@ -204,6 +225,9 @@ export default function NoteEditor({
             </MenuItem>
             <MenuItem icon={<ArrowRightIcon />} onAction={onMove}>
               Move to…
+            </MenuItem>
+            <MenuItem icon={<ChecklistIcon />} onAction={toggleChecklist}>
+              {draft.isChecklist ? 'Hide checkboxes' : 'Show checkboxes'}
             </MenuItem>
             <MenuDivider />
             <MenuItem variant="danger" icon={<TrashIcon />} onAction={onDelete}>

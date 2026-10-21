@@ -15,6 +15,7 @@ const note = (id: number, changes: Partial<Note> = {}): Note => ({
   owner: { name: 'Tom', email: 'tom@example.com' },
   shareCount: 0,
   isPinned: false,
+  isChecklist: false,
   createdAt: '2026-10-01T00:00:00Z',
   updatedAt: '2026-10-01T00:00:00Z',
   ...changes,

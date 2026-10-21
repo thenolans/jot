@@ -19,6 +19,7 @@ type NoteResponse = {
   owner: Person
   share_count: number
   is_pinned: boolean
+  is_checklist: boolean
   created_at: string
   updated_at: string
 }
@@ -33,6 +34,7 @@ function toNote(response: NoteResponse): Note {
     owner: response.owner,
     shareCount: response.share_count,
     isPinned: response.is_pinned,
+    isChecklist: response.is_checklist,
     createdAt: response.created_at,
     updatedAt: response.updated_at,
   }
@@ -98,9 +100,12 @@ async function patchNote(id: number, body: object): Promise<Note> {
   return toNote(await api.patch<NoteResponse>(`/jot/notes/${id}/`, body))
 }
 
-/** Changes a note's title or text, returning it as saved. */
-export function updateNote(id: number, changes: NoteChanges): Promise<Note> {
-  return patchNote(id, changes)
+/** Changes a note's title, text or whether it's a checklist, returning it as saved. */
+export function updateNote(
+  id: number,
+  { isChecklist, ...changes }: NoteChanges,
+): Promise<Note> {
+  return patchNote(id, { ...changes, is_checklist: isChecklist })
 }
 
 /** Moves a note into a folder, or out of any for `null`, returning it as saved. */

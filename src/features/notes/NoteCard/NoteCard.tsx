@@ -13,6 +13,7 @@ import NoteMarkdown from '../NoteMarkdown'
 import { notePreview, previewLines } from '../notePreview'
 import PinButton from '../PinButton'
 import type { Note } from '../types'
+import ChecklistPreview from './ChecklistPreview'
 
 // Written out in full so Tailwind generates them.
 const lineClampClassNames = {
@@ -33,7 +34,7 @@ type NoteCardProps = Omit<LinkProps, 'children'> & {
 
 /**
  * A note in the grid, linking to it: its title, if it has one, and the start of its text, rendered from
- * its markdown. A note shared with the user has the avatar of whoever shared it in its corner, and one
+ * its markdown, or for a checklist, the items still to do. A note shared with the user has the avatar of whoever shared it in its corner, and one
  * the user has shared has an icon of two people there. The user's own notes have a pin button in the
  * corner, shown while the card is hovered or focused, or always once it's pinned. With a touch screen
  * there's no hover, so it shows only once pinned, as a mark that opens the note like the rest of the
@@ -122,7 +123,18 @@ export default function NoteCard({
               {note.title}
             </Heading>
           )}
-          {preview && (
+          {preview && note.isChecklist && (
+            <ChecklistPreview
+              id={previewId}
+              content={note.content}
+              className={cx(
+                'text-sm',
+                compact && 'max-sm:text-xs',
+                !note.title && cornerPadding,
+              )}
+            />
+          )}
+          {preview && !note.isChecklist && (
             <NoteMarkdown
               id={previewId}
               variant="preview"

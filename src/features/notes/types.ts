@@ -18,6 +18,11 @@ export type Note = {
   shareCount: number
   /** Whether the user has pinned it ahead of their other notes; always `false` for a note shared with them. */
   isPinned: boolean
+  /**
+   * Whether it's a checklist: shown as items to check off rather than as markdown. Its content is still
+   * markdown, one task (`- [ ] …`, `- [x] …`) per line, each item's text plain (see `checklist.ts`).
+   */
+  isChecklist: boolean
   createdAt: string
   /** When it was last edited. */
   updatedAt: string
@@ -39,7 +44,9 @@ export type NoteFilters = {
 }
 
 /** What can be changed about a note from its editor. */
-export type NoteChanges = Partial<Pick<Note, 'title' | 'content'>>
+export type NoteChanges = Partial<
+  Pick<Note, 'title' | 'content' | 'isChecklist'>
+>
 
 /** What a new note starts with; anything left out starts empty. */
 export type NewNote = Partial<Pick<Note, 'title' | 'content' | 'folderId'>>

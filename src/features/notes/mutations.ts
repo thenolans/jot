@@ -95,6 +95,7 @@ export function setNoteMutationDefaults(queryClient: QueryClient) {
           owner: { name: user?.name ?? '', email: user?.email ?? null },
           shareCount: 0,
           isPinned: false,
+          isChecklist: false,
           createdAt: now,
           updatedAt: now,
         }

@@ -3,6 +3,7 @@ import { useEffect, useEffectEvent, useRef, useState } from 'react'
 
 import { isOfflineChange } from '@/lib/offlineQuery'
 
+import { withoutEmptyItems } from '../checklist'
 import type { Note, NoteChanges } from '../types'
 import { useDeleteNote } from '../useDeleteNote'
 import { useUpdateNote } from '../useUpdateNote'
@@ -17,6 +18,8 @@ function changesFrom(draft: NoteDraft, saved: NoteDraft) {
   const changes: NoteChanges = {}
   if (draft.title !== saved.title) changes.title = draft.title
   if (draft.content !== saved.content) changes.content = draft.content
+  if (draft.isChecklist !== saved.isChecklist)
+    changes.isChecklist = draft.isChecklist
   return Object.keys(changes).length ? changes : null
 }
 
@@ -24,8 +27,9 @@ function changesFrom(draft: NoteDraft, saved: NoteDraft) {
 const isLater = (a: string, b: string) => Date.parse(a) > Date.parse(b)
 
 /**
- * The note's title and text as they're being edited, and a way to change them. Changes are saved once
- * typing pauses, and straight away when the editor closes or the app is put away. With
+ * The note's title, text and whether it's a checklist as they're being edited, and a way to change them. Changes are saved once
+ * typing pauses, and straight away when the editor closes (a checklist without its empty items) or the
+ * app is put away. With
  * `discardIfEmpty` (a note just created), closing the editor with nothing written deletes the note.
  *
  * The note may have been edited elsewhere since it was cached (on another device), so when a later
@@ -36,6 +40,7 @@ export function useNoteAutosave(note: Note, discardIfEmpty: boolean) {
   const [draft, setDraft] = useState<NoteDraft>({
     title: note.title,
     content: note.content,
+    isChecklist: note.isChecklist,
   })
   const { mutate } = useUpdateNote()
   const { mutate: deleteNote } = useDeleteNote()
@@ -65,7 +70,11 @@ export function useNoteAutosave(note: Note, discardIfEmpty: boolean) {
 
   const takeLaterVersion = useEffectEvent(() => {
     if (isSending || !isLater(note.updatedAt, savedAt.current)) return
-    const latest = { title: note.title, content: note.content }
+    const latest = {
+      title: note.title,
+      content: note.content,
+      isChecklist: note.isChecklist,
+    }
     if (!changesFrom(latest, sent.current)) return
     savedAt.current = note.updatedAt
     const unchanged = (field: keyof NoteDraft) =>
@@ -73,21 +82,28 @@ export function useNoteAutosave(note: Note, discardIfEmpty: boolean) {
     const next = {
       title: unchanged('title') ? latest.title : draft.title,
       content: unchanged('content') ? latest.content : draft.content,
+      isChecklist: unchanged('isChecklist')
+        ? latest.isChecklist
+        : draft.isChecklist,
     }
     sent.current = latest
     setDraft(next)
   })
   useEffect(() => {
     takeLaterVersion()
-  }, [note.updatedAt, note.title, note.content, isSending])
+  }, [note.updatedAt, note.title, note.content, note.isChecklist, isSending])
   const saveLatest = useEffectEvent(() => save(draft))
   // The delete waits a moment, so the cleanup React runs when it mounts the editor twice in development
   // doesn't delete the note: mounting again cancels it.
   const discardTimer = useRef<ReturnType<typeof setTimeout>>(undefined)
+  // A checklist's empty items are left for typing in, so they go when it closes.
   const saveOrDiscard = useEffectEvent(() => {
-    if (discardIfEmpty && !draft.title.trim() && !draft.content.trim())
+    const closing = draft.isChecklist
+      ? { ...draft, content: withoutEmptyItems(draft.content) }
+      : draft
+    if (discardIfEmpty && !closing.title.trim() && !closing.content.trim())
       discardTimer.current = setTimeout(() => deleteNote(note.id))
-    else save(draft)
+    else save(closing)
   })
 
   useEffect(() => {
