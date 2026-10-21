@@ -44,7 +44,8 @@ export default function ChecklistPreview({
       )}
       {more > 0 && <p className="text-faint">+ {more} more</p>}
       {completed > 0 && (
-        <p className="text-faint">{plural(completed, 'completed item')}</p>
+        // Set apart from the items above, since it isn't one of them.
+        <p className="mt-2 text-faint">{plural(completed, 'completed item')}</p>
       )}
     </div>
   )
