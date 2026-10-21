@@ -5,7 +5,7 @@ import type {
   Ref,
 } from 'react'
 
-import CloseIcon from '@/components/icons/CloseIcon'
+import TrashIcon from '@/components/icons/TrashIcon'
 import Checkbox from '@/components/ui/Checkbox'
 import IconButton from '@/components/ui/IconButton'
 import { cx } from '@/lib/cx'
@@ -99,7 +99,7 @@ export default function ChecklistRow({
           onClick={onRemove}
           className={cx('-mr-2', isDragging && 'invisible')}
         >
-          <CloseIcon size={16} />
+          <TrashIcon size={16} />
         </IconButton>
       )}
     </li>
