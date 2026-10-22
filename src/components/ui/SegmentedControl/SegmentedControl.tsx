@@ -4,6 +4,7 @@ import { cx } from '@/lib/cx'
 
 import {
   segmentedItemClassName,
+  type SegmentedStyleProps,
   segmentedTrackClassName,
 } from './segmentedClassNames'
 import SegmentedThumb from './SegmentedThumb'
@@ -23,6 +24,8 @@ type SegmentedControlProps<T extends string | number> = {
   onChange: (value: T) => void
   /** Below `md`, show only the options' icons, keeping their labels for screen readers. */
   iconsOnlyOnPhones?: boolean
+  /** `sm` lines up with an `sm` button, `md` with a text field. */
+  size?: SegmentedStyleProps['size']
   className?: string
 }
 
@@ -33,48 +36,51 @@ export default function SegmentedControl<T extends string | number>({
   value,
   onChange,
   iconsOnlyOnPhones,
+  size = 'sm',
   className,
 }: SegmentedControlProps<T>) {
   const name = useId()
   const checkedIndex = options.findIndex((option) => option.value === value)
 
   return (
-    <fieldset
-      className={segmentedTrackClassName({}, cx('inline-flex', className))}
-    >
+    <fieldset className={cx('inline-block min-w-0', className)}>
       <legend className="sr-only">{label}</legend>
-      <div className="relative grid flex-1 auto-cols-fr grid-flow-col">
-        {checkedIndex !== -1 && (
-          <SegmentedThumb index={checkedIndex} count={options.length} />
-        )}
-        {options.map((option) => {
-          const id = `${name}-${option.value}`
-          const checked = option.value === value
-          return (
-            <div key={option.value} className="relative">
-              <input
-                id={id}
-                type="radio"
-                name={name}
-                className="peer sr-only"
-                checked={checked}
-                onChange={() => onChange(option.value)}
-              />
-              <label
-                htmlFor={id}
-                className={segmentedItemClassName(
-                  { active: checked },
-                  'gap-1 peer-focus-visible:shadow-focus',
-                )}
-              >
-                {option.icon}
-                <span className={cx(iconsOnlyOnPhones && 'max-md:sr-only')}>
-                  {option.label}
-                </span>
-              </label>
-            </div>
-          )
-        })}
+      {/* The track is a div inside the fieldset, since a fieldset doesn't stretch its contents to its
+          height, which would leave the thumb short of the track. */}
+      <div className={segmentedTrackClassName({ size }, 'flex')}>
+        <div className="relative grid flex-1 auto-cols-fr grid-flow-col">
+          {checkedIndex !== -1 && (
+            <SegmentedThumb index={checkedIndex} count={options.length} />
+          )}
+          {options.map((option) => {
+            const id = `${name}-${option.value}`
+            const checked = option.value === value
+            return (
+              <div key={option.value} className="relative">
+                <input
+                  id={id}
+                  type="radio"
+                  name={name}
+                  className="peer sr-only"
+                  checked={checked}
+                  onChange={() => onChange(option.value)}
+                />
+                <label
+                  htmlFor={id}
+                  className={segmentedItemClassName(
+                    { active: checked, size },
+                    'gap-1 peer-focus-visible:shadow-focus',
+                  )}
+                >
+                  {option.icon}
+                  <span className={cx(iconsOnlyOnPhones && 'max-md:sr-only')}>
+                    {option.label}
+                  </span>
+                </label>
+              </div>
+            )
+          })}
+        </div>
       </div>
     </fieldset>
   )
