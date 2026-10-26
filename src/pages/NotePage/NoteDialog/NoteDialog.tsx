@@ -57,7 +57,7 @@ export default function NoteDialog({
 }: NoteDialogProps) {
   const dialogRef = useRef<HTMLDialogElement>(null)
   const isCreating = noteId === 'new'
-  const { note, isChecking, isNotFound, isLoading, error, reload } = useNote(
+  const { note, isNotFound, isLoading, error, reload } = useNote(
     isCreating ? null : noteId,
   )
   useCreateOnOpen(isCreating ? newNote : null, onCreated)
@@ -108,7 +108,6 @@ export default function NoteDialog({
             onMove={() => show('move')}
             onDelete={() => show('delete')}
             isNew={isNew}
-            isChecking={isChecking}
             className={cx('flex-1', viewClassName, !isMainView && 'hidden')}
           />
           {view === 'share' && (

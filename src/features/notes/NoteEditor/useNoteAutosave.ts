@@ -1,30 +1,17 @@
 import { useIsMutating } from '@tanstack/react-query'
 import { useEffect, useEffectEvent, useRef, useState } from 'react'
 
+import { isSameId } from '@/lib/localIds'
 import { isOfflineChange } from '@/lib/offlineQuery'
 
 import { withoutEmptyItems } from '../checklist'
-import type { Note, NoteChanges } from '../types'
+import { changesFrom, isSavedAs, mergeNote, textOf } from '../noteText'
+import type { Note, NoteChanges, NoteText } from '../types'
 import { useDeleteNote } from '../useDeleteNote'
 import { useUpdateNote } from '../useUpdateNote'
 
 /** How long typing has to pause before what's typed is saved. */
 const SAVE_DELAY_MS = 500
-
-type NoteDraft = Required<NoteChanges>
-
-/** The fields of `draft` that differ from `saved`, or `null` when none do. */
-function changesFrom(draft: NoteDraft, saved: NoteDraft) {
-  const changes: NoteChanges = {}
-  if (draft.title !== saved.title) changes.title = draft.title
-  if (draft.content !== saved.content) changes.content = draft.content
-  if (draft.isChecklist !== saved.isChecklist)
-    changes.isChecklist = draft.isChecklist
-  return Object.keys(changes).length ? changes : null
-}
-
-/** Whether `a` is a later time than `b`, both ISO dates. */
-const isLater = (a: string, b: string) => Date.parse(a) > Date.parse(b)
 
 /**
  * The note's title, text and whether it's a checklist as they're being edited, and a way to change them. Changes are saved once
@@ -33,65 +20,57 @@ const isLater = (a: string, b: string) => Date.parse(a) > Date.parse(b)
  * `discardIfEmpty` (a note just created), closing the editor with nothing written deletes the note.
  *
  * The note may have been edited elsewhere since it was cached (on another device), so when a later
- * version arrives, it replaces each field not changed here since the last save. Otherwise the next save
- * would write over it with the older text.
+ * version arrives, what's been typed since the last save is merged into it. When the two can't be merged,
+ * the draft stays as it is, and its next save is merged with the API's version or saved as a copy (see
+ * `setNoteMutationDefaults`).
  */
 export function useNoteAutosave(note: Note, discardIfEmpty: boolean) {
-  const [draft, setDraft] = useState<NoteDraft>({
-    title: note.title,
-    content: note.content,
-    isChecklist: note.isChecklist,
-  })
+  const [draft, setDraft] = useState<NoteText>(() => textOf(note))
   const { mutate } = useUpdateNote()
   const { mutate: deleteNote } = useDeleteNote()
   // What has been sent, so each save sends only what's changed since.
   const sent = useRef(draft)
-  // When the version the draft is based on was saved: the note as opened, or as this editor or another
+  // The revision of the version the draft is based on: the note as opened, or as this editor or another
   // device last saved it. The API trims what it saves, so the text alone can't tell a later version
   // from this editor's own save.
-  const savedAt = useRef(note.updatedAt)
+  const revision = useRef(note.revision)
   // While a change is on its way, the cached note may be older than what's been sent.
   const isSending = useIsMutating({ predicate: isOfflineChange }) > 0
 
-  const save = useEffectEvent((toSave: NoteDraft) => {
+  const save = useEffectEvent((toSave: NoteText) => {
     const changes = changesFrom(toSave, sent.current)
     if (!changes) return
+    const base = { ...sent.current, revision: revision.current }
     sent.current = toSave
     mutate(
-      { id: note.id, changes },
+      { id: note.id, changes, base },
       {
+        // Saved as sent, rather than merged with edits made elsewhere or saved as a copy, which the
+        // draft takes in as a later version.
         onSuccess: (saved) => {
-          if (isLater(saved.updatedAt, savedAt.current))
-            savedAt.current = saved.updatedAt
+          if (
+            isSameId(saved.id, note.id) &&
+            isSavedAs(saved, toSave) &&
+            saved.revision > revision.current
+          )
+            revision.current = saved.revision
         },
       },
     )
   })
 
   const takeLaterVersion = useEffectEvent(() => {
-    if (isSending || !isLater(note.updatedAt, savedAt.current)) return
-    const latest = {
-      title: note.title,
-      content: note.content,
-      isChecklist: note.isChecklist,
-    }
-    if (!changesFrom(latest, sent.current)) return
-    savedAt.current = note.updatedAt
-    const unchanged = (field: keyof NoteDraft) =>
-      draft[field] === sent.current[field]
-    const next = {
-      title: unchanged('title') ? latest.title : draft.title,
-      content: unchanged('content') ? latest.content : draft.content,
-      isChecklist: unchanged('isChecklist')
-        ? latest.isChecklist
-        : draft.isChecklist,
-    }
+    if (isSending || note.revision <= revision.current) return
+    const latest = textOf(note)
+    const merged = mergeNote(sent.current, draft, latest)
+    if (!merged) return
+    revision.current = note.revision
     sent.current = latest
-    setDraft(next)
+    if (changesFrom(merged, draft)) setDraft(merged)
   })
   useEffect(() => {
     takeLaterVersion()
-  }, [note.updatedAt, note.title, note.content, note.isChecklist, isSending])
+  }, [note.revision, isSending])
   const saveLatest = useEffectEvent(() => save(draft))
   // The delete waits a moment, so the cleanup React runs when it mounts the editor twice in development
   // doesn't delete the note: mounting again cancels it.

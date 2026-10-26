@@ -8,10 +8,12 @@ import {
   type UpdateNote,
   updateNoteMutationKey,
 } from '../mutations'
+import type { Note } from '../types'
 
 /**
  * Where the latest save of the note with `id` (or making it, for a new one) has got to: `'saving'`, `'waiting'` for the connection,
- * `'failed'`, or `'saved'` (also when there's been none).
+ * `'failed'`, `'copied'` (it was edited elsewhere too, and the two couldn't be merged, so it was saved as a
+ * copy), or `'saved'` (also when there's been none).
  */
 export function useNoteSaveStatus(id: number) {
   const states = useMutationState({
@@ -32,5 +34,7 @@ export function useNoteSaveStatus(id: number) {
   if (latest?.isPaused) return 'waiting'
   if (latest?.status === 'pending') return 'saving'
   if (latest?.status === 'error') return 'failed'
+  const saved = latest?.data as Note | undefined
+  if (saved && !isSameId(saved.id, id)) return 'copied'
   return 'saved'
 }

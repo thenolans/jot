@@ -23,6 +23,11 @@ export type Note = {
    * markdown, one task (`- [ ] …`, `- [x] …`) per line, each item's text plain (see `checklist.ts`).
    */
   isChecklist: boolean
+  /**
+   * Counts the edits to its title, text and `isChecklist`, so a save can say which version it's based on and
+   * be refused when the note has been edited elsewhere since.
+   */
+  revision: number
   createdAt: string
   /** When it was last edited. */
   updatedAt: string
@@ -48,5 +53,10 @@ export type NoteChanges = Partial<
   Pick<Note, 'title' | 'content' | 'isChecklist'>
 >
 
+/** A note's title, text and whether it's a checklist: what its editor edits, and what's merged when it's edited in two places. */
+export type NoteText = Required<NoteChanges>
+
 /** What a new note starts with; anything left out starts empty. */
-export type NewNote = Partial<Pick<Note, 'title' | 'content' | 'folderId'>>
+export type NewNote = Partial<
+  Pick<Note, 'title' | 'content' | 'folderId' | 'isChecklist'>
+>

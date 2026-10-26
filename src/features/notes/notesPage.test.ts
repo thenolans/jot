@@ -16,6 +16,7 @@ const note = (id: number, changes: Partial<Note> = {}): Note => ({
   shareCount: 0,
   isPinned: false,
   isChecklist: false,
+  revision: 0,
   createdAt: '2026-10-01T00:00:00Z',
   updatedAt: '2026-10-01T00:00:00Z',
   ...changes,

@@ -4,14 +4,24 @@ import { authQueries } from '@/features/auth/queries'
 import { adjustNoteCount } from '@/features/folders/folderTree'
 import { folderQueries } from '@/features/folders/queries'
 import { updateCachedFolders } from '@/features/folders/updateCachedFolders'
-import { isNotFoundError } from '@/lib/api'
+import { ApiError, isNotFoundError } from '@/lib/api'
 import { apiId, isSameId, recordSavedId, resolveId } from '@/lib/localIds'
 import { offlineChange, refetchAfterLastChange } from '@/lib/offlineQuery'
 
-import { createNote, deleteNote, moveNote, pinNote, updateNote } from './api'
+import {
+  createNote,
+  deleteNote,
+  fetchNote,
+  isEditedElsewhere,
+  moveNote,
+  NOTE_TITLE_MAX_LENGTH,
+  pinNote,
+  updateNote,
+} from './api'
 import { findCachedNote, updateCachedNotes } from './noteCache'
+import { changesFrom, mergeNote, textOf } from './noteText'
 import { noteQueries } from './queries'
-import type { NewNote, Note, NoteChanges } from './types'
+import type { NewNote, Note, NoteChanges, NoteText } from './types'
 
 /** Marks saves of a note's title and text, so they can be found together. */
 export const updateNoteMutationKey = [...noteQueries.all(), 'update'] as const
@@ -28,9 +38,14 @@ export const pinNoteMutationKey = [...noteQueries.all(), 'pin'] as const
 /** Marks deletes of notes. */
 export const deleteNoteMutationKey = [...noteQueries.all(), 'delete'] as const
 
+/** A note's text as it was when an edit was made to it, and its revision then. */
+export type NoteBase = NoteText & { revision: number }
+
 export type UpdateNote = {
   id: number
   changes: NoteChanges
+  /** What `changes` were made to, so they can be merged with any made elsewhere since. */
+  base: NoteBase
 }
 
 export type CreateNote = {
@@ -50,6 +65,95 @@ export type PinNote = {
   isPinned: boolean
 }
 
+/** How many times a save merges with edits made elsewhere before giving up, when more keep arriving. */
+const MAX_MERGES = 3
+
+/**
+ * The last save of each note (by its API id) that went through as made, unmerged: the text it left, and the
+ * note's revision after it. The next save, made to that text, is based on that revision, though it was
+ * made before the save came back.
+ */
+const lastSaves = new Map<number, NoteBase>()
+
+/**
+ * Notes (by API id) whose edits here couldn't be merged with edits made elsewhere, so they were saved as a
+ * copy: its id, and the note's revision then. Later saves of edits made before it (to an older revision) go
+ * to the copy too.
+ */
+const conflictCopies = new Map<number, { copyId: number; revision: number }>()
+
+const isSameText = (a: NoteText, b: NoteText) => !changesFrom(a, b)
+
+/** "Groceries (conflicted copy)", short enough for a title. */
+function copyTitle(title: string) {
+  const suffix = ' (conflicted copy)'
+  return (
+    (title || 'Untitled').slice(0, NOTE_TITLE_MAX_LENGTH - suffix.length) +
+    suffix
+  )
+}
+
+/**
+ * Saves `changes` to the note with API id `id`, made to `base`. When it's been edited elsewhere since, the
+ * two edits are merged and saved; when they can't be, this one is saved as a copy, leaving the note as it was
+ * edited elsewhere. Either way the cached note is swapped for the saved one.
+ */
+async function saveEdit(
+  queryClient: QueryClient,
+  id: number,
+  base: NoteBase,
+  changes: NoteChanges,
+) {
+  const mine = { ...textOf(base), ...changes }
+  const last = lastSaves.get(id)
+  const revision =
+    last && isSameText(last, base) && last.revision > base.revision
+      ? last.revision
+      : base.revision
+  try {
+    const saved = await updateNote(id, changes, revision)
+    lastSaves.set(id, { ...mine, revision: saved.revision })
+    return saved
+  } catch (error) {
+    if (!isEditedElsewhere(error)) throw error
+  }
+  // The note now holds text this device's later edits weren't made to.
+  lastSaves.delete(id)
+
+  const swapCached = (saved: Note, add?: Note) =>
+    updateCachedNotes(queryClient, {
+      edit: (note) => (isSameId(note.id, id) ? saved : note),
+      add,
+    })
+  for (let attempt = 0; attempt < MAX_MERGES; attempt++) {
+    const theirs = await fetchNote(id)
+    const merged = mergeNote(base, mine, theirs)
+    if (!merged) {
+      const copy = await createNote({
+        ...mine,
+        title: copyTitle(mine.title),
+        folderId: theirs.access === 'owner' ? theirs.folderId : null,
+      })
+      conflictCopies.set(id, { copyId: copy.id, revision: theirs.revision })
+      swapCached(theirs, copy)
+      return copy
+    }
+    const toSave = changesFrom(merged, theirs)
+    if (!toSave) {
+      swapCached(theirs)
+      return theirs
+    }
+    try {
+      const saved = await updateNote(id, toSave, theirs.revision)
+      swapCached(saved)
+      return saved
+    } catch (error) {
+      if (!isEditedElsewhere(error)) throw error
+    }
+  }
+  throw new ApiError(409, 'This note keeps being edited elsewhere.')
+}
+
 /** Once every change has been sent, the notes and folders are refetched, which also undoes any that failed. */
 const refetchAll = (queryClient: QueryClient) =>
   refetchAfterLastChange(queryClient, [
@@ -62,7 +166,8 @@ const refetchAll = (queryClient: QueryClient) =>
  * Sets up every change to notes: making one, saving its title and text as it's typed, moving it, pinning
  * it and deleting it. Each shows straight away, then is sent with the other changes, in order (see
  * `offlineChange`), so they all work offline. Their options live on the client rather than in a hook, so
- * changes kept from before the app was closed can still be sent.
+ * changes kept from before the app was closed can still be sent. Edits to a note's title and text made
+ * while it was edited elsewhere (say, offline) are merged with those edits (see `saveEdit`).
  */
 export function setNoteMutationDefaults(queryClient: QueryClient) {
   const cancelRefetches = () =>
@@ -96,6 +201,7 @@ export function setNoteMutationDefaults(queryClient: QueryClient) {
           shareCount: 0,
           isPinned: false,
           isChecklist: false,
+          revision: 0,
           createdAt: now,
           updatedAt: now,
         }
@@ -126,7 +232,13 @@ export function setNoteMutationDefaults(queryClient: QueryClient) {
     updateNoteMutationKey,
     {
       ...offlineChange,
-      mutationFn: ({ id, changes }) => updateNote(apiId(id), changes),
+      mutationFn: ({ id, changes, base }) => {
+        const noteId = apiId(id)
+        const copy = conflictCopies.get(noteId)
+        if (copy && base.revision < copy.revision)
+          return updateNote(copy.copyId, changes)
+        return saveEdit(queryClient, noteId, base, changes)
+      },
       onMutate: async ({ id, changes }) => {
         await cancelRefetches()
         const updatedAt = new Date().toISOString()

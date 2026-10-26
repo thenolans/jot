@@ -1,5 +1,11 @@
 import type { Person } from '@/features/auth/types'
-import { api, type Page, rekeyFieldErrors, withQuery } from '@/lib/api'
+import {
+  api,
+  ApiError,
+  type Page,
+  rekeyFieldErrors,
+  withQuery,
+} from '@/lib/api'
 
 import type {
   NewNote,
@@ -20,6 +26,7 @@ type NoteResponse = {
   share_count: number
   is_pinned: boolean
   is_checklist: boolean
+  revision: number
   created_at: string
   updated_at: string
 }
@@ -35,6 +42,7 @@ function toNote(response: NoteResponse): Note {
     shareCount: response.share_count,
     isPinned: response.is_pinned,
     isChecklist: response.is_checklist,
+    revision: response.revision,
     createdAt: response.created_at,
     updatedAt: response.updated_at,
   }
@@ -100,12 +108,21 @@ async function patchNote(id: number, body: object): Promise<Note> {
   return toNote(await api.patch<NoteResponse>(`/jot/notes/${id}/`, body))
 }
 
-/** Changes a note's title, text or whether it's a checklist, returning it as saved. */
+/**
+ * Changes a note's title, text or whether it's a checklist, returning it as saved. Given the `revision` the
+ * changes are based on, it fails with a 409 (`isEditedElsewhere`) when the note has been edited since.
+ */
 export function updateNote(
   id: number,
   { isChecklist, ...changes }: NoteChanges,
+  revision?: number,
 ): Promise<Note> {
-  return patchNote(id, { ...changes, is_checklist: isChecklist })
+  return patchNote(id, { ...changes, is_checklist: isChecklist, revision })
+}
+
+/** Whether a save failed because the note has been edited since the revision it was based on. */
+export function isEditedElsewhere(error: unknown) {
+  return error instanceof ApiError && error.status === 409
 }
 
 /** Moves a note into a folder, or out of any for `null`, returning it as saved. */
@@ -130,12 +147,14 @@ export async function createNote({
   title,
   content,
   folderId,
+  isChecklist,
 }: NewNote): Promise<Note> {
   return toNote(
     await api.post<NoteResponse>('/jot/notes/', {
       title,
       content,
       folder_id: folderId,
+      is_checklist: isChecklist,
     }),
   )
 }

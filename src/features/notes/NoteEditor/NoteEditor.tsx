@@ -63,11 +63,6 @@ type NoteEditorProps = {
   onDelete: () => void
   /** Just created: the text takes focus, and closing the note with nothing written deletes it. */
   isNew?: boolean
-  /**
-   * The note is being refreshed since it was opened, so it may have been edited elsewhere: the title and
-   * text can't be edited until it's back, so nothing typed is based on an older version.
-   */
-  isChecking?: boolean
   className?: string
 }
 
@@ -89,7 +84,6 @@ export default function NoteEditor({
   onMove,
   onDelete,
   isNew = false,
-  isChecking = false,
   className,
 }: NoteEditorProps) {
   const canEdit = canEditNote(note)
@@ -115,11 +109,13 @@ export default function NoteEditor({
 
   const statusText = () => {
     if (!canEdit) return 'View only'
-    if (isChecking) return 'Checking for changes…'
     if (saveStatus === 'saving') return 'Saving…'
     if (saveStatus === 'waiting') return "Saves when you're back online"
     if (saveStatus === 'failed')
       return "Couldn't save. Keep typing to try again."
+    if (saveStatus === 'copied')
+      return 'Edited elsewhere too, so saved as a copy'
+
     return `${note.isPinned ? 'Pinned · ' : ''}Edited ${formatDate(note.updatedAt)}`
   }
 
@@ -133,7 +129,6 @@ export default function NoteEditor({
             name="title"
             aria-label="Title"
             value={draft.title}
-            readOnly={isChecking}
             onChange={(event) => change({ title: event.target.value })}
             maxLength={NOTE_TITLE_MAX_LENGTH}
             placeholder="Title"
@@ -169,7 +164,6 @@ export default function NoteEditor({
           content={draft.content}
           onChange={(content) => change({ content })}
           readOnly={!canEdit}
-          disabled={isChecking}
           className="min-h-0 flex-1 overflow-y-auto px-6 py-4"
         />
       ) : mode === 'edit' ? (
@@ -179,7 +173,6 @@ export default function NoteEditor({
           name="content"
           aria-label="Note"
           value={draft.content}
-          readOnly={isChecking}
           onChange={(event) => change({ content: event.target.value })}
           placeholder="Write in markdown…"
           className="field-sizing-content min-h-0 flex-1 resize-none bg-transparent px-6 py-4 leading-relaxed text-ink outline-none placeholder:text-faint focus-visible:shadow-none"
