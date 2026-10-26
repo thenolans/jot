@@ -39,7 +39,7 @@ const SKELETON_LINES = [5, 3, 9, 3, 7, 5, 3, 7, 5]
 
 // A card's padding takes about as much room as a line of preview, and its title two more.
 const estimateHeight = (note: Note) =>
-  (note.title ? 3 : 1) + previewLines(notePreview(note.content))
+  (note.title ? 3 : 1) + previewLines(notePreview(note.content), note.id)
 
 /**
  * The grid of notes, or what to show instead while it loads, fails or comes up empty. More load as it's

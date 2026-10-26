@@ -10,17 +10,21 @@ import { plural } from '@/lib/plural'
 
 import { isSharedByUser, isSharedWithUser, sharedByLabel } from '../access'
 import NoteMarkdown from '../NoteMarkdown'
-import { notePreview, previewLines } from '../notePreview'
+import {
+  type MaxPreviewLines,
+  maxPreviewLines,
+  notePreview,
+} from '../notePreview'
 import PinButton from '../PinButton'
 import type { Note } from '../types'
 import ChecklistPreview from './ChecklistPreview'
 
 // Written out in full so Tailwind generates them.
-const lineClampClassNames = {
-  3: 'line-clamp-3',
-  5: 'line-clamp-5',
-  7: 'line-clamp-7',
-  9: 'line-clamp-9',
+const lineClampClassNames: Record<MaxPreviewLines, string> = {
+  8: 'line-clamp-8',
+  10: 'line-clamp-10',
+  12: 'line-clamp-12',
+  14: 'line-clamp-14',
 }
 
 // Room for the icons in the top corner, by how many there are.
@@ -142,7 +146,7 @@ export default function NoteCard({
               className={cx(
                 'text-sm',
                 compact && 'max-sm:text-xs',
-                lineClampClassNames[previewLines(preview)],
+                lineClampClassNames[maxPreviewLines(note.id)],
                 !note.title && cornerPadding,
               )}
             />

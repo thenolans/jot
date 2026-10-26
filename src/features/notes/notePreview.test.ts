@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { notePreview, previewLines } from './notePreview'
+import { maxPreviewLines, notePreview, previewLines } from './notePreview'
 
 describe('notePreview', () => {
   it('takes out emphasis and code', () => {
@@ -42,15 +42,22 @@ describe('notePreview', () => {
   })
 
   it('cuts long notes short', () => {
-    expect(notePreview('a'.repeat(2000))).toHaveLength(600)
+    expect(notePreview('a'.repeat(2000))).toHaveLength(1000)
   })
 })
 
 describe('previewLines', () => {
-  it('shows more lines for longer previews', () => {
-    expect(previewLines('11:30am, Terminal 8')).toBe(3)
-    expect(previewLines('a'.repeat(100))).toBe(5)
-    expect(previewLines('a'.repeat(300))).toBe(7)
-    expect(previewLines('a'.repeat(600))).toBe(9)
+  it('counts lines as they wrap', () => {
+    expect(previewLines('11:30am, Terminal 8', 1)).toBe(1)
+    expect(previewLines('a'.repeat(100), 1)).toBe(3)
+    expect(previewLines('One\nTwo\n\nThree', 1)).toBe(4)
+  })
+
+  it('stops at a maximum that varies by note', () => {
+    const long = 'a'.repeat(1000)
+    expect(new Set([1, 2, 3, 4].map((id) => previewLines(long, id))).size).toBe(
+      4,
+    )
+    expect(previewLines(long, -3)).toBe(maxPreviewLines(-3))
   })
 })
