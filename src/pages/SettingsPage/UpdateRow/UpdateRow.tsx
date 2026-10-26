@@ -36,7 +36,7 @@ export default function UpdateRow() {
   return (
     <SettingsRow
       Icon={ResetIcon}
-      title="Updates"
+      title="Check for updates"
       description={
         isOnline || isBusy
           ? descriptions[status]

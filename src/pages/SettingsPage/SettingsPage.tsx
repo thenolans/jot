@@ -72,7 +72,6 @@ export default function SettingsPage() {
               onChange={setNoteLayout}
             />
           </SettingsRow>
-          <UpdateRow />
         </SettingsSection>
 
         <SettingsSection title="Account">
@@ -95,6 +94,10 @@ export default function SettingsPage() {
         </SettingsSection>
 
         <AppSwitcher />
+
+        <SettingsSection title="Updates">
+          <UpdateRow />
+        </SettingsSection>
       </PageContainer>
     </div>
   )
