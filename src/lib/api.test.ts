@@ -44,6 +44,7 @@ describe('api', () => {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: '{"email":"a@b.c"}',
+      signal: expect.any(AbortSignal),
     })
   })
 
@@ -56,7 +57,25 @@ describe('api', () => {
       method: 'POST',
       headers: {},
       body,
+      signal: expect.any(AbortSignal),
     })
+  })
+
+  it("counts the API as unreachable when it doesn't start answering in time", async () => {
+    vi.useFakeTimers()
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(
+        (_: string, { signal }: RequestInit) =>
+          new Promise((_, reject) =>
+            signal?.addEventListener('abort', () => reject(signal.reason)),
+          ),
+      ),
+    )
+    const request = failure(api.get('/jot/notes/'))
+    await vi.advanceTimersByTimeAsync(8_000)
+    expect((await request).status).toBe(0)
+    vi.useRealTimers()
   })
 
   it('returns nothing for 204 No Content', async () => {

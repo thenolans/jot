@@ -54,6 +54,13 @@ export const authToken = {
 const GENERIC_ERROR = 'Something went wrong. Please try again.'
 
 /**
+ * How long a request waits for the API to start answering before it counts as unreachable. On a weak
+ * signal the device thinks it's online, and a request can hang far longer before the browser gives up.
+ * Only the wait for the answer to start is limited, so a slow download of a long answer still finishes.
+ */
+const RESPONSE_TIMEOUT_MS = 8_000
+
+/**
  * The first message in a DRF error value: a string, a list of them, or, for nested data, an object or
  * list of objects holding them (`[{}, { "email": ["…"] }]`).
  */
@@ -107,11 +114,14 @@ async function request<T>(
   if (token) headers.Authorization = `Token ${token}`
 
   let response: Response
+  const timeout = new AbortController()
+  const timer = setTimeout(() => timeout.abort(), RESPONSE_TIMEOUT_MS)
   try {
     response = await fetch(BASE_URL + path, {
       method,
       headers,
       body: body === undefined || isFormData ? body : JSON.stringify(body),
+      signal: timeout.signal,
     })
   } catch {
     connectivity.reportUnreachable()
@@ -119,6 +129,8 @@ async function request<T>(
       0,
       "We couldn't reach Jot. Check your connection and try again.",
     )
+  } finally {
+    clearTimeout(timer)
   }
   connectivity.reportReachable()
 
