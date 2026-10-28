@@ -15,7 +15,7 @@ Run `yarn lint:fix`, `yarn format`, `yarn build`, `yarn lint` and `yarn test` be
 ## Backend
 
 - The API is `thenolans-api` (Django REST Framework), checked out at `~/Documents/dev/thenolans-api`; it serves several apps. Run it locally with `python manage.py runserver` (setup in its `docs/setup.md`).
-- Production is https://api-v2.thenolans.io; Netlify proxies `/api/*` to it (`public/_redirects`).
+- Production is https://api.thenolans.io; Netlify proxies `/api/*` to it (`public/_redirects`).
 - Locally it's at http://api.thenolans.local:8000 (`/etc/hosts` entry) and rejects any other host name, so the Vite proxy targets that host with `changeOrigin`.
 - The app calls it through `api` in `src/lib/api.ts`, at `/api` + the API path, trailing slash included (`/api/user/me/`).
 - Auth is DRF token auth under `/user/`: `register/` creates a user (returns no token), `login/` returns `{ token }`, `me/` returns the user, `logout/` deletes the token (204). Requests send `Authorization: Token <key>`; the app keeps the token in local storage. Passwords need at least 8 characters on register (older, shorter ones still log in).
