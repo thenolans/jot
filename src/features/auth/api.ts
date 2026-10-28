@@ -28,9 +28,12 @@ export async function login(input: LoginInput) {
   return user
 }
 
-/** Creates an account, then signs in to it (registering doesn't return a token). */
+/**
+ * Creates an account, then signs in to it (registering doesn't return a token). Naming the app
+ * has the API send Jot's welcome email.
+ */
 export async function register(input: RegisterInput) {
-  await api.post<User>('/user/register/', input)
+  await api.post<User>('/user/register/', { ...input, app: 'jot' })
   return login({ email: input.email, password: input.password })
 }
 
