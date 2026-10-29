@@ -4,17 +4,17 @@
  *
  * Bodies are sent as JSON, or as multipart form data when given as `FormData` (to send files).
  *
- * The API authenticates with a token sent as `Authorization: Token <key>`. The token is kept in
- * local storage so the session survives reloads.
+ * The API authenticates with a token sent as `Authorization: Token <key>` (see `authToken`). A
+ * request the API turns away for its token ends that session.
  *
  * Failed requests throw an `ApiError`, built from DRF's error format:
  * `{ "detail": string }` or `{ "<field>": string[], "non_field_errors": string[] }`.
  */
 
+import { authToken } from './authToken'
 import { connectivity } from './connectivity'
 
 const BASE_URL = '/api'
-const TOKEN_STORAGE_KEY = 'jot.token'
 
 export class ApiError extends Error {
   readonly status: number
@@ -31,24 +31,6 @@ export class ApiError extends Error {
     this.status = status
     this.fieldErrors = fieldErrors
   }
-}
-
-export const authToken = {
-  get() {
-    try {
-      return localStorage.getItem(TOKEN_STORAGE_KEY)
-    } catch {
-      return null
-    }
-  },
-  set(token: string | null) {
-    try {
-      if (token) localStorage.setItem(TOKEN_STORAGE_KEY, token)
-      else localStorage.removeItem(TOKEN_STORAGE_KEY)
-    } catch {
-      // Storage unavailable (e.g. private mode): the session lasts until reload.
-    }
-  },
 }
 
 const GENERIC_ERROR = 'Something went wrong. Please try again.'
@@ -139,6 +121,7 @@ async function request<T>(
       ? undefined
       : await response.json().catch(() => undefined)
 
+  if (response.status === 401 && token) authToken.reject(token)
   if (!response.ok) throw toApiError(response.status, data)
 
   return data as T

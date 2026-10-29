@@ -1,4 +1,5 @@
-import { api, ApiError, authToken } from '@/lib/api'
+import { api, ApiError } from '@/lib/api'
+import { authToken } from '@/lib/authToken'
 
 import type { LoginInput, RegisterInput, User } from './types'
 
@@ -53,10 +54,8 @@ export async function fetchCurrentUser() {
   try {
     return await api.get<User>('/user/me/')
   } catch (error) {
-    if (error instanceof ApiError && error.status === 401) {
-      authToken.set(null)
-      return null
-    }
+    // The request has already dropped the rejected token.
+    if (error instanceof ApiError && error.status === 401) return null
     throw error
   }
 }
