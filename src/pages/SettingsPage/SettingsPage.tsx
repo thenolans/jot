@@ -93,11 +93,11 @@ export default function SettingsPage() {
           </SettingsRow>
         </SettingsSection>
 
-        <AppSwitcher />
-
         <SettingsSection title="Updates">
           <UpdateRow />
         </SettingsSection>
+
+        <AppSwitcher />
       </PageContainer>
     </div>
   )

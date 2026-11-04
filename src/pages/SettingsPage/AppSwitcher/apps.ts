@@ -3,6 +3,7 @@ import type { ComponentType } from 'react'
 import AvocadoIcon from './AvocadoIcon'
 import DabberIcon from './DabberIcon'
 import FramerIcon from './FramerIcon'
+import ScoopIcon from './ScoopIcon'
 import TomeOfScoringIcon from './TomeOfScoringIcon'
 
 export type AppBrand = {
@@ -58,6 +59,17 @@ export const otherApps: OtherApp[] = [
       color: 'light-dark(#185d64, #6dbfc5)',
       soft: 'light-dark(#cfecee, #144b51)',
       mid: '#3fa0a8',
+    },
+  },
+  {
+    name: 'scoop',
+    description: 'Your daily edition',
+    href: 'https://scoop.thenolans.io',
+    Icon: ScoopIcon,
+    brand: {
+      color: 'light-dark(#5c5180, #b3a8d1)',
+      soft: 'light-dark(#e5e1f0, #4a4168)',
+      mid: '#8d84a9',
     },
   },
   {
